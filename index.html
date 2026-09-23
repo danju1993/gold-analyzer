@@ -193,6 +193,11 @@ main{
   color:#92400e
 }
 
+.context-conflict{
+  background:#fef3c7;
+  color:#92400e
+}
+
 .layer-main{
   border-left:5px solid #2563eb
 }
@@ -1748,6 +1753,176 @@ actualizarResumen();
 
 
 /* ====================================================== */
+/* ANALIZAR ESTRUCTURA */
+/* ====================================================== */
+
+function analizarEstructura(){
+
+const estructura15 =
+document.getElementById(
+"structure15"
+).value;
+
+const estructura5 =
+document.getElementById(
+"structure5"
+).value;
+
+const bos =
+document.getElementById(
+"bos"
+).value;
+
+const rejection =
+document.getElementById(
+"rejection"
+).value;
+
+
+/* ------------------------------------------------------ */
+/* COMPRA */
+/* ------------------------------------------------------ */
+
+let compra = 0;
+
+if(
+estructura15 === "Alcista"
+){
+compra++;
+}
+
+if(
+estructura5 === "Alcista"
+){
+compra++;
+}
+
+if(
+bos === "Compra"
+){
+compra++;
+}
+
+if(
+rejection === "Compra"
+){
+compra++;
+}
+
+
+/* ------------------------------------------------------ */
+/* VENTA */
+/* ------------------------------------------------------ */
+
+let venta = 0;
+
+if(
+estructura15 === "Bajista"
+){
+venta++;
+}
+
+if(
+estructura5 === "Bajista"
+){
+venta++;
+}
+
+if(
+bos === "Venta"
+){
+venta++;
+}
+
+if(
+rejection === "Venta"
+){
+venta++;
+}
+
+
+/* ------------------------------------------------------ */
+/* RESULTADO */
+/* ------------------------------------------------------ */
+
+let direccion = "neutral";
+
+if(
+compra === 4
+){
+
+direccion = "compra";
+
+}
+
+else if(
+venta === 4
+){
+
+direccion = "venta";
+
+}
+
+else if(
+compra > venta &&
+compra >= 2
+){
+
+direccion = "parcialCompra";
+
+}
+
+else if(
+venta > compra &&
+venta >= 2
+){
+
+direccion = "parcialVenta";
+
+}
+
+else if(
+compra > 0 &&
+venta > 0
+){
+
+direccion = "conflicto";
+
+}
+
+
+return {
+
+compra,
+venta,
+direccion
+
+};
+
+}
+
+
+/* ====================================================== */
+/* AGREGAR ELEMENTOS A LA LECTURA FINAL */
+/* ====================================================== */
+
+function agregarLista(
+lista,
+texto
+){
+
+const li =
+document.createElement("li");
+
+li.textContent =
+texto;
+
+lista.appendChild(li);
+
+}
+
+
+/* ====================================================== */
 /* LECTURA FINAL */
 /* ====================================================== */
 
@@ -1781,7 +1956,13 @@ document.getElementById(
 lista.innerHTML = "";
 
 
+/* ====================================================== */
 /* ESTRUCTURA */
+/* ====================================================== */
+
+const estructura =
+analizarEstructura();
+
 
 const estructura15 =
 document.getElementById(
@@ -1805,61 +1986,58 @@ document.getElementById(
 
 
 /* ====================================================== */
-/* CASO COMPRA */
+/* COMPRA COMPLETAMENTE ALINEADA */
 /* ====================================================== */
 
 if(
 tipoContexto === "oro" &&
-compras >= 2
+compras >= 2 &&
+estructura.direccion === "compra"
 ){
 
 badge.className =
 "badge context-good";
 
 badge.textContent =
-"🟢 Contexto alineado para estudiar";
+"🟢 Contexto + estructura alineados";
 
 title.textContent =
-"Escenario alcista del oro a estudiar";
+"Contexto alcista para estudiar";
 
 text.textContent =
-"Los factores principales y las confirmaciones están alineados. Falta revisar la estructura del oro antes de sacar conclusiones.";
+"Los factores macro, las confirmaciones y la estructura manual del oro están alineados. Esto sirve como contexto de estudio y requiere interpretar el precio en el momento.";
 
+agregarLista(
+lista,
+"DXY ↓ + US10Y ↓"
+);
 
-const items = [
-
-"DXY ↓ + US10Y ↓",
-
-"USOIL/AUD/USD: " +
+agregarLista(
+lista,
+"Confirmaciones: " +
 compras +
-"/2 confirmaciones de compra",
+"/2 para estudiar compra"
+);
 
-"15M: " +
-estructura15,
+agregarLista(
+lista,
+"15M: Alcista"
+);
 
-"5M: " +
-estructura5,
+agregarLista(
+lista,
+"5M: Alcista"
+);
 
-"BOS: " +
-bos,
+agregarLista(
+lista,
+"BOS: Compra"
+);
 
-"Retroceso/rechazo: " +
-rejection
-
-];
-
-
-items.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-lista.appendChild(li);
-
-});
+agregarLista(
+lista,
+"Retroceso/rechazo: Compra"
+);
 
 return;
 
@@ -1867,61 +2045,58 @@ return;
 
 
 /* ====================================================== */
-/* CASO VENTA */
+/* VENTA COMPLETAMENTE ALINEADA */
 /* ====================================================== */
 
 if(
 tipoContexto === "presion" &&
-ventas >= 2
+ventas >= 2 &&
+estructura.direccion === "venta"
 ){
 
 badge.className =
 "badge context-sell";
 
 badge.textContent =
-"🔴 Contexto alineado para estudiar";
+"🔴 Contexto + estructura alineados";
 
 title.textContent =
-"Escenario bajista del oro a estudiar";
+"Contexto bajista para estudiar";
 
 text.textContent =
-"Los factores principales y las confirmaciones están alineados. Falta revisar la estructura del oro antes de sacar conclusiones.";
+"Los factores macro, las confirmaciones y la estructura manual del oro están alineados. Esto sirve como contexto de estudio y requiere interpretar el precio en el momento.";
 
+agregarLista(
+lista,
+"DXY ↑ + US10Y ↑"
+);
 
-const items = [
-
-"DXY ↑ + US10Y ↑",
-
-"USOIL/AUD/USD: " +
+agregarLista(
+lista,
+"Confirmaciones: " +
 ventas +
-"/2 confirmaciones de venta",
+"/2 para estudiar venta"
+);
 
-"15M: " +
-estructura15,
+agregarLista(
+lista,
+"15M: Bajista"
+);
 
-"5M: " +
-estructura5,
+agregarLista(
+lista,
+"5M: Bajista"
+);
 
-"BOS: " +
-bos,
+agregarLista(
+lista,
+"BOS: Venta"
+);
 
-"Retroceso/rechazo: " +
-rejection
-
-];
-
-
-items.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-lista.appendChild(li);
-
-});
+agregarLista(
+lista,
+"Retroceso/rechazo: Venta"
+);
 
 return;
 
@@ -1929,11 +2104,387 @@ return;
 
 
 /* ====================================================== */
-/* CASO PARCIAL */
+/* MACRO ALINEADO PERO ESTRUCTURA CONTRARIA */
 /* ====================================================== */
 
 if(
-tipoContexto === "oro" ||
+tipoContexto === "oro" &&
+estructura.direccion === "venta"
+){
+
+badge.className =
+"badge context-conflict";
+
+badge.textContent =
+"🟡 Conflicto macro / estructura";
+
+title.textContent =
+"El contexto macro y el precio no están alineados";
+
+text.textContent =
+"El contexto principal favorece el estudio de una subida, pero la estructura introducida para el oro muestra dirección bajista. Conviene separar ambos elementos.";
+
+agregarLista(
+lista,
+"DXY ↓ + US10Y ↓"
+);
+
+agregarLista(
+lista,
+"Confirmaciones compra: " +
+compras +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura 15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"Estructura 5M: " +
+estructura5
+);
+
+agregarLista(
+lista,
+"BOS: " +
+bos
+);
+
+agregarLista(
+lista,
+"Retroceso/rechazo: " +
+rejection
+);
+
+return;
+
+}
+
+
+if(
+tipoContexto === "presion" &&
+estructura.direccion === "compra"
+){
+
+badge.className =
+"badge context-conflict";
+
+badge.textContent =
+"🟡 Conflicto macro / estructura";
+
+title.textContent =
+"El contexto macro y el precio no están alineados";
+
+text.textContent =
+"El contexto principal muestra presión, pero la estructura introducida para el oro muestra dirección alcista. Conviene separar ambos elementos.";
+
+agregarLista(
+lista,
+"DXY ↑ + US10Y ↑"
+);
+
+agregarLista(
+lista,
+"Confirmaciones venta: " +
+ventas +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura 15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"Estructura 5M: " +
+estructura5
+);
+
+agregarLista(
+lista,
+"BOS: " +
+bos
+);
+
+agregarLista(
+lista,
+"Retroceso/rechazo: " +
+rejection
+);
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* ESTRUCTURA PARCIALMENTE ALINEADA */
+/* ====================================================== */
+
+if(
+(
+tipoContexto === "oro" &&
+estructura.direccion === "parcialCompra"
+)
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Falta confirmación de estructura";
+
+title.textContent =
+"Contexto favorable, estructura parcial";
+
+text.textContent =
+"El contexto macro está alineado para estudiar compra, pero la estructura manual todavía no tiene los cuatro elementos alcistas.";
+
+agregarLista(
+lista,
+"DXY ↓ + US10Y ↓"
+);
+
+agregarLista(
+lista,
+"Confirmaciones compra: " +
+compras +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura alcista: " +
+estructura.compra +
+"/4"
+);
+
+agregarLista(
+lista,
+"15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"5M: " +
+estructura5
+);
+
+agregarLista(
+lista,
+"BOS: " +
+bos
+);
+
+agregarLista(
+lista,
+"Retroceso/rechazo: " +
+rejection
+);
+
+return;
+
+}
+
+
+if(
+(
+tipoContexto === "presion" &&
+estructura.direccion === "parcialVenta"
+)
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Falta confirmación de estructura";
+
+title.textContent =
+"Contexto de presión, estructura parcial";
+
+text.textContent =
+"El contexto macro está alineado para estudiar venta, pero la estructura manual todavía no tiene los cuatro elementos bajistas.";
+
+agregarLista(
+lista,
+"DXY ↑ + US10Y ↑"
+);
+
+agregarLista(
+lista,
+"Confirmaciones venta: " +
+ventas +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura bajista: " +
+estructura.venta +
+"/4"
+);
+
+agregarLista(
+lista,
+"15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"5M: " +
+estructura5
+);
+
+agregarLista(
+lista,
+"BOS: " +
+bos
+);
+
+agregarLista(
+lista,
+"Retroceso/rechazo: " +
+rejection
+);
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* ESTRUCTURA EN CONFLICTO */
+/* ====================================================== */
+
+if(
+estructura.direccion === "conflicto"
+){
+
+badge.className =
+"badge context-conflict";
+
+badge.textContent =
+"🟡 Estructura en conflicto";
+
+title.textContent =
+"Los elementos de estructura no están alineados";
+
+text.textContent =
+"Hay elementos que apuntan en direcciones diferentes. La estructura necesita una lectura más clara antes de compararla con el contexto macro.";
+
+agregarLista(
+lista,
+"Elementos alcistas: " +
+estructura.compra +
+"/4"
+);
+
+agregarLista(
+lista,
+"Elementos bajistas: " +
+estructura.venta +
+"/4"
+);
+
+agregarLista(
+lista,
+"15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"5M: " +
+estructura5
+);
+
+agregarLista(
+lista,
+"BOS: " +
+bos
+);
+
+agregarLista(
+lista,
+"Retroceso/rechazo: " +
+rejection
+);
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* MACRO ALINEADO PERO SIN ESTRUCTURA COMPLETA */
+/* ====================================================== */
+
+if(
+tipoContexto === "oro"
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Contexto favorable · falta estructura";
+
+title.textContent =
+"Falta confirmar la estructura del oro";
+
+text.textContent =
+"El contexto macro está alineado, pero todavía no hay una estructura completa de 15M y 5M con BOS y retroceso/rechazo en la misma dirección.";
+
+agregarLista(
+lista,
+"DXY ↓ + US10Y ↓"
+);
+
+agregarLista(
+lista,
+"Confirmaciones compra: " +
+compras +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura alcista: " +
+estructura.compra +
+"/4"
+);
+
+agregarLista(
+lista,
+"15M: " +
+estructura15
+);
+
+agregarLista(
+lista,
+"5M: " +
+estructura5
+);
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* MACRO DE PRESIÓN PERO SIN ESTRUCTURA COMPLETA */
+/* ====================================================== */
+
+if(
 tipoContexto === "presion"
 ){
 
@@ -1941,52 +2492,44 @@ badge.className =
 "badge context-wait";
 
 badge.textContent =
-"🟡 Contexto parcial";
+"🟡 Contexto de presión · falta estructura";
 
 title.textContent =
-"Hay factores alineados, pero falta confirmación";
+"Falta confirmar la estructura del oro";
 
 text.textContent =
-"El contexto principal tiene dirección, pero las confirmaciones complementarias todavía no están completamente alineadas.";
+"El contexto macro muestra presión, pero todavía no hay una estructura completa de 15M y 5M con BOS y retroceso/rechazo en la misma dirección.";
 
+agregarLista(
+lista,
+"DXY ↑ + US10Y ↑"
+);
 
-const items = [
-
-"Factores principales: " +
-(
-tipoContexto === "oro"
-? "DXY ↓ + US10Y ↓"
-: "DXY ↑ + US10Y ↑"
-),
-
-"Confirmaciones compra: " +
-compras +
-"/2",
-
+agregarLista(
+lista,
 "Confirmaciones venta: " +
 ventas +
-"/2",
+"/2"
+);
 
+agregarLista(
+lista,
+"Estructura bajista: " +
+estructura.venta +
+"/4"
+);
+
+agregarLista(
+lista,
 "15M: " +
-estructura15,
+estructura15
+);
 
+agregarLista(
+lista,
 "5M: " +
 estructura5
-
-];
-
-
-items.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-lista.appendChild(li);
-
-});
+);
 
 return;
 
@@ -1994,7 +2537,7 @@ return;
 
 
 /* ====================================================== */
-/* CASO PARCIAL PRINCIPAL */
+/* PARCIAL */
 /* ====================================================== */
 
 if(
@@ -2011,39 +2554,47 @@ title.textContent =
 "Falta confirmación de un factor principal";
 
 text.textContent =
-"Solo uno de DXY y US10Y tiene dirección. Las confirmaciones complementarias pueden aportar información adicional, pero el contexto principal todavía no está completo.";
+"Solo uno de DXY y US10Y tiene dirección. Las confirmaciones y la estructura pueden aportar información adicional, pero el contexto principal todavía no está completo.";
 
-
-const items = [
-
+agregarLista(
+lista,
 "DXY: " +
-marketState.DXY.direction,
+marketState.DXY.direction
+);
 
+agregarLista(
+lista,
 "US10Y: " +
-marketState.US10Y.direction,
+marketState.US10Y.direction
+);
 
+agregarLista(
+lista,
 "Confirmaciones compra: " +
 compras +
-"/2",
+"/2"
+);
 
+agregarLista(
+lista,
 "Confirmaciones venta: " +
 ventas +
 "/2"
+);
 
-];
+agregarLista(
+lista,
+"Estructura alcista: " +
+estructura.compra +
+"/4"
+);
 
-
-items.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-lista.appendChild(li);
-
-});
+agregarLista(
+lista,
+"Estructura bajista: " +
+estructura.venta +
+"/4"
+);
 
 return;
 
@@ -2051,7 +2602,7 @@ return;
 
 
 /* ====================================================== */
-/* CASO CONFLICTO */
+/* CONFLICTO MACRO */
 /* ====================================================== */
 
 if(
@@ -2059,44 +2610,56 @@ tipoContexto === "conflicto"
 ){
 
 badge.className =
-"badge context-wait";
+"badge context-conflict";
 
 badge.textContent =
-"🟡 Factores en conflicto";
+"🟡 Factores macro en conflicto";
 
 title.textContent =
 "DXY y US10Y no están alineados";
 
 text.textContent =
-"Los dos factores principales muestran direcciones opuestas. Conviene observar la evolución antes de interpretar las confirmaciones.";
+"Los dos factores principales muestran direcciones opuestas. Las confirmaciones y la estructura pueden observarse por separado.";
 
+agregarLista(
+lista,
+"DXY: " +
+marketState.DXY.direction
+);
 
-const items = [
+agregarLista(
+lista,
+"US10Y: " +
+marketState.US10Y.direction
+);
 
-"DXY y US10Y tienen direcciones opuestas",
-
+agregarLista(
+lista,
 "Confirmaciones compra: " +
 compras +
-"/2",
+"/2"
+);
 
+agregarLista(
+lista,
 "Confirmaciones venta: " +
 ventas +
 "/2"
+);
 
-];
+agregarLista(
+lista,
+"Estructura alcista: " +
+estructura.compra +
+"/4"
+);
 
-
-items.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-lista.appendChild(li);
-
-});
+agregarLista(
+lista,
+"Estructura bajista: " +
+estructura.venta +
+"/4"
+);
 
 return;
 
@@ -2117,7 +2680,47 @@ title.textContent =
 "Esperando una dirección más definida";
 
 text.textContent =
-"DXY y US10Y están neutrales. Las confirmaciones por sí solas no definen el contexto principal.";
+"DXY y US10Y están neutrales. Las confirmaciones y la estructura se mantienen como información de estudio.";
+
+agregarLista(
+lista,
+"DXY: " +
+marketState.DXY.direction
+);
+
+agregarLista(
+lista,
+"US10Y: " +
+marketState.US10Y.direction
+);
+
+agregarLista(
+lista,
+"Confirmaciones compra: " +
+compras +
+"/2"
+);
+
+agregarLista(
+lista,
+"Confirmaciones venta: " +
+ventas +
+"/2"
+);
+
+agregarLista(
+lista,
+"Estructura alcista: " +
+estructura.compra +
+"/4"
+);
+
+agregarLista(
+lista,
+"Estructura bajista: " +
+estructura.venta +
+"/4"
+);
 
 }
 
