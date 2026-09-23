@@ -1,4 +1,4 @@
-<!doctype html>
+l<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -87,6 +87,31 @@ document.querySelectorAll("nav button").forEach(btn=>{
  });
 });
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
-</script>
+async function cargarPrecioOro() {
+  try {
+    const respuesta = await fetch("/api/market");
+    const datos = await respuesta.json();
+
+    if (datos.price) {
+      const oro = document.getElementById("gold");
+
+      if (oro) {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "card";
+        tarjeta.innerHTML = `
+          <h2>🥇 Precio del oro</h2>
+          <div class="big">${Number(datos.price).toFixed(2)} USD/oz</div>
+          <p class="muted">🟢 Datos en vivo · XAU/USD</p>
+        `;
+
+        oro.insertBefore(tarjeta, oro.firstChild);
+      }
+    }
+  } catch (error) {
+    console.log("No se pudo cargar el precio del oro");
+  }
+}
+
+cargarPrecioOro();</script>
 </body>
 </html>
