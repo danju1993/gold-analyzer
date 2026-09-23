@@ -1,13 +1,19 @@
 <!doctype html>
 <html lang="es">
+
 <head>
 
 <meta charset="utf-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
 
-<meta name="theme-color" content="#111827">
+<meta
+  name="theme-color"
+  content="#111827"
+>
 
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -15,6 +21,10 @@ content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Gold Analyzer</title>
 
 <style>
+
+/* ========================= */
+/* GENERAL */
+/* ========================= */
 
 *{
   box-sizing:border-box
@@ -46,13 +56,18 @@ h2{
 }
 
 h3{
-  margin:0 0 10px
+  margin:0 0 8px
 }
 
 .sub{
   font-size:13px;
   opacity:.75
 }
+
+
+/* ========================= */
+/* NAVEGACIÓN */
+/* ========================= */
 
 nav{
   display:flex;
@@ -79,6 +94,11 @@ nav button.active{
   background:#dbeafe;
   color:#1d4ed8
 }
+
+
+/* ========================= */
+/* CONTENIDO */
+/* ========================= */
 
 main{
   padding:14px;
@@ -124,6 +144,11 @@ main{
   font-size:13px
 }
 
+
+/* ========================= */
+/* COLORES */
+/* ========================= */
+
 .up{
   color:#15803d
 }
@@ -135,6 +160,11 @@ main{
 .neutral{
   color:#6b7280
 }
+
+
+/* ========================= */
+/* FILAS */
+/* ========================= */
 
 .row{
   display:flex;
@@ -148,6 +178,11 @@ main{
 .row:last-child{
   border-bottom:0
 }
+
+
+/* ========================= */
+/* BADGES */
+/* ========================= */
 
 .badge{
   padding:5px 9px;
@@ -172,27 +207,6 @@ main{
   color:#6b7280
 }
 
-.price{
-  font-size:24px;
-  font-weight:800;
-  margin:8px 0
-}
-
-select,
-input{
-  font-size:16px;
-  padding:9px;
-  border:1px solid #d5d9df;
-  border-radius:9px;
-  background:white
-}
-
-iframe{
-  width:100%;
-  max-width:100%;
-  border:0
-}
-
 .context-good{
   background:#dcfce7;
   color:#166534
@@ -207,6 +221,11 @@ iframe{
   background:#fef3c7;
   color:#92400e
 }
+
+
+/* ========================= */
+/* ESTRUCTURA VISUAL */
+/* ========================= */
 
 .layer-main{
   border-left:5px solid #2563eb
@@ -233,6 +252,36 @@ iframe{
   margin-top:8px
 }
 
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+select,
+input{
+  font-size:16px;
+  padding:9px;
+  border:1px solid #d5d9df;
+  border-radius:9px;
+  background:white
+}
+
+
+/* ========================= */
+/* NOTICIAS */
+/* ========================= */
+
+iframe{
+  width:100%;
+  max-width:100%;
+  border:0
+}
+
+
+/* ========================= */
+/* MÓVIL */
+/* ========================= */
+
 @media(max-width:520px){
 
   .grid{
@@ -249,7 +298,13 @@ iframe{
 
 </head>
 
+
 <body>
+
+
+<!-- ========================= -->
+<!-- CABECERA -->
+<!-- ========================= -->
 
 <header>
 
@@ -261,6 +316,10 @@ Contexto para estudiar el mercado · no es una señal automática
 
 </header>
 
+
+<!-- ========================= -->
+<!-- MENÚ -->
+<!-- ========================= -->
 
 <nav>
 
@@ -290,31 +349,39 @@ Contexto para estudiar el mercado · no es una señal automática
 <main>
 
 
-<!-- ========================= -->
+<!-- ====================================================== -->
 <!-- RESUMEN -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <section id="summary" class="page active">
 
+
+<!-- LECTURA RÁPIDA -->
 
 <div class="card">
 
 <h2>🥇 Lectura rápida del oro</h2>
 
-<div id="contextBadge" class="badge neutral">
+<div
+id="contextBadge"
+class="badge neutral"
+>
 Esperando datos
 </div>
 
-<p id="contextText" class="muted">
+<p
+id="contextText"
+class="muted"
+>
 Esperando datos de mercado...
 </p>
 
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA 1 -->
-<!-- ========================= -->
+<!-- ====================================================== -->
+<!-- 1. FACTORES PRINCIPALES -->
+<!-- ====================================================== -->
 
 <div class="card layer-main">
 
@@ -324,19 +391,27 @@ Esperando datos de mercado...
 DXY + US10Y
 </p>
 
+
 <div class="grid">
+
 
 <div class="metric">
 
 <div class="muted">
-Condiciones alineadas
+Condiciones con dirección
 </div>
 
-<div class="big" id="mainConditions">
+<div
+class="big"
+id="mainConditions"
+>
 0/2
 </div>
 
-<div class="muted" id="mainConditionText">
+<div
+class="muted"
+id="mainConditionText"
+>
 Esperando datos
 </div>
 
@@ -349,8 +424,10 @@ Esperando datos
 Lectura
 </div>
 
-<div class="status-large"
-id="mainReading">
+<div
+class="status-large neutral"
+id="mainReading"
+>
 ⚪ Sin datos
 </div>
 
@@ -359,6 +436,7 @@ Contexto macro principal
 </div>
 
 </div>
+
 
 </div>
 
@@ -371,7 +449,8 @@ DXY
 
 <span
 id="summaryDXY"
-class="badge neutral">
+class="badge neutral"
+>
 Sin datos
 </span>
 
@@ -386,26 +465,28 @@ US10Y
 
 <span
 id="summaryUS10Y"
-class="badge neutral">
+class="badge neutral"
+>
 Sin datos
 </span>
 
 </div>
 
+
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA 2 -->
-<!-- ========================= -->
+<!-- ====================================================== -->
+<!-- 2. CONFIRMACIONES -->
+<!-- ====================================================== -->
 
 <div class="card layer-confirm">
 
 <h3>🟡 2. Confirmaciones</h3>
 
 <p class="muted">
-Factores complementarios. Se muestran para estudiar el contexto,
-pero no determinan automáticamente una operación.
+USOIL y AUD/USD se muestran como factores complementarios.
+No determinan automáticamente una operación.
 </p>
 
 
@@ -417,7 +498,8 @@ USOIL
 
 <span
 id="summaryUSOIL"
-class="badge neutral">
+class="badge neutral"
+>
 Sin datos
 </span>
 
@@ -432,7 +514,8 @@ AUD/USD
 
 <span
 id="summaryAUDUSD"
-class="badge neutral">
+class="badge neutral"
+>
 Sin datos
 </span>
 
@@ -441,9 +524,9 @@ Sin datos
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA 3 -->
-<!-- ========================= -->
+<!-- ====================================================== -->
+<!-- 3. ESTRUCTURA -->
+<!-- ====================================================== -->
 
 <div class="card layer-structure">
 
@@ -455,6 +538,7 @@ Información introducida en la sección Oro.
 
 
 <div class="structure-result">
+
 
 <div class="row">
 
@@ -507,20 +591,23 @@ Sin definir
 
 </div>
 
-</div>
 
 </div>
 
+</div>
 
-<!-- ========================= -->
+
+<!-- ====================================================== -->
 <!-- MERCADO -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <div class="card">
 
 <h2>📊 Mercado</h2>
 
+
 <div class="grid">
+
 
 <div class="metric">
 
@@ -528,11 +615,17 @@ Sin definir
 🟢 Subiendo
 </div>
 
-<div class="big up" id="upCount">
+<div
+class="big up"
+id="upCount"
+>
 0
 </div>
 
-<div class="muted" id="upNames">
+<div
+class="muted"
+id="upNames"
+>
 —
 </div>
 
@@ -545,15 +638,22 @@ Sin definir
 🔴 Bajando
 </div>
 
-<div class="big down" id="downCount">
+<div
+class="big down"
+id="downCount"
+>
 0
 </div>
 
-<div class="muted" id="downNames">
+<div
+class="muted"
+id="downNames"
+>
 —
 </div>
 
 </div>
+
 
 </div>
 
@@ -563,9 +663,9 @@ Sin definir
 </section>
 
 
-<!-- ========================= -->
+<!-- ====================================================== -->
 <!-- ORO -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <section id="gold" class="page">
 
@@ -574,7 +674,10 @@ Sin definir
 
 <h2>🥇 Precio del oro</h2>
 
-<div class="big" id="goldPrice">
+<div
+class="big"
+id="goldPrice"
+>
 Cargando...
 </div>
 
@@ -673,23 +776,31 @@ BOS, ruptura, retroceso y rechazo deben interpretarse junto al contexto macro.
 
 </div>
 
+
 </section>
 
 
-<!-- ========================= -->
+<!-- ====================================================== -->
 <!-- MACRO -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <section id="macro" class="page">
+
 
 <div class="card">
 
 <h2>🌎 Macro</h2>
 
+
 <div id="macroRows">
 
 
-<div class="row" id="row-XAUUSD">
+<!-- XAU/USD -->
+
+<div
+class="row"
+id="row-XAUUSD"
+>
 
 <span>
 
@@ -710,7 +821,12 @@ Cargando...
 </div>
 
 
-<div class="row" id="row-DXY">
+<!-- DXY -->
+
+<div
+class="row"
+id="row-DXY"
+>
 
 <span>
 
@@ -731,7 +847,12 @@ Cargando...
 </div>
 
 
-<div class="row" id="row-US10Y">
+<!-- US10Y -->
+
+<div
+class="row"
+id="row-US10Y"
+>
 
 <span>
 
@@ -752,7 +873,12 @@ Cargando...
 </div>
 
 
-<div class="row" id="row-USOIL">
+<!-- USOIL -->
+
+<div
+class="row"
+id="row-USOIL"
+>
 
 <span>
 
@@ -773,7 +899,12 @@ Cargando...
 </div>
 
 
-<div class="row" id="row-AUDUSD">
+<!-- AUD/USD -->
+
+<div
+class="row"
+id="row-AUDUSD"
+>
 
 <span>
 
@@ -793,6 +924,7 @@ Cargando...
 
 </div>
 
+
 </div>
 
 </div>
@@ -803,24 +935,27 @@ Cargando...
 <h2>🧭 Relación con el oro</h2>
 
 <p class="muted">
-DXY y US10Y son los factores principales para estudiar el contexto del oro.
-USOIL y AUD/USD son factores complementarios.
+DXY y US10Y son los factores principales para estudiar
+el contexto del oro. USOIL y AUD/USD son factores complementarios.
 </p>
 
 </div>
 
+
 </section>
 
 
-<!-- ========================= -->
+<!-- ====================================================== -->
 <!-- NOTICIAS -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <section id="news" class="page">
+
 
 <div class="card">
 
 <h2>📰 Noticias económicas</h2>
+
 
 <iframe
 src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=2,3&features=datepicker,timezone&countries=25,60,5&calType=week&timeZone=58&lang=1"
@@ -831,11 +966,14 @@ marginwidth="0"
 marginheight="0">
 </iframe>
 
+
 <div
-style="font-family:Arial,Helvetica,sans-serif;margin-top:8px">
+style="font-family:Arial,Helvetica,sans-serif;margin-top:8px"
+>
 
 <span
-style="font-size:11px;color:#333">
+style="font-size:11px;color:#333"
+>
 
 Real Time Economic Calendar provided by
 
@@ -843,7 +981,8 @@ Real Time Economic Calendar provided by
 href="https://www.investing.com/"
 rel="nofollow"
 target="_blank"
-style="font-size:11px;color:#06529D;font-weight:bold">
+style="font-size:11px;color:#06529D;font-weight:bold"
+>
 
 Investing.com
 
@@ -855,14 +994,16 @@ Investing.com
 
 </div>
 
+
 </section>
 
 
-<!-- ========================= -->
+<!-- ====================================================== -->
 <!-- CONFIGURACIÓN -->
-<!-- ========================= -->
+<!-- ====================================================== -->
 
 <section id="settings" class="page">
+
 
 <div class="card">
 
@@ -881,7 +1022,8 @@ type="number"
 min="1"
 max="5"
 value="3"
-style="width:70px">
+style="width:70px"
+>
 
 </div>
 
@@ -903,13 +1045,12 @@ Temporalidad principal
 
 
 <p class="muted">
-
-La configuración organiza el análisis.
+Esta configuración sirve para organizar el análisis.
 El sistema no genera señales automáticas.
-
 </p>
 
 </div>
+
 
 </section>
 
@@ -920,27 +1061,39 @@ El sistema no genera señales automáticas.
 <script>
 
 
-/* ========================= */
+/* ====================================================== */
 /* NAVEGACIÓN */
-/* ========================= */
+/* ====================================================== */
 
-document.querySelectorAll("nav button").forEach(button => {
+document
+.querySelectorAll("nav button")
+.forEach(button => {
 
-button.addEventListener("click", () => {
+button.addEventListener("click",() => {
 
-document.querySelectorAll("nav button")
-.forEach(x => x.classList.remove("active"));
+document
+.querySelectorAll("nav button")
+.forEach(x =>
+x.classList.remove("active")
+);
 
-document.querySelectorAll(".page")
-.forEach(x => x.classList.remove("active"));
+document
+.querySelectorAll(".page")
+.forEach(x =>
+x.classList.remove("active")
+);
 
 button.classList.add("active");
 
 const page =
-document.getElementById(button.dataset.page);
+document.getElementById(
+button.dataset.page
+);
 
 if(page){
+
 page.classList.add("active");
+
 }
 
 });
@@ -948,45 +1101,48 @@ page.classList.add("active");
 });
 
 
-/* ========================= */
-/* DATOS DEL MERCADO */
-/* ========================= */
+/* ====================================================== */
+/* ESTADO DEL MERCADO */
+/* ====================================================== */
 
 const marketState = {
 
 XAUUSD:{
-  direction:"neutral",
-  price:null
+direction:"neutral",
+price:null
 },
 
 DXY:{
-  direction:"neutral",
-  price:null
+direction:"neutral",
+price:null
 },
 
 US10Y:{
-  direction:"neutral",
-  price:null
+direction:"neutral",
+price:null
 },
 
 USOIL:{
-  direction:"neutral",
-  price:null
+direction:"neutral",
+price:null
 },
 
 AUDUSD:{
-  direction:"neutral",
-  price:null
+direction:"neutral",
+price:null
 }
 
 };
 
 
-/* ========================= */
+/* ====================================================== */
 /* DIRECCIÓN */
-/* ========================= */
+/* ====================================================== */
 
-function obtenerDireccion(openPrice,closePrice){
+function obtenerDireccion(
+openPrice,
+closePrice
+){
 
 if(
 openPrice === undefined ||
@@ -1000,14 +1156,19 @@ return "neutral";
 }
 
 const diferencia =
-Number(closePrice)-Number(openPrice);
+Number(closePrice) -
+Number(openPrice);
 
 if(diferencia > 0){
+
 return "up";
+
 }
 
 if(diferencia < 0){
+
 return "down";
+
 }
 
 return "neutral";
@@ -1015,9 +1176,9 @@ return "neutral";
 }
 
 
-/* ========================= */
-/* ACTUALIZAR FILA MACRO */
-/* ========================= */
+/* ====================================================== */
+/* ACTUALIZAR FILA */
+/* ====================================================== */
 
 function actualizarFila(
 id,
@@ -1039,19 +1200,13 @@ fila.querySelector(".badge");
 const texto =
 fila.querySelector(".muted");
 
+
 if(badge){
 
-badge.className =
-"badge " +
-(
-direccion === "up"
-? "up"
-: direccion === "down"
-? "down"
-: "neutral"
-);
-
 if(direccion === "up"){
+
+badge.className =
+"badge up";
 
 badge.textContent =
 "🟢 " + valor;
@@ -1060,6 +1215,9 @@ badge.textContent =
 
 else if(direccion === "down"){
 
+badge.className =
+"badge down";
+
 badge.textContent =
 "🔴 " + valor;
 
@@ -1067,12 +1225,16 @@ badge.textContent =
 
 else{
 
+badge.className =
+"badge neutral";
+
 badge.textContent =
 "⚪ " + valor;
 
 }
 
 }
+
 
 if(texto && detalle){
 
@@ -1084,9 +1246,9 @@ detalle;
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* ORO */
-/* ========================= */
+/* ====================================================== */
 
 async function cargarOro(){
 
@@ -1097,6 +1259,7 @@ await fetch("/api/market");
 
 const datos =
 await respuesta.json();
+
 
 if(
 datos &&
@@ -1110,25 +1273,29 @@ Number(datos.price);
 marketState.XAUUSD.price =
 precio;
 
+
 document.getElementById(
 "goldPrice"
 ).textContent =
-precio.toFixed(2)+" USD/oz";
+precio.toFixed(2) +
+" USD/oz";
 
 
 actualizarFila(
 "row-XAUUSD",
-precio.toFixed(2)+" USD",
+precio.toFixed(2) + " USD",
 "neutral",
 "Precio actual · XAU/USD"
 );
 
 }
 
-}catch(error){
+}
+catch(error){
 
 console.log(
-"No se pudo cargar XAU/USD"
+"No se pudo cargar XAU/USD",
+error
 );
 
 document.getElementById(
@@ -1141,9 +1308,9 @@ document.getElementById(
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* REALMARKETAPI */
-/* ========================= */
+/* ====================================================== */
 
 async function cargarRealMarket(){
 
@@ -1156,7 +1323,9 @@ const datos =
 await respuesta.json();
 
 
+/* ------------------------- */
 /* DXY */
+/* ------------------------- */
 
 if(
 datos.DXY &&
@@ -1179,6 +1348,7 @@ direccion;
 marketState.DXY.price =
 Number(d.closePrice);
 
+
 actualizarFila(
 "row-DXY",
 Number(d.closePrice).toFixed(3),
@@ -1189,7 +1359,9 @@ direccion,
 }
 
 
+/* ------------------------- */
 /* USOIL */
+/* ------------------------- */
 
 if(
 datos.USOIL &&
@@ -1212,6 +1384,7 @@ direccion;
 marketState.USOIL.price =
 Number(d.closePrice);
 
+
 actualizarFila(
 "row-USOIL",
 Number(d.closePrice).toFixed(3),
@@ -1222,7 +1395,9 @@ direccion,
 }
 
 
+/* ------------------------- */
 /* AUD/USD */
+/* ------------------------- */
 
 if(
 datos.AUDUSD &&
@@ -1245,6 +1420,7 @@ direccion;
 marketState.AUDUSD.price =
 Number(d.closePrice);
 
+
 actualizarFila(
 "row-AUDUSD",
 Number(d.closePrice).toFixed(5),
@@ -1254,10 +1430,12 @@ direccion,
 
 }
 
-}catch(error){
+}
+catch(error){
 
 console.log(
-"No se pudo cargar RealMarketAPI"
+"No se pudo cargar RealMarketAPI",
+error
 );
 
 }
@@ -1265,9 +1443,9 @@ console.log(
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* US10Y */
-/* ========================= */
+/* ====================================================== */
 
 async function cargarUS10Y(){
 
@@ -1276,13 +1454,16 @@ try{
 const respuesta =
 await fetch("/api/us10y");
 
+
 if(!respuesta.ok){
 
 throw new Error(
-"Error HTTP US10Y: "+respuesta.status
+"Error HTTP US10Y: " +
+respuesta.status
 );
 
 }
+
 
 const datos =
 await respuesta.json();
@@ -1298,10 +1479,12 @@ const precio =
 Number(datos.price);
 
 const direccion =
-datos.direction || "neutral";
+datos.direction ||
+"neutral";
 
 const cambio =
 Number(datos.change || 0);
+
 
 marketState.US10Y.price =
 precio;
@@ -1309,13 +1492,14 @@ precio;
 marketState.US10Y.direction =
 direccion;
 
+
 actualizarFila(
 "row-US10Y",
-precio.toFixed(2)+"%",
+precio.toFixed(2) + "%",
 direccion,
-"U.S. Treasury · "+
-String(datos.date).slice(0,10)+
-" · Cambio: "+
+"U.S. Treasury · " +
+String(datos.date).slice(0,10) +
+" · Cambio: " +
 cambio.toFixed(2)
 );
 
@@ -1329,7 +1513,8 @@ throw new Error(
 
 }
 
-}catch(error){
+}
+catch(error){
 
 console.log(
 "No se pudo cargar US10Y:",
@@ -1348,11 +1533,14 @@ actualizarFila(
 }
 
 
-/* ========================= */
-/* BADGE RESUMEN */
-/* ========================= */
+/* ====================================================== */
+/* BADGES DEL RESUMEN */
+/* ====================================================== */
 
-function ponerBadge(id,direccion){
+function ponerBadge(
+id,
+direccion
+){
 
 const elemento =
 document.getElementById(id);
@@ -1361,44 +1549,57 @@ if(!elemento){
 return;
 }
 
-if(direccion==="up"){
 
-elemento.className="badge up";
-elemento.textContent="🟢 Subiendo";
+if(direccion === "up"){
+
+elemento.className =
+"badge up";
+
+elemento.textContent =
+"🟢 Subiendo";
 
 }
 
-else if(direccion==="down"){
+else if(direccion === "down"){
 
-elemento.className="badge down";
-elemento.textContent="🔴 Bajando";
+elemento.className =
+"badge down";
+
+elemento.textContent =
+"🔴 Bajando";
 
 }
 
 else{
 
-elemento.className="badge neutral";
-elemento.textContent="⚪ Neutral";
+elemento.className =
+"badge neutral";
+
+elemento.textContent =
+"⚪ Neutral";
 
 }
 
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* GUARDAR ESTRUCTURA */
-/* ========================= */
+/* ====================================================== */
 
 function guardarEstructura(){
 
-const ids=[
+const ids = [
+
 "structure15",
 "structure5",
 "bos",
 "rejection"
+
 ];
 
-ids.forEach(id=>{
+
+ids.forEach(id => {
 
 const elemento =
 document.getElementById(id);
@@ -1406,7 +1607,7 @@ document.getElementById(id);
 if(elemento){
 
 localStorage.setItem(
-"goldAnalyzer_"+id,
+"goldAnalyzer_" + id,
 elemento.value
 );
 
@@ -1417,63 +1618,72 @@ elemento.value
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* CARGAR ESTRUCTURA */
-/* ========================= */
+/* ====================================================== */
 
 function cargarEstructura(){
 
-const ids=[
+const ids = [
+
 "structure15",
 "structure5",
 "bos",
 "rejection"
+
 ];
 
-ids.forEach(id=>{
+
+ids.forEach(id => {
 
 const elemento =
 document.getElementById(id);
 
+if(!elemento){
+return;
+}
+
+
 const guardado =
 localStorage.getItem(
-"goldAnalyzer_"+id
+"goldAnalyzer_" + id
 );
 
-if(elemento && guardado){
 
-elemento.value=guardado;
+if(guardado){
+
+elemento.value =
+guardado;
 
 }
 
-if(elemento){
 
 elemento.addEventListener(
 "change",
-()=>{
+() => {
 
 guardarEstructura();
+
 actualizarResumen();
 
 }
 );
-
-}
 
 });
 
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* RESUMEN */
-/* ========================= */
+/* ====================================================== */
 
 function actualizarResumen(){
 
-/* ------------------------- */
-/* DIRECCIONES */
-/* ------------------------- */
+
+/* ====================================================== */
+/* BADGES */
+/* ====================================================== */
 
 ponerBadge(
 "summaryDXY",
@@ -1496,9 +1706,9 @@ marketState.AUDUSD.direction
 );
 
 
-/* ------------------------- */
-/* PRINCIPALES */
-/* ------------------------- */
+/* ====================================================== */
+/* FACTORES PRINCIPALES */
+/* ====================================================== */
 
 const dxy =
 marketState.DXY.direction;
@@ -1506,37 +1716,143 @@ marketState.DXY.direction;
 const us10y =
 marketState.US10Y.direction;
 
-let condiciones=0;
 
-if(dxy==="down" && us10y==="down"){
+/*
+REGLA:
 
-condiciones=2;
+2/2:
+DXY y US10Y tienen la misma
+dirección relevante.
 
-}
+1/2:
+solo uno tiene dirección y
+el otro está neutral.
 
-else if(
-(dxy==="down" && us10y==="neutral") ||
-(dxy==="neutral" && us10y==="down") ||
-(dxy==="up" && us10y==="neutral") ||
-(dxy==="neutral" && us10y==="up")
+0/2:
+ambos están neutrales.
+
+CONFLICTO:
+uno sube y el otro baja.
+*/
+
+
+let condiciones = 0;
+
+let tipoContexto = "neutral";
+
+
+/* ------------------------- */
+/* DXY ↓ + US10Y ↓ */
+/* ------------------------- */
+
+if(
+dxy === "down" &&
+us10y === "down"
 ){
 
-condiciones=1;
+condiciones = 2;
+
+tipoContexto = "oro";
 
 }
+
+
+/* ------------------------- */
+/* DXY ↑ + US10Y ↑ */
+/* ------------------------- */
+
+else if(
+dxy === "up" &&
+us10y === "up"
+){
+
+condiciones = 2;
+
+tipoContexto = "presion";
+
+}
+
+
+/* ------------------------- */
+/* SOLO DXY TIENE DIRECCIÓN */
+/* ------------------------- */
+
+else if(
+(
+dxy === "up" ||
+dxy === "down"
+) &&
+us10y === "neutral"
+){
+
+condiciones = 1;
+
+tipoContexto = "parcial";
+
+}
+
+
+/* ------------------------- */
+/* SOLO US10Y TIENE DIRECCIÓN */
+/* ------------------------- */
+
+else if(
+dxy === "neutral" &&
+(
+us10y === "up" ||
+us10y === "down"
+)
+){
+
+condiciones = 1;
+
+tipoContexto = "parcial";
+
+}
+
+
+/* ------------------------- */
+/* AMBOS NEUTRALES */
+/* ------------------------- */
+
+else if(
+dxy === "neutral" &&
+us10y === "neutral"
+){
+
+condiciones = 0;
+
+tipoContexto = "neutral";
+
+}
+
+
+/* ------------------------- */
+/* DIRECCIONES OPUESTAS */
+/* ------------------------- */
 
 else{
 
-condiciones=0;
+condiciones = 0;
+
+tipoContexto = "conflicto";
 
 }
 
+
+/* ====================================================== */
+/* MOSTRAR 0/2 - 1/2 - 2/2 */
+/* ====================================================== */
 
 document.getElementById(
 "mainConditions"
 ).textContent =
-condiciones+"/2";
+condiciones + "/2";
 
+
+/* ====================================================== */
+/* LECTURA PRINCIPAL */
+/* ====================================================== */
 
 const mainReading =
 document.getElementById(
@@ -1550,8 +1866,7 @@ document.getElementById(
 
 
 if(
-dxy==="down" &&
-us10y==="down"
+tipoContexto === "oro"
 ){
 
 mainReading.textContent =
@@ -1565,9 +1880,9 @@ mainText.textContent =
 
 }
 
+
 else if(
-dxy==="up" &&
-us10y==="up"
+tipoContexto === "presion"
 ){
 
 mainReading.textContent =
@@ -1581,10 +1896,40 @@ mainText.textContent =
 
 }
 
+
 else if(
-dxy==="neutral" &&
-us10y==="neutral"
+tipoContexto === "parcial"
 ){
+
+mainReading.textContent =
+"🟡 Parcial";
+
+mainReading.className =
+"status-large";
+
+mainText.textContent =
+"Solo uno de los factores tiene dirección";
+
+}
+
+
+else if(
+tipoContexto === "conflicto"
+){
+
+mainReading.textContent =
+"🟡 Conflicto";
+
+mainReading.className =
+"status-large";
+
+mainText.textContent =
+"DXY y US10Y se mueven en direcciones opuestas";
+
+}
+
+
+else{
 
 mainReading.textContent =
 "⚪ Sin dirección";
@@ -1593,27 +1938,14 @@ mainReading.className =
 "status-large neutral";
 
 mainText.textContent =
-"Esperando cambios";
-
-}
-
-else{
-
-mainReading.textContent =
-"🟡 Mixtos";
-
-mainReading.className =
-"status-large";
-
-mainText.textContent =
-"DXY y US10Y no están alineados";
+"DXY y US10Y están neutrales";
 
 }
 
 
-/* ------------------------- */
-/* ESTRUCTURA */
-/* ------------------------- */
+/* ====================================================== */
+/* ESTRUCTURA DEL ORO */
+/* ====================================================== */
 
 const s15 =
 document.getElementById(
@@ -1657,9 +1989,9 @@ document.getElementById(
 rejection;
 
 
-/* ------------------------- */
+/* ====================================================== */
 /* LECTURA GENERAL */
-/* ------------------------- */
+/* ====================================================== */
 
 const badge =
 document.getElementById(
@@ -1673,8 +2005,7 @@ document.getElementById(
 
 
 if(
-dxy==="down" &&
-us10y==="down"
+tipoContexto === "oro"
 ){
 
 badge.className =
@@ -1684,13 +2015,13 @@ badge.textContent =
 "🟢 Contexto favorable para estudiar";
 
 texto.textContent =
-"DXY y US10Y están bajando. El contexto macro principal está alineado para estudiar fortaleza del oro. Revisa las confirmaciones y la estructura.";
+"DXY y US10Y están bajando. Los dos factores principales están alineados. Revisa las confirmaciones y la estructura del oro.";
 
 }
 
+
 else if(
-dxy==="up" &&
-us10y==="up"
+tipoContexto === "presion"
 ){
 
 badge.className =
@@ -1700,27 +2031,30 @@ badge.textContent =
 "🔴 Contexto de presión para estudiar";
 
 texto.textContent =
-"DXY y US10Y están subiendo. El contexto macro principal muestra presión sobre el oro. Revisa las confirmaciones y la estructura.";
+"DXY y US10Y están subiendo. Los dos factores principales están alineados en una dirección de presión. Revisa las confirmaciones y la estructura.";
 
 }
 
+
 else if(
-dxy==="neutral" &&
-us10y==="neutral"
+tipoContexto === "parcial"
 ){
 
 badge.className =
 "badge context-wait";
 
 badge.textContent =
-"🟡 Sin dirección clara";
+"🟡 Contexto parcial";
 
 texto.textContent =
-"Los factores principales están neutrales. Espera nueva información y revisa la estructura del oro.";
+"Solo uno de los factores principales tiene dirección. El otro está neutral y todavía no confirma el contexto.";
 
 }
 
-else{
+
+else if(
+tipoContexto === "conflicto"
+){
 
 badge.className =
 "badge context-wait";
@@ -1729,16 +2063,30 @@ badge.textContent =
 "🟡 Factores en conflicto";
 
 texto.textContent =
-"DXY y US10Y no están alineados. Las confirmaciones y la estructura del oro deben revisarse antes de sacar conclusiones.";
+"DXY y US10Y están moviéndose en direcciones opuestas. El contexto principal no está alineado.";
 
 }
 
 
-/* ------------------------- */
-/* MERCADO */
-/* ------------------------- */
+else{
 
-const activos=[
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"⚪ Sin dirección clara";
+
+texto.textContent =
+"DXY y US10Y están neutrales. No hay una dirección definida en los factores principales.";
+
+}
+
+
+/* ====================================================== */
+/* MERCADO */
+/* ====================================================== */
+
+const activos = [
 
 {
 nombre:"DXY",
@@ -1765,12 +2113,12 @@ data:marketState.AUDUSD
 
 const subiendo =
 activos.filter(
-x=>x.data.direction==="up"
+x => x.data.direction === "up"
 );
 
 const bajando =
 activos.filter(
-x=>x.data.direction==="down"
+x => x.data.direction === "down"
 );
 
 
@@ -1778,7 +2126,6 @@ document.getElementById(
 "upCount"
 ).textContent =
 subiendo.length;
-
 
 document.getElementById(
 "downCount"
@@ -1790,7 +2137,9 @@ document.getElementById(
 "upNames"
 ).textContent =
 subiendo.length
-? subiendo.map(x=>x.nombre).join(", ")
+? subiendo.map(
+x => x.nombre
+).join(", ")
 : "—";
 
 
@@ -1798,15 +2147,17 @@ document.getElementById(
 "downNames"
 ).textContent =
 bajando.length
-? bajando.map(x=>x.nombre).join(", ")
+? bajando.map(
+x => x.nombre
+).join(", ")
 : "—";
 
 }
 
 
-/* ========================= */
-/* CARGAR TODO */
-/* ========================= */
+/* ====================================================== */
+/* CARGAR TODOS LOS DATOS */
+/* ====================================================== */
 
 async function cargarDatos(){
 
@@ -1820,14 +2171,15 @@ cargarUS10Y()
 
 ]);
 
+
 actualizarResumen();
 
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* SERVICE WORKER */
-/* ========================= */
+/* ====================================================== */
 
 if(
 "serviceWorker" in navigator
@@ -1835,20 +2187,22 @@ if(
 
 navigator.serviceWorker
 .register("sw.js")
-.catch(()=>{});
+.catch(() => {});
 
 }
 
 
-/* ========================= */
+/* ====================================================== */
 /* INICIO */
-/* ========================= */
+/* ====================================================== */
 
 cargarEstructura();
 
 cargarDatos();
 
+
 </script>
 
 </body>
+
 </html>
