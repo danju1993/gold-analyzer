@@ -111,7 +111,39 @@ async function cargarPrecioOro() {
     console.log("No se pudo cargar el precio del oro");
   }
 }
+async function cargarUS10Y() {
+  try {
+    const respuesta = await fetch("/api/us10y");
+    const datos = await respuesta.json();
 
+    if (datos.price !== undefined) {
+      const filas = [...document.querySelectorAll("#macroRows .row")];
+
+      const fila = filas.find(
+        f => f.querySelector("b")?.textContent === "US10Y"
+      );
+
+      if (fila) {
+        const badge = fila.querySelector(".badge");
+
+        if (badge) {
+          badge.textContent = `${Number(datos.price).toFixed(2)}%`;
+          badge.className = "badge neutral";
+        }
+
+        const texto = fila.querySelector(".muted");
+
+        if (texto) {
+          texto.textContent = `U.S. Treasury · ${datos.date.slice(0,10)}`;
+        }
+      }
+    }
+  } catch (error) {
+    console.log("No se pudo cargar US10Y");
+  }
+}
+
+cargarUS10Y();
 cargarPrecioOro();</script>
 </body>
 </html>
