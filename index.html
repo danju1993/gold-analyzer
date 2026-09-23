@@ -3,14 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
 <meta name="theme-color" content="#111827">
+
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <title>Gold Analyzer</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -31,6 +36,10 @@ header{
 h1{
   font-size:21px;
   margin:0 0 4px
+}
+
+h2{
+  margin-top:0
 }
 
 .sub{
@@ -124,9 +133,13 @@ main{
   display:flex;
   justify-content:space-between;
   gap:10px;
-  padding:11px 0;
+  padding:12px 0;
   border-bottom:1px solid #eee;
   align-items:center
+}
+
+.row:last-child{
+  border-bottom:0
 }
 
 .badge{
@@ -137,7 +150,29 @@ main{
   background:#eef1f5
 }
 
-select,input{
+.badge.up{
+  background:#dcfce7;
+  color:#166534
+}
+
+.badge.down{
+  background:#fee2e2;
+  color:#991b1b
+}
+
+.badge.neutral{
+  background:#f3f4f6;
+  color:#6b7280
+}
+
+.price{
+  font-size:24px;
+  font-weight:800;
+  margin:8px 0
+}
+
+select,
+input{
   font-size:16px;
   padding:9px;
   border:1px solid #d5d9df;
@@ -147,624 +182,1196 @@ select,input{
 
 iframe{
   width:100%;
-  max-width:650px;
+  max-width:100%;
   border:0
 }
 
+.context-good{
+  background:#dcfce7;
+  color:#166534
+}
+
+.context-sell{
+  background:#fee2e2;
+  color:#991b1b
+}
+
+.context-wait{
+  background:#fef3c7;
+  color:#92400e
+}
+
 @media(max-width:520px){
+
   .grid{
     grid-template-columns:1fr
   }
+
+  .row{
+    align-items:flex-start
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>🥇 Gold Analyzer</h1>
-  <div class="sub">
-    Contexto para estudiar el mercado · no es una señal automática
-  </div>
+
+<h1>🥇 Gold Analyzer</h1>
+
+<div class="sub">
+Contexto para estudiar el mercado · no es una señal automática
+</div>
+
 </header>
 
+
 <nav>
-  <button class="active" data-page="summary">🏠 Resumen</button>
-  <button data-page="gold">🥇 Oro</button>
-  <button data-page="macro">🌎 Macro</button>
-  <button data-page="news">📰 Noticias</button>
-  <button data-page="settings">⚙️ Config.</button>
+
+<button class="active" data-page="summary">
+🏠 Resumen
+</button>
+
+<button data-page="gold">
+🥇 Oro
+</button>
+
+<button data-page="macro">
+🌎 Macro
+</button>
+
+<button data-page="news">
+📰 Noticias
+</button>
+
+<button data-page="settings">
+⚙️ Config.
+</button>
+
 </nav>
+
 
 <main>
 
+
+<!-- ========================= -->
 <!-- RESUMEN -->
+<!-- ========================= -->
 
 <section id="summary" class="page active">
 
-  <div class="card">
-    <h2>Mercado</h2>
+<div class="card">
 
-    <div class="grid">
+<h2>Mercado</h2>
 
-      <div class="metric">
-        <div class="muted">Subiendo</div>
-        <div class="big up" id="upCount">0</div>
-        <div class="muted" id="upNames">—</div>
-      </div>
+<div class="grid">
 
-      <div class="metric">
-        <div class="muted">Bajando</div>
-        <div class="big down" id="downCount">0</div>
-        <div class="muted" id="downNames">—</div>
-      </div>
+<div class="metric">
 
-    </div>
-  </div>
+<div class="muted">
+🟢 Subiendo
+</div>
 
-  <div class="card">
+<div class="big up" id="upCount">
+0
+</div>
 
-    <h2>Contexto del oro</h2>
+<div class="muted" id="upNames">
+—
+</div>
 
-    <div id="contextBadge" class="badge">
-      Sin datos
-    </div>
+</div>
 
-    <p id="contextText" class="muted">
-      Cargando datos del mercado...
-    </p>
 
-  </div>
+<div class="metric">
 
-  <div class="card">
+<div class="muted">
+🔴 Bajando
+</div>
 
-    <h2>📊 Factores principales</h2>
+<div class="big down" id="downCount">
+0
+</div>
 
-    <div id="summaryFactors">
-      <div class="row">
-        <span>🥇 XAU/USD</span>
-        <span class="badge neutral">Cargando</span>
-      </div>
+<div class="muted" id="downNames">
+—
+</div>
 
-      <div class="row">
-        <span>🇺🇸 DXY</span>
-        <span class="badge neutral">Sin datos</span>
-      </div>
+</div>
 
-      <div class="row">
-        <span>🇺🇸 US10Y</span>
-        <span class="badge neutral">Cargando</span>
-      </div>
+</div>
 
-      <div class="row">
-        <span>🛢️ USOIL</span>
-        <span class="badge neutral">Sin datos</span>
-      </div>
+</div>
 
-      <div class="row">
-        <span>🇦🇺 AUD/USD</span>
-        <span class="badge neutral">Sin datos</span>
-      </div>
-    </div>
 
-  </div>
+<div class="card">
+
+<h2>Contexto del oro</h2>
+
+<div id="contextBadge" class="badge neutral">
+Sin datos
+</div>
+
+<p id="contextText" class="muted">
+Esperando datos de mercado...
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>📊 Factores principales</h2>
+
+<div id="summaryFactors">
+
+<div class="row">
+<span>DXY</span>
+<span class="badge neutral">Sin datos</span>
+</div>
+
+<div class="row">
+<span>US10Y</span>
+<span class="badge neutral">Sin datos</span>
+</div>
+
+<div class="row">
+<span>USOIL</span>
+<span class="badge neutral">Sin datos</span>
+</div>
+
+<div class="row">
+<span>AUD/USD</span>
+<span class="badge neutral">Sin datos</span>
+</div>
+
+</div>
+
+</div>
 
 </section>
 
 
+<!-- ========================= -->
 <!-- ORO -->
+<!-- ========================= -->
 
 <section id="gold" class="page">
 
-  <div id="goldPriceCard" class="card">
 
-    <h2>🥇 Precio del oro</h2>
+<div class="card">
 
-    <div class="big" id="goldPrice">
-      Cargando...
-    </div>
+<h2>🥇 Precio del oro</h2>
 
-    <p class="muted" id="goldPriceStatus">
-      Consultando XAU/USD...
-    </p>
+<div class="big" id="goldPrice">
+Cargando...
+</div>
 
-  </div>
+<p class="muted">
+XAU/USD · Twelve Data
+</p>
+
+</div>
 
 
-  <div class="card">
+<div class="card">
 
-    <h2>📈 Estructura del oro</h2>
+<h2>📐 Estructura del oro</h2>
 
-    <div class="row">
-      <span>15M · estructura</span>
 
-      <select id="structure15">
-        <option>Sin definir</option>
-        <option>Alcista</option>
-        <option>Bajista</option>
-        <option>Rango</option>
-      </select>
-    </div>
+<div class="row">
 
-    <div class="row">
-      <span>5M · estructura</span>
+<span>
+15M · estructura
+</span>
 
-      <select id="structure5">
-        <option>Sin definir</option>
-        <option>Alcista</option>
-        <option>Bajista</option>
-        <option>Rango</option>
-      </select>
-    </div>
+<select id="structure15">
 
-    <div class="row">
-      <span>BOS / ruptura</span>
+<option>Sin definir</option>
+<option>Alcista</option>
+<option>Bajista</option>
+<option>Rango</option>
 
-      <select id="bos">
-        <option>Sin definir</option>
-        <option>Compra</option>
-        <option>Venta</option>
-      </select>
-    </div>
+</select>
 
-    <div class="row">
-      <span>Retroceso / rechazo</span>
+</div>
 
-      <select id="retest">
-        <option>Sin definir</option>
-        <option>Compra</option>
-        <option>Venta</option>
-      </select>
-    </div>
 
-  </div>
+<div class="row">
+
+<span>
+5M · estructura
+</span>
+
+<select id="structure5">
+
+<option>Sin definir</option>
+<option>Alcista</option>
+<option>Bajista</option>
+<option>Rango</option>
+
+</select>
+
+</div>
+
+
+<div class="row">
+
+<span>
+BOS / ruptura
+</span>
+
+<select id="bos">
+
+<option>Sin definir</option>
+<option>Compra</option>
+<option>Venta</option>
+
+</select>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Retroceso / rechazo
+</span>
+
+<select id="rejection">
+
+<option>Sin definir</option>
+<option>Compra</option>
+<option>Venta</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🧠 Lectura</h2>
+
+<p class="muted">
+Usa 15M para estudiar la estructura principal y 5M para buscar confirmación.
+BOS, ruptura, retroceso y rechazo deben interpretarse junto al contexto macro.
+</p>
+
+</div>
 
 </section>
 
 
+<!-- ========================= -->
 <!-- MACRO -->
+<!-- ========================= -->
 
 <section id="macro" class="page">
 
-  <div class="card">
+<div class="card">
 
-    <h2>🌎 Macro</h2>
+<h2>🌎 Macro</h2>
 
-    <div id="macroRows">
+<div id="macroRows">
 
-      <div class="row" data-asset="XAU/USD">
-        <span>
-          <b>🥇 XAU/USD</b><br>
-          <span class="muted">Precio del oro</span>
-        </span>
+<div class="row" id="row-XAUUSD">
 
-        <span class="badge neutral" id="macroXAU">
-          Cargando
-        </span>
-      </div>
+<span>
+<b>XAU/USD</b>
+<br>
+<span class="muted">
+Precio
+</span>
+</span>
 
+<span class="badge neutral">
+Cargando...
+</span>
 
-      <div class="row" data-asset="DXY">
-        <span>
-          <b>🇺🇸 DXY</b><br>
-          <span class="muted">Índice del dólar</span>
-        </span>
-
-        <span class="badge neutral">
-          Sin datos
-        </span>
-      </div>
+</div>
 
 
-      <div class="row" data-asset="US10Y">
-        <span>
-          <b>🇺🇸 US10Y</b><br>
-          <span class="muted" id="us10yDate">
-            Treasury 10 años
-          </span>
-        </span>
+<div class="row" id="row-DXY">
 
-        <span class="badge neutral" id="macroUS10Y">
-          Cargando
-        </span>
-      </div>
+<span>
+<b>DXY</b>
+<br>
+<span class="muted">
+Dirección
+</span>
+</span>
 
+<span class="badge neutral">
+Cargando...
+</span>
 
-      <div class="row" data-asset="USOIL">
-        <span>
-          <b>🛢️ USOIL</b><br>
-          <span class="muted">Petróleo WTI</span>
-        </span>
-
-        <span class="badge neutral">
-          Sin datos
-        </span>
-      </div>
+</div>
 
 
-      <div class="row" data-asset="AUD/USD">
-        <span>
-          <b>🇦🇺 AUD/USD</b><br>
-          <span class="muted">Dólar australiano</span>
-        </span>
+<div class="row" id="row-US10Y">
 
-        <span class="badge neutral">
-          Sin datos
-        </span>
-      </div>
+<span>
+<b>US10Y</b>
+<br>
+<span class="muted">
+U.S. Treasury
+</span>
+</span>
 
-    </div>
+<span class="badge neutral">
+Cargando...
+</span>
 
-    <p class="muted">
-      Los datos conectados aparecen automáticamente.
-      Las relaciones macro sirven como contexto de estudio y no como señal automática.
-    </p>
-
-  </div>
+</div>
 
 
-  <div class="card">
+<div class="row" id="row-USOIL">
 
-    <h2>🧭 Lectura del contexto</h2>
+<span>
+<b>USOIL</b>
+<br>
+<span class="muted">
+Dirección
+</span>
+</span>
 
-    <p id="macroContext" class="muted">
-      Cargando información...
-    </p>
+<span class="badge neutral">
+Cargando...
+</span>
 
-  </div>
+</div>
+
+
+<div class="row" id="row-AUDUSD">
+
+<span>
+<b>AUD/USD</b>
+<br>
+<span class="muted">
+Dirección
+</span>
+</span>
+
+<span class="badge neutral">
+Cargando...
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🧭 Relación con el oro</h2>
+
+<p class="muted">
+DXY y US10Y son factores especialmente importantes para estudiar el contexto del oro.
+USOIL y AUD/USD funcionan como factores complementarios.
+</p>
+
+</div>
 
 </section>
 
 
+<!-- ========================= -->
 <!-- NOTICIAS -->
+<!-- ========================= -->
 
 <section id="news" class="page">
 
-  <div class="card">
+<div class="card">
 
-    <h2>📰 Noticias económicas</h2>
+<h2>📰 Noticias económicas</h2>
 
-    <iframe
-      src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=2,3&features=datepicker,timezone&countries=25,60,5&calType=week&timeZone=58&lang=1"
-      width="650"
-      height="467"
-      frameborder="0"
-      allowtransparency="true"
-      marginwidth="0"
-      marginheight="0">
-    </iframe>
+<iframe
+src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=2,3&features=datepicker,timezone&countries=25,60,5&calType=week&timeZone=58&lang=1"
+height="600"
+frameborder="0"
+allowtransparency="true"
+marginwidth="0"
+marginheight="0">
+</iframe>
 
-    <div
-      class="poweredBy"
-      style="font-family:Arial,Helvetica,sans-serif;">
+<div
+style="font-family:Arial,Helvetica,sans-serif;margin-top:8px">
 
-      <span
-        style="font-size:11px;color:#333;text-decoration:none;">
+<span
+style="font-size:11px;color:#333">
 
-        Real Time Economic Calendar provided by
+Real Time Economic Calendar provided by
 
-        <a
-          href="https://www.investing.com/"
-          rel="nofollow"
-          target="_blank"
-          style="font-size:11px;color:#06529D;font-weight:bold;">
+<a
+href="https://www.investing.com/"
+rel="nofollow"
+target="_blank"
+style="font-size:11px;color:#06529D;font-weight:bold">
 
-          Investing.com
+Investing.com
 
-        </a>
+</a>
 
-      </span>
+</span>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </section>
 
 
+<!-- ========================= -->
 <!-- CONFIGURACIÓN -->
+<!-- ========================= -->
 
 <section id="settings" class="page">
 
-  <div class="card">
+<div class="card">
 
-    <h2>⚙️ Configuración</h2>
-
-    <div class="row">
-
-      <span>
-        Mínimo de condiciones
-      </span>
-
-      <input
-        id="minConditions"
-        type="number"
-        min="1"
-        max="10"
-        value="3"
-        style="width:70px">
-
-    </div>
+<h2>⚙️ Configuración</h2>
 
 
-    <div class="row">
+<div class="row">
 
-      <span>
-        Temporalidad principal
-      </span>
+<span>
+Mínimo de condiciones
+</span>
 
-      <select id="mainTimeframe">
-        <option>15M</option>
-        <option>5M</option>
-      </select>
+<input
+id="minConditions"
+type="number"
+min="1"
+max="10"
+value="3"
+style="width:70px">
 
-    </div>
+</div>
 
 
-    <p class="muted">
+<div class="row">
 
-      El mínimo de condiciones indica cuántos factores deben coincidir
-      antes de considerar que el contexto merece estudiarse.
+<span>
+Temporalidad principal
+</span>
 
-    </p>
+<select id="mainTimeframe">
 
-  </div>
+<option>15M</option>
+<option>5M</option>
+
+</select>
+
+</div>
+
+
+<p class="muted">
+
+Esta configuración sirve para organizar el análisis.
+El sistema no genera señales automáticas.
+
+</p>
+
+</div>
 
 </section>
+
 
 </main>
 
 
 <script>
 
-/* =========================
-   NAVEGACIÓN
-========================= */
+
+/* ========================= */
+/* NAVEGACIÓN */
+/* ========================= */
 
 document.querySelectorAll("nav button").forEach(button => {
 
-  button.addEventListener("click", () => {
+button.addEventListener("click", () => {
 
-    document
-      .querySelectorAll("nav button")
-      .forEach(x => x.classList.remove("active"));
+document.querySelectorAll("nav button")
+.forEach(x => x.classList.remove("active"));
 
-    document
-      .querySelectorAll(".page")
-      .forEach(x => x.classList.remove("active"));
+document.querySelectorAll(".page")
+.forEach(x => x.classList.remove("active"));
 
-    button.classList.add("active");
+button.classList.add("active");
 
-    const page =
-      document.getElementById(button.dataset.page);
+const page =
+document.getElementById(button.dataset.page);
 
-    if(page){
-      page.classList.add("active");
-    }
+if(page){
+page.classList.add("active");
+}
 
-  });
+});
 
 });
 
 
-/* =========================
-   PRECIO DEL ORO
-========================= */
+/* ========================= */
+/* DATOS DEL MERCADO */
+/* ========================= */
 
-async function cargarPrecioOro(){
+const marketState = {
 
-  try{
+XAUUSD:{
+  direction:"neutral",
+  price:null
+},
 
-    const respuesta =
-      await fetch("/api/market?x=" + Date.now());
+DXY:{
+  direction:"neutral",
+  price:null
+},
 
-    const datos =
-      await respuesta.json();
+US10Y:{
+  direction:"neutral",
+  price:null
+},
 
-    console.log("Datos mercado:",datos);
+USOIL:{
+  direction:"neutral",
+  price:null
+},
 
+AUDUSD:{
+  direction:"neutral",
+  price:null
+}
 
-    if(
-      datos &&
-      datos.XAUUSD &&
-      datos.XAUUSD.price !== null
-    ){
-
-      const precio =
-        Number(datos.XAUUSD.price);
-
-
-      document.getElementById("goldPrice").textContent =
-        precio.toFixed(2) + " USD/oz";
-
-
-      document.getElementById("goldPriceStatus").textContent =
-        "🟢 Datos en vivo · XAU/USD";
-
-
-      document.getElementById("macroXAU").textContent =
-        precio.toFixed(2) + " USD";
+};
 
 
-    }else{
+/* ========================= */
+/* FUNCIÓN DIRECCIÓN */
+/* ========================= */
 
-      document.getElementById("goldPrice").textContent =
-        "Sin datos";
+function obtenerDireccion(openPrice, closePrice){
 
-      document.getElementById("goldPriceStatus").textContent =
-        "No se pudo obtener XAU/USD";
+if(
+  openPrice === undefined ||
+  closePrice === undefined ||
+  openPrice === null ||
+  closePrice === null
+){
+  return "neutral";
+}
 
-    }
+const diferencia =
+Number(closePrice) - Number(openPrice);
 
-  }catch(error){
+if(diferencia > 0){
+  return "up";
+}
 
-    console.log(
-      "Error XAU/USD:",
-      error
-    );
+if(diferencia < 0){
+  return "down";
+}
 
-    document.getElementById("goldPrice").textContent =
-      "Error";
-
-    document.getElementById("goldPriceStatus").textContent =
-      "No se pudo conectar con el mercado";
-
-  }
+return "neutral";
 
 }
 
 
-/* =========================
-   US10Y
-========================= */
+/* ========================= */
+/* ACTUALIZAR FILA MACRO */
+/* ========================= */
+
+function actualizarFila(
+id,
+valor,
+direccion,
+detalle
+){
+
+const fila =
+document.getElementById(id);
+
+if(!fila){
+return;
+}
+
+const badge =
+fila.querySelector(".badge");
+
+const texto =
+fila.querySelector(".muted");
+
+if(badge){
+
+badge.className =
+"badge " +
+(
+direccion === "up"
+? "up"
+: direccion === "down"
+? "down"
+: "neutral"
+);
+
+if(direccion === "up"){
+
+badge.textContent =
+"🟢 " + valor;
+
+}
+
+else if(direccion === "down"){
+
+badge.textContent =
+"🔴 " + valor;
+
+}
+
+else{
+
+badge.textContent =
+"⚪ " + valor;
+
+}
+
+}
+
+if(texto && detalle){
+
+texto.textContent =
+detalle;
+
+}
+
+}
+
+
+/* ========================= */
+/* XAU/USD */
+/* ========================= */
+
+async function cargarOro(){
+
+try{
+
+const respuesta =
+await fetch("/api/market");
+
+const datos =
+await respuesta.json();
+
+if(
+datos &&
+datos.price !== null &&
+datos.price !== undefined
+){
+
+const precio =
+Number(datos.price);
+
+marketState.XAUUSD.price =
+precio;
+
+document.getElementById(
+"goldPrice"
+).textContent =
+precio.toFixed(2) +
+" USD/oz";
+
+
+actualizarFila(
+"row-XAUUSD",
+precio.toFixed(2) + " USD",
+"neutral",
+"Precio actual · XAU/USD"
+);
+
+}
+
+}catch(error){
+
+console.log(
+"No se pudo cargar XAU/USD"
+);
+
+document.getElementById(
+"goldPrice"
+).textContent =
+"No disponible";
+
+}
+
+}
+
+
+/* ========================= */
+/* REALMARKETAPI */
+/* ========================= */
+
+async function cargarRealMarket(){
+
+try{
+
+const respuesta =
+await fetch("/api/realmarket");
+
+const datos =
+await respuesta.json();
+
+
+/* DXY */
+
+if(
+datos.DXY &&
+datos.DXY.ok &&
+datos.DXY.data
+){
+
+const d =
+datos.DXY.data;
+
+const direccion =
+obtenerDireccion(
+d.openPrice,
+d.closePrice
+);
+
+marketState.DXY.direction =
+direccion;
+
+marketState.DXY.price =
+Number(d.closePrice);
+
+actualizarFila(
+"row-DXY",
+Number(d.closePrice).toFixed(3),
+direccion,
+"RealMarketAPI · DXY"
+);
+
+}
+
+
+/* USOIL */
+
+if(
+datos.USOIL &&
+datos.USOIL.ok &&
+datos.USOIL.data
+){
+
+const d =
+datos.USOIL.data;
+
+const direccion =
+obtenerDireccion(
+d.openPrice,
+d.closePrice
+);
+
+marketState.USOIL.direction =
+direccion;
+
+marketState.USOIL.price =
+Number(d.closePrice);
+
+actualizarFila(
+"row-USOIL",
+Number(d.closePrice).toFixed(3),
+direccion,
+"RealMarketAPI · USOIL"
+);
+
+}
+
+
+/* AUD/USD */
+
+if(
+datos.AUDUSD &&
+datos.AUDUSD.ok &&
+datos.AUDUSD.data
+){
+
+const d =
+datos.AUDUSD.data;
+
+const direccion =
+obtenerDireccion(
+d.openPrice,
+d.closePrice
+);
+
+marketState.AUDUSD.direction =
+direccion;
+
+marketState.AUDUSD.price =
+Number(d.closePrice);
+
+actualizarFila(
+"row-AUDUSD",
+Number(d.closePrice).toFixed(5),
+direccion,
+"RealMarketAPI · AUD/USD"
+);
+
+}
+
+
+/* Actualizar resumen */
+
+actualizarResumen();
+
+}catch(error){
+
+console.log(
+"No se pudo cargar RealMarketAPI"
+);
+
+}
+
+}
+
+
+/* ========================= */
+/* US10Y */
+/* ========================= */
 
 async function cargarUS10Y(){
 
-  try{
+try{
 
-    const respuesta =
-      await fetch("/api/us10y?x=" + Date.now());
+const respuesta =
+await fetch("/api/us10y");
 
-    const datos =
-      await respuesta.json();
+const datos =
+await respuesta.json();
 
-    console.log("Datos US10Y:",datos);
+if(
+datos &&
+datos.price !== undefined &&
+datos.price !== null
+){
 
+marketState.US10Y.price =
+Number(datos.price);
 
-    if(
-      datos &&
-      datos.price !== undefined &&
-      datos.price !== null
-    ){
-
-      const rendimiento =
-        Number(datos.price);
-
-
-      document.getElementById("macroUS10Y").textContent =
-        rendimiento.toFixed(2) + "%";
+marketState.US10Y.direction =
+"neutral";
 
 
-      document.getElementById("macroUS10Y").className =
-        "badge neutral";
+actualizarFila(
+"row-US10Y",
+Number(datos.price).toFixed(2) + "%",
+"neutral",
+"U.S. Treasury · " +
+String(datos.date).slice(0,10)
+);
 
+}
 
-      if(datos.date){
+}catch(error){
 
-        document.getElementById("us10yDate").textContent =
-          "U.S. Treasury · " +
-          datos.date.slice(0,10);
+console.log(
+"No se pudo cargar US10Y"
+);
 
-      }
-
-    }else{
-
-      document.getElementById("macroUS10Y").textContent =
-        "Sin datos";
-
-    }
-
-  }catch(error){
-
-    console.log(
-      "Error US10Y:",
-      error
-    );
-
-    document.getElementById("macroUS10Y").textContent =
-      "Error";
-
-  }
+}
 
 }
 
 
-/* =========================
-   CONTEXTO DEL ORO
-========================= */
+/* ========================= */
+/* RESUMEN */
+/* ========================= */
 
-function actualizarContexto(){
+function actualizarResumen(){
 
-  const badge =
-    document.getElementById("contextBadge");
+const activos = [
 
-  const texto =
-    document.getElementById("contextText");
+{
+nombre:"DXY",
+data:marketState.DXY
+},
 
-  const macroTexto =
-    document.getElementById("macroContext");
+{
+nombre:"USOIL",
+data:marketState.USOIL
+},
 
+{
+nombre:"AUD/USD",
+data:marketState.AUDUSD
+}
 
-  /*
-    Por ahora solo tenemos conectados:
-
-    XAU/USD
-    US10Y
-
-    DXY, USOIL y AUD/USD
-    todavía están pendientes.
-
-    Por eso NO damos una conclusión
-    automática de compra o venta.
-  */
+];
 
 
-  badge.textContent =
-    "🟡 Datos parciales";
+const subiendo =
+activos.filter(
+x => x.data.direction === "up"
+);
+
+const bajando =
+activos.filter(
+x => x.data.direction === "down"
+);
 
 
-  badge.className =
-    "badge neutral";
+document.getElementById(
+"upCount"
+).textContent =
+subiendo.length;
 
 
-  texto.textContent =
-    "Tenemos XAU/USD y US10Y conectados. " +
-    "Faltan DXY, USOIL y AUD/USD para completar " +
-    "el análisis macro.";
+document.getElementById(
+"downCount"
+).textContent =
+bajando.length;
 
 
-  macroTexto.textContent =
-    "XAU/USD y US10Y están conectados. " +
-    "Cuando añadamos los demás factores podremos " +
-    "comparar el contexto completo.";
+document.getElementById(
+"upNames"
+).textContent =
+subiendo.length
+? subiendo.map(x => x.nombre).join(", ")
+: "—";
+
+
+document.getElementById(
+"downNames"
+).textContent =
+bajando.length
+? bajando.map(x => x.nombre).join(", ")
+: "—";
+
+
+/* Factores del resumen */
+
+const summaryRows =
+document.querySelectorAll(
+"#summaryFactors .row"
+);
+
+
+summaryRows.forEach(row => {
+
+const nombre =
+row.children[0].textContent.trim();
+
+const badge =
+row.querySelector(".badge");
+
+let activo = null;
+
+if(nombre === "DXY"){
+activo = marketState.DXY;
+}
+
+if(nombre === "USOIL"){
+activo = marketState.USOIL;
+}
+
+if(nombre === "AUD/USD"){
+activo = marketState.AUDUSD;
+}
+
+if(!activo || !badge){
+return;
+}
+
+if(activo.direction === "up"){
+
+badge.className =
+"badge up";
+
+badge.textContent =
+"🟢 Subiendo";
+
+}
+
+else if(activo.direction === "down"){
+
+badge.className =
+"badge down";
+
+badge.textContent =
+"🔴 Bajando";
+
+}
+
+else{
+
+badge.className =
+"badge neutral";
+
+badge.textContent =
+"⚪ Neutral";
+
+}
+
+});
+
+
+/* ========================= */
+/* CONTEXTO DEL ORO */
+/* ========================= */
+
+const dxy =
+marketState.DXY.direction;
+
+const us10y =
+marketState.US10Y.direction;
+
+
+/*
+DXY ↓ + US10Y ↓
+→ contexto históricamente favorable
+para estudiar fortaleza del oro.
+
+DXY ↑ + US10Y ↑
+→ contexto históricamente favorable
+para estudiar presión sobre el oro.
+
+No es una señal automática.
+*/
+
+const badge =
+document.getElementById(
+"contextBadge"
+);
+
+const texto =
+document.getElementById(
+"contextText"
+);
+
+
+if(
+dxy === "down" &&
+us10y === "neutral"
+){
+
+badge.className =
+"badge context-good";
+
+badge.textContent =
+"🟢 Contexto a estudiar";
+
+texto.textContent =
+"DXY está bajando. US10Y todavía no tiene dirección intradía en esta versión; observa si el rendimiento acompaña.";
+
+}
+
+else if(
+dxy === "up" &&
+us10y === "neutral"
+){
+
+badge.className =
+"badge context-sell";
+
+badge.textContent =
+"🔴 Presión a estudiar";
+
+texto.textContent =
+"DXY está subiendo. US10Y todavía no tiene dirección intradía; observa si los rendimientos también aumentan.";
+
+}
+
+else if(
+dxy === "down" &&
+us10y === "down"
+){
+
+badge.className =
+"badge context-good";
+
+badge.textContent =
+"🟢 Contexto favorable para estudiar oro";
+
+texto.textContent =
+"DXY y US10Y están bajando. Es un contexto históricamente favorable para estudiar fortaleza del oro, pero debe confirmarse con la estructura.";
+
+}
+
+else if(
+dxy === "up" &&
+us10y === "up"
+){
+
+badge.className =
+"badge context-sell";
+
+badge.textContent =
+"🔴 Contexto de presión para estudiar";
+
+texto.textContent =
+"DXY y US10Y están subiendo. Es un contexto que puede ejercer presión sobre el oro; confirma siempre con la estructura.";
+
+}
+
+else{
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Factores divididos";
+
+texto.textContent =
+"Los factores principales no están alineados. Conviene observar DXY, US10Y y la estructura del oro antes de sacar conclusiones.";
+
+}
 
 }
 
 
-/* =========================
-   CARGAR TODO
-========================= */
+/* ========================= */
+/* CARGAR TODO */
+/* ========================= */
 
 async function cargarDatos(){
 
-  await Promise.all([
-    cargarPrecioOro(),
-    cargarUS10Y()
-  ]);
+await Promise.all([
+cargarOro(),
+cargarRealMarket(),
+cargarUS10Y()
+]);
 
-  actualizarContexto();
-
-}
-
-
-/* =========================
-   SERVICE WORKER
-========================= */
-
-if("serviceWorker" in navigator){
-
-  navigator.serviceWorker
-    .register("sw.js")
-    .catch(() => {});
+actualizarResumen();
 
 }
 
 
-/* =========================
-   INICIO
-========================= */
+/* ========================= */
+/* SERVICE WORKER */
+/* ========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+navigator.serviceWorker
+.register("sw.js")
+.catch(() => {});
+
+}
+
+
+/* ========================= */
+/* INICIAR */
+/* ========================= */
 
 cargarDatos();
+
 
 </script>
 
