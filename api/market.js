@@ -31,11 +31,19 @@ export default async function handler(req, res) {
       })
     );
 
+    const oro = resultados.find((x) => x.symbol === "XAU/USD");
+
     return res.status(200).json({
-      XAUUSD: resultados.find((x) => x.symbol === "XAU/USD"),
+      symbol: "XAU/USD",
+      price: oro ? oro.price : null,
+
+      XAUUSD: oro,
+
       DXY: resultados.find((x) => x.symbol === "DXY"),
+
       US10Y: resultados.find((x) => x.symbol === "US10Y"),
     });
+
   } catch (error) {
     return res.status(500).json({
       error: "No se pudieron consultar los datos de mercado",
