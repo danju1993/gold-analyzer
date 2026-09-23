@@ -1,29 +1,44 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch(
-      "https://api.twelvedata.com/price?symbol=XAU/USD",
-      {
-        headers: {
-          Authorization: `apikey ${process.env.TWELVE_DATA_API_KEY}`,
-        },
-      }
+    const apiKey = process.env.TWELVE_DATA_API_KEY;
+
+    const symbols = ["XAU/USD", "DXY", "US10Y"];
+
+    const resultados = await Promise.all(
+      symbols.map(async (symbol) => {
+        const response = await fetch(
+          `https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbol)}`,
+          {
+            headers: {
+              Authorization: `apikey ${apiKey}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        return {
+          symbol,
+          price:
+            response.ok && data.status !== "error"
+              ? Number(data.price)
+              : null,
+          error:
+            response.ok && data.status !== "error"
+              ? null
+              : data.message || "No disponible",
+        };
+      })
     );
 
-    const data = await response.json();
-
-    if (!response.ok || data.status === "error") {
-      return res.status(500).json({
-        error: data.message || "Error al consultar Twelve Data",
-      });
-    }
-
     return res.status(200).json({
-      symbol: "XAU/USD",
-      price: Number(data.price),
+      XAUUSD: resultados.find((x) => x.symbol === "XAU/USD"),
+      DXY: resultados.find((x) => x.symbol === "DXY"),
+      US10Y: resultados.find((x) => x.symbol === "US10Y"),
     });
   } catch (error) {
     return res.status(500).json({
-      error: "No se pudo conectar con Twelve Data",
+      error: "No se pudieron consultar los datos de mercado",
     });
   }
 }
