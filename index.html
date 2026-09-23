@@ -117,26 +117,18 @@ async function cargarPrecioOro() {
     const datos = await respuesta.json();
 
     if (datos.price !== undefined) {
-      const filas = document.querySelectorAll("#macro .row");
+      const macro = document.getElementById("macro");
 
-      const fila = [...filas].find((f) => {
-        const titulo = f.querySelector("b");
-        return titulo && titulo.textContent.trim() === "US10Y";
-      });
+      if (macro) {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "card";
+        tarjeta.innerHTML = `
+          <h2>🇺🇸 US10Y</h2>
+          <div class="big">${Number(datos.price).toFixed(2)}%</div>
+          <p class="muted">U.S. Treasury · ${datos.date.slice(0,10)}</p>
+        `;
 
-      if (fila) {
-        const badge = fila.querySelector(".badge");
-
-        if (badge) {
-          badge.textContent = `${Number(datos.price).toFixed(2)}%`;
-          badge.className = "badge neutral";
-        }
-
-        const texto = fila.querySelector(".muted");
-
-        if (texto) {
-          texto.textContent = `U.S. Treasury · ${datos.date.slice(0, 10)}`;
-        }
+        macro.insertBefore(tarjeta, macro.firstChild);
       }
     }
   } catch (error) {
