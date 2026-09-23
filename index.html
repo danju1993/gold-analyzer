@@ -1063,18 +1063,16 @@ datos.price !== null
 marketState.US10Y.price =
 Number(datos.price);
 
-marketState.US10Y.direction =
-"neutral";
-
+marketState.US10Y.price = Number(datos.price);
+marketState.US10Y.direction = datos.direction || "neutral";
 
 actualizarFila(
-"row-US10Y",
-Number(datos.price).toFixed(2) + "%",
-"neutral",
-"U.S. Treasury · " +
-String(datos.date).slice(0,10)
+  "row-US10Y",
+  Number(datos.price).toFixed(2) + "%",
+  datos.direction || "neutral",
+  "U.S. Treasury · " + String(datos.date).slice(0,10) +
+  " · Cambio: " + Number(datos.change || 0).toFixed(2)
 );
-
 }
 
 }catch(error){
