@@ -12,8 +12,13 @@ export default async function handler(req, res) {
       });
     }
 
-    const fechas = [...xml.matchAll(/<d:NEW_DATE>(.*?)<\/d:NEW_DATE>/g)];
-    const rendimientos = [...xml.matchAll(/<d:BC_10YEAR>(.*?)<\/d:BC_10YEAR>/g)];
+    const fechas = [
+      ...xml.matchAll(/<d:NEW_DATE[^>]*>(.*?)<\/d:NEW_DATE>/g)
+    ];
+
+    const rendimientos = [
+      ...xml.matchAll(/<d:BC_10YEAR[^>]*>(.*?)<\/d:BC_10YEAR>/g)
+    ];
 
     if (!fechas.length || !rendimientos.length) {
       return res.status(500).json({
