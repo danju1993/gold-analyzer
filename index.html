@@ -205,6 +205,10 @@ main{
   border-left:5px solid #6b7280
 }
 
+.layer-final{
+  border-left:5px solid #16a34a
+}
+
 .status-large{
   font-size:18px;
   font-weight:800;
@@ -218,12 +222,26 @@ main{
   margin-top:8px
 }
 
-.confirm-buy{
-  border-left:5px solid #16a34a
+.final-box{
+  padding:15px;
+  border-radius:12px;
+  background:#f7f8fa;
+  margin-top:10px
 }
 
-.confirm-sell{
-  border-left:5px solid #dc2626
+.final-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:8px
+}
+
+.final-list{
+  margin:10px 0 0;
+  padding-left:20px
+}
+
+.final-list li{
+  margin-bottom:7px
 }
 
 select,
@@ -261,10 +279,6 @@ iframe{
 <body>
 
 
-<!-- ====================================================== -->
-<!-- CABECERA -->
-<!-- ====================================================== -->
-
 <header>
 
 <h1>🥇 Gold Analyzer</h1>
@@ -275,10 +289,6 @@ Contexto para estudiar el mercado · no es una señal automática
 
 </header>
 
-
-<!-- ====================================================== -->
-<!-- NAVEGACIÓN -->
-<!-- ====================================================== -->
 
 <nav>
 
@@ -321,7 +331,9 @@ Contexto para estudiar el mercado · no es una señal automática
 >
 
 
+<!-- ====================================================== -->
 <!-- LECTURA RÁPIDA -->
+<!-- ====================================================== -->
 
 <div class="card">
 
@@ -345,7 +357,7 @@ Esperando datos de mercado...
 
 
 <!-- ====================================================== -->
-<!-- 1. FACTORES PRINCIPALES -->
+<!-- FACTORES PRINCIPALES -->
 <!-- ====================================================== -->
 
 <div class="card layer-main">
@@ -356,9 +368,7 @@ Esperando datos de mercado...
 DXY + US10Y
 </p>
 
-
 <div class="grid">
-
 
 <div class="metric">
 
@@ -440,7 +450,7 @@ Sin datos
 
 
 <!-- ====================================================== -->
-<!-- 2. CONFIRMACIONES -->
+<!-- CONFIRMACIONES -->
 <!-- ====================================================== -->
 
 <div class="card layer-confirm">
@@ -502,7 +512,6 @@ Si bajan, son confirmaciones para estudiar venta.
 
 </div>
 
-
 </div>
 
 
@@ -537,12 +546,11 @@ Sin datos
 
 </div>
 
-
 </div>
 
 
 <!-- ====================================================== -->
-<!-- 3. ESTRUCTURA -->
+<!-- ESTRUCTURA -->
 <!-- ====================================================== -->
 
 <div class="card layer-structure">
@@ -609,6 +617,55 @@ Sin definir
 
 </div>
 
+
+</div>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- LECTURA FINAL -->
+<!-- ====================================================== -->
+
+<div class="card layer-final">
+
+<h3>🧭 4. Lectura final</h3>
+
+<div
+  id="finalBadge"
+  class="badge neutral"
+>
+Esperando datos
+</div>
+
+
+<div
+  id="finalBox"
+  class="final-box"
+>
+
+<div
+  id="finalTitle"
+  class="final-title"
+>
+Esperando datos
+</div>
+
+
+<p
+  id="finalText"
+  class="muted"
+>
+La aplicación combinará los factores principales,
+las confirmaciones y la estructura del oro.
+</p>
+
+
+<ul
+  id="finalList"
+  class="final-list"
+>
+</ul>
 
 </div>
 
@@ -1345,9 +1402,7 @@ const datos =
 await respuesta.json();
 
 
-/* ------------------------- */
 /* DXY */
-/* ------------------------- */
 
 if(
 datos.DXY &&
@@ -1381,9 +1436,7 @@ direccion,
 }
 
 
-/* ------------------------- */
 /* USOIL */
-/* ------------------------- */
 
 if(
 datos.USOIL &&
@@ -1417,9 +1470,7 @@ direccion,
 }
 
 
-/* ------------------------- */
 /* AUD/USD */
-/* ------------------------- */
 
 if(
 datos.AUDUSD &&
@@ -1697,6 +1748,381 @@ actualizarResumen();
 
 
 /* ====================================================== */
+/* LECTURA FINAL */
+/* ====================================================== */
+
+function actualizarLecturaFinal(
+tipoContexto,
+compras,
+ventas
+){
+
+const badge =
+document.getElementById(
+"finalBadge"
+);
+
+const title =
+document.getElementById(
+"finalTitle"
+);
+
+const text =
+document.getElementById(
+"finalText"
+);
+
+const lista =
+document.getElementById(
+"finalList"
+);
+
+
+lista.innerHTML = "";
+
+
+/* ESTRUCTURA */
+
+const estructura15 =
+document.getElementById(
+"structure15"
+).value;
+
+const estructura5 =
+document.getElementById(
+"structure5"
+).value;
+
+const bos =
+document.getElementById(
+"bos"
+).value;
+
+const rejection =
+document.getElementById(
+"rejection"
+).value;
+
+
+/* ====================================================== */
+/* CASO COMPRA */
+/* ====================================================== */
+
+if(
+tipoContexto === "oro" &&
+compras >= 2
+){
+
+badge.className =
+"badge context-good";
+
+badge.textContent =
+"🟢 Contexto alineado para estudiar";
+
+title.textContent =
+"Escenario alcista del oro a estudiar";
+
+text.textContent =
+"Los factores principales y las confirmaciones están alineados. Falta revisar la estructura del oro antes de sacar conclusiones.";
+
+
+const items = [
+
+"DXY ↓ + US10Y ↓",
+
+"USOIL/AUD/USD: " +
+compras +
+"/2 confirmaciones de compra",
+
+"15M: " +
+estructura15,
+
+"5M: " +
+estructura5,
+
+"BOS: " +
+bos,
+
+"Retroceso/rechazo: " +
+rejection
+
+];
+
+
+items.forEach(item => {
+
+const li =
+document.createElement("li");
+
+li.textContent =
+item;
+
+lista.appendChild(li);
+
+});
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* CASO VENTA */
+/* ====================================================== */
+
+if(
+tipoContexto === "presion" &&
+ventas >= 2
+){
+
+badge.className =
+"badge context-sell";
+
+badge.textContent =
+"🔴 Contexto alineado para estudiar";
+
+title.textContent =
+"Escenario bajista del oro a estudiar";
+
+text.textContent =
+"Los factores principales y las confirmaciones están alineados. Falta revisar la estructura del oro antes de sacar conclusiones.";
+
+
+const items = [
+
+"DXY ↑ + US10Y ↑",
+
+"USOIL/AUD/USD: " +
+ventas +
+"/2 confirmaciones de venta",
+
+"15M: " +
+estructura15,
+
+"5M: " +
+estructura5,
+
+"BOS: " +
+bos,
+
+"Retroceso/rechazo: " +
+rejection
+
+];
+
+
+items.forEach(item => {
+
+const li =
+document.createElement("li");
+
+li.textContent =
+item;
+
+lista.appendChild(li);
+
+});
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* CASO PARCIAL */
+/* ====================================================== */
+
+if(
+tipoContexto === "oro" ||
+tipoContexto === "presion"
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Contexto parcial";
+
+title.textContent =
+"Hay factores alineados, pero falta confirmación";
+
+text.textContent =
+"El contexto principal tiene dirección, pero las confirmaciones complementarias todavía no están completamente alineadas.";
+
+
+const items = [
+
+"Factores principales: " +
+(
+tipoContexto === "oro"
+? "DXY ↓ + US10Y ↓"
+: "DXY ↑ + US10Y ↑"
+),
+
+"Confirmaciones compra: " +
+compras +
+"/2",
+
+"Confirmaciones venta: " +
+ventas +
+"/2",
+
+"15M: " +
+estructura15,
+
+"5M: " +
+estructura5
+
+];
+
+
+items.forEach(item => {
+
+const li =
+document.createElement("li");
+
+li.textContent =
+item;
+
+lista.appendChild(li);
+
+});
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* CASO PARCIAL PRINCIPAL */
+/* ====================================================== */
+
+if(
+tipoContexto === "parcial"
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Contexto parcial";
+
+title.textContent =
+"Falta confirmación de un factor principal";
+
+text.textContent =
+"Solo uno de DXY y US10Y tiene dirección. Las confirmaciones complementarias pueden aportar información adicional, pero el contexto principal todavía no está completo.";
+
+
+const items = [
+
+"DXY: " +
+marketState.DXY.direction,
+
+"US10Y: " +
+marketState.US10Y.direction,
+
+"Confirmaciones compra: " +
+compras +
+"/2",
+
+"Confirmaciones venta: " +
+ventas +
+"/2"
+
+];
+
+
+items.forEach(item => {
+
+const li =
+document.createElement("li");
+
+li.textContent =
+item;
+
+lista.appendChild(li);
+
+});
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* CASO CONFLICTO */
+/* ====================================================== */
+
+if(
+tipoContexto === "conflicto"
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Factores en conflicto";
+
+title.textContent =
+"DXY y US10Y no están alineados";
+
+text.textContent =
+"Los dos factores principales muestran direcciones opuestas. Conviene observar la evolución antes de interpretar las confirmaciones.";
+
+
+const items = [
+
+"DXY y US10Y tienen direcciones opuestas",
+
+"Confirmaciones compra: " +
+compras +
+"/2",
+
+"Confirmaciones venta: " +
+ventas +
+"/2"
+
+];
+
+
+items.forEach(item => {
+
+const li =
+document.createElement("li");
+
+li.textContent =
+item;
+
+lista.appendChild(li);
+
+});
+
+return;
+
+}
+
+
+/* ====================================================== */
+/* SIN DIRECCIÓN */
+/* ====================================================== */
+
+badge.className =
+"badge neutral";
+
+badge.textContent =
+"⚪ Sin dirección clara";
+
+title.textContent =
+"Esperando una dirección más definida";
+
+text.textContent =
+"DXY y US10Y están neutrales. Las confirmaciones por sí solas no definen el contexto principal.";
+
+}
+
+
+/* ====================================================== */
 /* RESUMEN */
 /* ====================================================== */
 
@@ -1712,24 +2138,6 @@ marketState.DXY.direction;
 
 const us10y =
 marketState.US10Y.direction;
-
-
-/*
-DXY + US10Y
-
-2/2:
-ambos bajando o ambos subiendo.
-
-1/2:
-uno tiene dirección y el otro
-está neutral.
-
-0/2:
-ambos neutrales.
-
-CONFLICTO:
-uno sube y el otro baja.
-*/
 
 
 let condicionesPrincipales = 0;
@@ -1921,19 +2329,6 @@ us10y
 /* CONFIRMACIONES */
 /* ====================================================== */
 
-/*
-Según el método configurado:
-
-USOIL ↑ = confirmación compra
-USOIL ↓ = confirmación venta
-
-AUD/USD ↑ = confirmación compra
-AUD/USD ↓ = confirmación venta
-
-Neutral = no confirma.
-*/
-
-
 const confirmacionesCompra = [];
 
 const confirmacionesVenta = [];
@@ -2027,7 +2422,7 @@ marketState.AUDUSD.direction
 
 
 /* ====================================================== */
-/* LECTURA GENERAL */
+/* LECTURA RÁPIDA */
 /* ====================================================== */
 
 const badge =
@@ -2152,6 +2547,17 @@ document.getElementById(
 
 
 /* ====================================================== */
+/* LECTURA FINAL */
+/* ====================================================== */
+
+actualizarLecturaFinal(
+tipoContexto,
+confirmacionesCompra.length,
+confirmacionesVenta.length
+);
+
+
+/* ====================================================== */
 /* MERCADO */
 /* ====================================================== */
 
@@ -2227,7 +2633,7 @@ bajando.length
 
 
 /* ====================================================== */
-/* CARGAR DATOS */
+/* CARGAR TODO */
 /* ====================================================== */
 
 async function cargarDatos(){
