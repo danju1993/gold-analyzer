@@ -4,25 +4,13 @@
 
 <meta charset="utf-8">
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,viewport-fit=cover"
->
+<meta name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<meta
-  name="theme-color"
-  content="#111827"
->
+<meta name="theme-color" content="#111827">
 
-<link
-  rel="manifest"
-  href="manifest.webmanifest"
->
-
-<link
-  rel="apple-touch-icon"
-  href="icon-192.png"
->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 
 <title>Gold Analyzer</title>
 
@@ -55,6 +43,10 @@ h1{
 
 h2{
   margin-top:0
+}
+
+h3{
+  margin:0 0 10px
 }
 
 .sub{
@@ -216,6 +208,31 @@ iframe{
   color:#92400e
 }
 
+.layer-main{
+  border-left:5px solid #2563eb
+}
+
+.layer-confirm{
+  border-left:5px solid #d97706
+}
+
+.layer-structure{
+  border-left:5px solid #6b7280
+}
+
+.status-large{
+  font-size:18px;
+  font-weight:800;
+  margin:8px 0
+}
+
+.structure-result{
+  padding:10px;
+  border-radius:10px;
+  background:#f7f8fa;
+  margin-top:8px
+}
+
 @media(max-width:520px){
 
   .grid{
@@ -279,9 +296,229 @@ Contexto para estudiar el mercado · no es una señal automática
 
 <section id="summary" class="page active">
 
+
 <div class="card">
 
-<h2>Mercado</h2>
+<h2>🥇 Lectura rápida del oro</h2>
+
+<div id="contextBadge" class="badge neutral">
+Esperando datos
+</div>
+
+<p id="contextText" class="muted">
+Esperando datos de mercado...
+</p>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA 1 -->
+<!-- ========================= -->
+
+<div class="card layer-main">
+
+<h3>🎯 1. Factores principales</h3>
+
+<p class="muted">
+DXY + US10Y
+</p>
+
+<div class="grid">
+
+<div class="metric">
+
+<div class="muted">
+Condiciones alineadas
+</div>
+
+<div class="big" id="mainConditions">
+0/2
+</div>
+
+<div class="muted" id="mainConditionText">
+Esperando datos
+</div>
+
+</div>
+
+
+<div class="metric">
+
+<div class="muted">
+Lectura
+</div>
+
+<div class="status-large"
+id="mainReading">
+⚪ Sin datos
+</div>
+
+<div class="muted">
+Contexto macro principal
+</div>
+
+</div>
+
+</div>
+
+
+<div class="row">
+
+<span>
+DXY
+</span>
+
+<span
+id="summaryDXY"
+class="badge neutral">
+Sin datos
+</span>
+
+</div>
+
+
+<div class="row">
+
+<span>
+US10Y
+</span>
+
+<span
+id="summaryUS10Y"
+class="badge neutral">
+Sin datos
+</span>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA 2 -->
+<!-- ========================= -->
+
+<div class="card layer-confirm">
+
+<h3>🟡 2. Confirmaciones</h3>
+
+<p class="muted">
+Factores complementarios. Se muestran para estudiar el contexto,
+pero no determinan automáticamente una operación.
+</p>
+
+
+<div class="row">
+
+<span>
+USOIL
+</span>
+
+<span
+id="summaryUSOIL"
+class="badge neutral">
+Sin datos
+</span>
+
+</div>
+
+
+<div class="row">
+
+<span>
+AUD/USD
+</span>
+
+<span
+id="summaryAUDUSD"
+class="badge neutral">
+Sin datos
+</span>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA 3 -->
+<!-- ========================= -->
+
+<div class="card layer-structure">
+
+<h3>🥇 3. Estructura del oro</h3>
+
+<p class="muted">
+Información introducida en la sección Oro.
+</p>
+
+
+<div class="structure-result">
+
+<div class="row">
+
+<span>
+15M · estructura
+</span>
+
+<strong id="summary15M">
+Sin definir
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+5M · estructura
+</span>
+
+<strong id="summary5M">
+Sin definir
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+BOS / ruptura
+</span>
+
+<strong id="summaryBOS">
+Sin definir
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Retroceso / rechazo
+</span>
+
+<strong id="summaryRejection">
+Sin definir
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- MERCADO -->
+<!-- ========================= -->
+
+<div class="card">
+
+<h2>📊 Mercado</h2>
 
 <div class="grid">
 
@@ -323,51 +560,6 @@ Contexto para estudiar el mercado · no es una señal automática
 </div>
 
 
-<div class="card">
-
-<h2>Contexto del oro</h2>
-
-<div id="contextBadge" class="badge neutral">
-Sin datos
-</div>
-
-<p id="contextText" class="muted">
-Esperando datos de mercado...
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h2>📊 Factores principales</h2>
-
-<div id="summaryFactors">
-
-<div class="row">
-<span>DXY</span>
-<span class="badge neutral">Sin datos</span>
-</div>
-
-<div class="row">
-<span>US10Y</span>
-<span class="badge neutral">Sin datos</span>
-</div>
-
-<div class="row">
-<span>USOIL</span>
-<span class="badge neutral">Sin datos</span>
-</div>
-
-<div class="row">
-<span>AUD/USD</span>
-<span class="badge neutral">Sin datos</span>
-</div>
-
-</div>
-
-</div>
-
 </section>
 
 
@@ -376,6 +568,7 @@ Esperando datos de mercado...
 <!-- ========================= -->
 
 <section id="gold" class="page">
+
 
 <div class="card">
 
@@ -395,6 +588,7 @@ XAU/USD · Twelve Data
 <div class="card">
 
 <h2>📐 Estructura del oro</h2>
+
 
 <div class="row">
 
@@ -609,8 +803,8 @@ Cargando...
 <h2>🧭 Relación con el oro</h2>
 
 <p class="muted">
-DXY y US10Y son factores especialmente importantes para estudiar el contexto del oro.
-USOIL y AUD/USD funcionan como factores complementarios.
+DXY y US10Y son los factores principales para estudiar el contexto del oro.
+USOIL y AUD/USD son factores complementarios.
 </p>
 
 </div>
@@ -685,7 +879,7 @@ Mínimo de condiciones
 id="minConditions"
 type="number"
 min="1"
-max="10"
+max="5"
 value="3"
 style="width:70px">
 
@@ -710,7 +904,7 @@ Temporalidad principal
 
 <p class="muted">
 
-Esta configuración sirve para organizar el análisis.
+La configuración organiza el análisis.
 El sistema no genera señales automáticas.
 
 </p>
@@ -789,29 +983,31 @@ AUDUSD:{
 
 
 /* ========================= */
-/* FUNCIÓN DIRECCIÓN */
+/* DIRECCIÓN */
 /* ========================= */
 
-function obtenerDireccion(openPrice, closePrice){
+function obtenerDireccion(openPrice,closePrice){
 
 if(
-  openPrice === undefined ||
-  closePrice === undefined ||
-  openPrice === null ||
-  closePrice === null
+openPrice === undefined ||
+closePrice === undefined ||
+openPrice === null ||
+closePrice === null
 ){
-  return "neutral";
+
+return "neutral";
+
 }
 
 const diferencia =
-Number(closePrice) - Number(openPrice);
+Number(closePrice)-Number(openPrice);
 
 if(diferencia > 0){
-  return "up";
+return "up";
 }
 
 if(diferencia < 0){
-  return "down";
+return "down";
 }
 
 return "neutral";
@@ -889,7 +1085,7 @@ detalle;
 
 
 /* ========================= */
-/* XAU/USD */
+/* ORO */
 /* ========================= */
 
 async function cargarOro(){
@@ -917,13 +1113,12 @@ precio;
 document.getElementById(
 "goldPrice"
 ).textContent =
-precio.toFixed(2) +
-" USD/oz";
+precio.toFixed(2)+" USD/oz";
 
 
 actualizarFila(
 "row-XAUUSD",
-precio.toFixed(2) + " USD",
+precio.toFixed(2)+" USD",
 "neutral",
 "Precio actual · XAU/USD"
 );
@@ -1084,19 +1279,13 @@ await fetch("/api/us10y");
 if(!respuesta.ok){
 
 throw new Error(
-"Error HTTP US10Y: " +
-respuesta.status
+"Error HTTP US10Y: "+respuesta.status
 );
 
 }
 
 const datos =
 await respuesta.json();
-
-console.log(
-"Datos US10Y:",
-datos
-);
 
 
 if(
@@ -1114,21 +1303,19 @@ datos.direction || "neutral";
 const cambio =
 Number(datos.change || 0);
 
-
 marketState.US10Y.price =
 precio;
 
 marketState.US10Y.direction =
 direccion;
 
-
 actualizarFila(
 "row-US10Y",
-precio.toFixed(2) + "%",
+precio.toFixed(2)+"%",
 direccion,
-"U.S. Treasury · " +
-String(datos.date).slice(0,10) +
-" · Cambio: " +
+"U.S. Treasury · "+
+String(datos.date).slice(0,10)+
+" · Cambio: "+
 cambio.toFixed(2)
 );
 
@@ -1162,85 +1349,114 @@ actualizarFila(
 
 
 /* ========================= */
-/* ACTUALIZAR FACTOR */
+/* BADGE RESUMEN */
 /* ========================= */
 
-function actualizarFactorResumen(
-nombre,
-activo
-){
+function ponerBadge(id,direccion){
 
-const filas =
-document.querySelectorAll(
-"#summaryFactors .row"
-);
+const elemento =
+document.getElementById(id);
 
-filas.forEach(row => {
-
-const nombreFila =
-row.children[0]
-.textContent
-.trim();
-
-if(nombreFila !== nombre){
+if(!elemento){
 return;
 }
 
-const badge =
-row.querySelector(".badge");
+if(direccion==="up"){
 
-if(!badge){
-return;
-}
-
-
-if(
-!activo ||
-activo.price === null
-){
-
-badge.className =
-"badge neutral";
-
-badge.textContent =
-"⚪ Sin datos";
-
-return;
+elemento.className="badge up";
+elemento.textContent="🟢 Subiendo";
 
 }
 
+else if(direccion==="down"){
 
-if(
-activo.direction === "up"
-){
-
-badge.className =
-"badge up";
-
-badge.textContent =
-"🟢 Subiendo";
-
-}
-
-else if(
-activo.direction === "down"
-){
-
-badge.className =
-"badge down";
-
-badge.textContent =
-"🔴 Bajando";
+elemento.className="badge down";
+elemento.textContent="🔴 Bajando";
 
 }
 
 else{
 
-badge.className =
-"badge neutral";
+elemento.className="badge neutral";
+elemento.textContent="⚪ Neutral";
 
-badge.textContent =
-"⚪ Neutral";
+}
+
+}
+
+
+/* ========================= */
+/* GUARDAR ESTRUCTURA */
+/* ========================= */
+
+function guardarEstructura(){
+
+const ids=[
+"structure15",
+"structure5",
+"bos",
+"rejection"
+];
+
+ids.forEach(id=>{
+
+const elemento =
+document.getElementById(id);
+
+if(elemento){
+
+localStorage.setItem(
+"goldAnalyzer_"+id,
+elemento.value
+);
+
+}
+
+});
+
+}
+
+
+/* ========================= */
+/* CARGAR ESTRUCTURA */
+/* ========================= */
+
+function cargarEstructura(){
+
+const ids=[
+"structure15",
+"structure5",
+"bos",
+"rejection"
+];
+
+ids.forEach(id=>{
+
+const elemento =
+document.getElementById(id);
+
+const guardado =
+localStorage.getItem(
+"goldAnalyzer_"+id
+);
+
+if(elemento && guardado){
+
+elemento.value=guardado;
+
+}
+
+if(elemento){
+
+elemento.addEventListener(
+"change",
+()=>{
+
+guardarEstructura();
+actualizarResumen();
+
+}
+);
 
 }
 
@@ -1255,15 +1471,274 @@ badge.textContent =
 
 function actualizarResumen(){
 
-/*
-Estos cuatro factores son los
-factores macro principales.
+/* ------------------------- */
+/* DIRECCIONES */
+/* ------------------------- */
 
-US10Y se incluye ahora también
-en el resumen.
-*/
+ponerBadge(
+"summaryDXY",
+marketState.DXY.direction
+);
 
-const activos = [
+ponerBadge(
+"summaryUS10Y",
+marketState.US10Y.direction
+);
+
+ponerBadge(
+"summaryUSOIL",
+marketState.USOIL.direction
+);
+
+ponerBadge(
+"summaryAUDUSD",
+marketState.AUDUSD.direction
+);
+
+
+/* ------------------------- */
+/* PRINCIPALES */
+/* ------------------------- */
+
+const dxy =
+marketState.DXY.direction;
+
+const us10y =
+marketState.US10Y.direction;
+
+let condiciones=0;
+
+if(dxy==="down" && us10y==="down"){
+
+condiciones=2;
+
+}
+
+else if(
+(dxy==="down" && us10y==="neutral") ||
+(dxy==="neutral" && us10y==="down") ||
+(dxy==="up" && us10y==="neutral") ||
+(dxy==="neutral" && us10y==="up")
+){
+
+condiciones=1;
+
+}
+
+else{
+
+condiciones=0;
+
+}
+
+
+document.getElementById(
+"mainConditions"
+).textContent =
+condiciones+"/2";
+
+
+const mainReading =
+document.getElementById(
+"mainReading"
+);
+
+const mainText =
+document.getElementById(
+"mainConditionText"
+);
+
+
+if(
+dxy==="down" &&
+us10y==="down"
+){
+
+mainReading.textContent =
+"🟢 Alineados";
+
+mainReading.className =
+"status-large up";
+
+mainText.textContent =
+"DXY ↓ + US10Y ↓";
+
+}
+
+else if(
+dxy==="up" &&
+us10y==="up"
+){
+
+mainReading.textContent =
+"🔴 Presión";
+
+mainReading.className =
+"status-large down";
+
+mainText.textContent =
+"DXY ↑ + US10Y ↑";
+
+}
+
+else if(
+dxy==="neutral" &&
+us10y==="neutral"
+){
+
+mainReading.textContent =
+"⚪ Sin dirección";
+
+mainReading.className =
+"status-large neutral";
+
+mainText.textContent =
+"Esperando cambios";
+
+}
+
+else{
+
+mainReading.textContent =
+"🟡 Mixtos";
+
+mainReading.className =
+"status-large";
+
+mainText.textContent =
+"DXY y US10Y no están alineados";
+
+}
+
+
+/* ------------------------- */
+/* ESTRUCTURA */
+/* ------------------------- */
+
+const s15 =
+document.getElementById(
+"structure15"
+).value;
+
+const s5 =
+document.getElementById(
+"structure5"
+).value;
+
+const bos =
+document.getElementById(
+"bos"
+).value;
+
+const rejection =
+document.getElementById(
+"rejection"
+).value;
+
+
+document.getElementById(
+"summary15M"
+).textContent =
+s15;
+
+document.getElementById(
+"summary5M"
+).textContent =
+s5;
+
+document.getElementById(
+"summaryBOS"
+).textContent =
+bos;
+
+document.getElementById(
+"summaryRejection"
+).textContent =
+rejection;
+
+
+/* ------------------------- */
+/* LECTURA GENERAL */
+/* ------------------------- */
+
+const badge =
+document.getElementById(
+"contextBadge"
+);
+
+const texto =
+document.getElementById(
+"contextText"
+);
+
+
+if(
+dxy==="down" &&
+us10y==="down"
+){
+
+badge.className =
+"badge context-good";
+
+badge.textContent =
+"🟢 Contexto favorable para estudiar";
+
+texto.textContent =
+"DXY y US10Y están bajando. El contexto macro principal está alineado para estudiar fortaleza del oro. Revisa las confirmaciones y la estructura.";
+
+}
+
+else if(
+dxy==="up" &&
+us10y==="up"
+){
+
+badge.className =
+"badge context-sell";
+
+badge.textContent =
+"🔴 Contexto de presión para estudiar";
+
+texto.textContent =
+"DXY y US10Y están subiendo. El contexto macro principal muestra presión sobre el oro. Revisa las confirmaciones y la estructura.";
+
+}
+
+else if(
+dxy==="neutral" &&
+us10y==="neutral"
+){
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Sin dirección clara";
+
+texto.textContent =
+"Los factores principales están neutrales. Espera nueva información y revisa la estructura del oro.";
+
+}
+
+else{
+
+badge.className =
+"badge context-wait";
+
+badge.textContent =
+"🟡 Factores en conflicto";
+
+texto.textContent =
+"DXY y US10Y no están alineados. Las confirmaciones y la estructura del oro deben revisarse antes de sacar conclusiones.";
+
+}
+
+
+/* ------------------------- */
+/* MERCADO */
+/* ------------------------- */
+
+const activos=[
 
 {
 nombre:"DXY",
@@ -1290,12 +1765,12 @@ data:marketState.AUDUSD
 
 const subiendo =
 activos.filter(
-x => x.data.direction === "up"
+x=>x.data.direction==="up"
 );
 
 const bajando =
 activos.filter(
-x => x.data.direction === "down"
+x=>x.data.direction==="down"
 );
 
 
@@ -1315,7 +1790,7 @@ document.getElementById(
 "upNames"
 ).textContent =
 subiendo.length
-? subiendo.map(x => x.nombre).join(", ")
+? subiendo.map(x=>x.nombre).join(", ")
 : "—";
 
 
@@ -1323,144 +1798,8 @@ document.getElementById(
 "downNames"
 ).textContent =
 bajando.length
-? bajando.map(x => x.nombre).join(", ")
+? bajando.map(x=>x.nombre).join(", ")
 : "—";
-
-
-/* Actualizar los cuatro factores */
-
-actualizarFactorResumen(
-"DXY",
-marketState.DXY
-);
-
-actualizarFactorResumen(
-"US10Y",
-marketState.US10Y
-);
-
-actualizarFactorResumen(
-"USOIL",
-marketState.USOIL
-);
-
-actualizarFactorResumen(
-"AUD/USD",
-marketState.AUDUSD
-);
-
-
-/* ========================= */
-/* CONTEXTO DEL ORO */
-/* ========================= */
-
-const dxy =
-marketState.DXY.direction;
-
-const us10y =
-marketState.US10Y.direction;
-
-
-const badge =
-document.getElementById(
-"contextBadge"
-);
-
-const texto =
-document.getElementById(
-"contextText"
-);
-
-
-/*
-DXY ↓ + US10Y ↓
-→ contexto históricamente favorable
-para estudiar fortaleza del oro.
-
-DXY ↑ + US10Y ↑
-→ contexto de presión sobre el oro.
-
-El US10Y utilizado aquí es diario,
-no intradía.
-*/
-
-
-if(
-dxy === "down" &&
-us10y === "neutral"
-){
-
-badge.className =
-"badge context-good";
-
-badge.textContent =
-"🟢 Contexto a estudiar";
-
-texto.textContent =
-"DXY está bajando. El US10Y está neutral según el último dato diario del Tesoro. Observa si los rendimientos cambian en la siguiente actualización.";
-
-}
-
-else if(
-dxy === "up" &&
-us10y === "neutral"
-){
-
-badge.className =
-"badge context-sell";
-
-badge.textContent =
-"🔴 Presión a estudiar";
-
-texto.textContent =
-"DXY está subiendo. El US10Y está neutral según el último dato diario del Tesoro. Observa si los rendimientos también aumentan.";
-
-}
-
-else if(
-dxy === "down" &&
-us10y === "down"
-){
-
-badge.className =
-"badge context-good";
-
-badge.textContent =
-"🟢 Contexto favorable para estudiar oro";
-
-texto.textContent =
-"DXY y US10Y están bajando. Es un contexto históricamente favorable para estudiar fortaleza del oro, pero debe confirmarse con la estructura.";
-
-}
-
-else if(
-dxy === "up" &&
-us10y === "up"
-){
-
-badge.className =
-"badge context-sell";
-
-badge.textContent =
-"🔴 Contexto de presión para estudiar";
-
-texto.textContent =
-"DXY y US10Y están subiendo. Es un contexto que puede ejercer presión sobre el oro; confirma siempre con la estructura.";
-
-}
-
-else{
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Factores divididos";
-
-texto.textContent =
-"Los factores principales no están alineados. Observa DXY, US10Y y la estructura del oro antes de sacar conclusiones.";
-
-}
 
 }
 
@@ -1472,15 +1811,14 @@ texto.textContent =
 async function cargarDatos(){
 
 await Promise.all([
-cargarOro(),
-cargarRealMarket(),
-cargarUS10Y()
-]);
 
-/*
-Después de recibir todos los datos,
-actualizamos el resumen una sola vez.
-*/
+cargarOro(),
+
+cargarRealMarket(),
+
+cargarUS10Y()
+
+]);
 
 actualizarResumen();
 
@@ -1497,17 +1835,18 @@ if(
 
 navigator.serviceWorker
 .register("sw.js")
-.catch(() => {});
+.catch(()=>{});
 
 }
 
 
 /* ========================= */
-/* INICIAR */
+/* INICIO */
 /* ========================= */
 
-cargarDatos();
+cargarEstructura();
 
+cargarDatos();
 
 </script>
 
