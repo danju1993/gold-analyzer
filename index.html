@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Gold Analyzer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fa;color:#111827}
+header{padding:18px 16px;background:#111827;color:white;position:sticky;top:0;z-index:5}
+h1{font-size:21px;margin:0 0 4px}.sub{font-size:13px;opacity:.75}
+nav{display:flex;overflow:auto;gap:8px;padding:10px;background:white;border-bottom:1px solid #ddd;position:sticky;top:78px;z-index:4}
+nav button{white-space:nowrap;border:0;border-radius:10px;padding:11px 13px;background:#eef1f5;font-weight:600}
+nav button.active{background:#dbeafe;color:#1d4ed8}
+main{padding:14px;max-width:760px;margin:auto}.page{display:none}.page.active{display:block}
+.card{background:white;border:1px solid #e1e5ea;border-radius:15px;padding:15px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:13px;border-radius:12px;background:#f7f8fa}
+.big{font-size:28px;font-weight:800}.muted{color:#6b7280;font-size:13px}.up{color:#15803d}.down{color:#b91c1c}.neutral{color:#6b7280}
+.row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #eee;align-items:center}
+.badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eef1f5}
+select,input{font-size:16px;padding:9px;border:1px solid #d5d9df;border-radius:9px;background:white}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🥇 Gold Analyzer</h1><div class="sub">Contexto para estudiar el mercado · no es una señal automática</div></header>
+<nav>
+<button class="active" data-page="summary">🏠 Resumen</button>
+<button data-page="gold">🥇 Oro</button>
+<button data-page="macro">🌎 Macro</button>
+<button data-page="news">📰 Noticias</button>
+<button data-page="settings">⚙️ Config.</button>
+</nav>
+<main>
+<section id="summary" class="page active">
+<div class="card"><h2>Mercado</h2><div class="grid">
+<div class="metric"><div class="muted">Subiendo</div><div class="big up" id="upCount">0</div><div class="muted" id="upNames">—</div></div>
+<div class="metric"><div class="muted">Bajando</div><div class="big down" id="downCount">0</div><div class="muted" id="downNames">—</div></div>
+</div></div>
+<div class="card"><h2>Contexto del oro</h2><div id="contextBadge" class="badge">Sin datos</div><p id="contextText" class="muted">Cuando conectemos los datos en vivo, aquí aparecerá la explicación.</p></div>
+</section>
+
+<section id="gold" class="page">
+<div class="card"><h2>🥇 Oro</h2>
+<div class="row"><span>15M · estructura</span><select><option>Sin definir</option><option>Alcista</option><option>Bajista</option><option>Rango</option></select></div>
+<div class="row"><span>5M · estructura</span><select><option>Sin definir</option><option>Alcista</option><option>Bajista</option><option>Rango</option></select></div>
+<div class="row"><span>BOS / ruptura</span><select><option>Sin definir</option><option>Compra</option><option>Venta</option></select></div>
+<div class="row"><span>Retroceso / rechazo</span><select><option>Sin definir</option><option>Compra</option><option>Venta</option></select></div>
+</div></section>
+
+<section id="macro" class="page">
+<div class="card"><h2>🌎 Macro</h2>
+<div id="macroRows"></div>
+<p class="muted">La versión conectada mostrará automáticamente dirección y cambio de cada activo.</p>
+</div></section>
+
+<section id="news" class="page">
+<div class="card"><h2>📰 Noticias</h2>
+<div class="row"><span><b>Calendario macro</b><br><span class="muted">Fed · CPI · PCE · NFP · PPI · PIB</span></span><span class="badge">Pendiente de conexión</span></div>
+<p class="muted">Las fechas y horas se actualizarán desde una fuente de calendario económico cuando conectemos el servicio de datos.</p>
+</div></section>
+
+<section id="settings" class="page">
+<div class="card"><h2>⚙️ Configuración</h2>
+<div class="row"><span>Mínimo de condiciones</span><input id="minConditions" type="number" min="1" max="10" value="3" style="width:70px"></div>
+<div class="row"><span>Temporalidad principal</span><select><option>15M</option><option>5M</option></select></div>
+<p class="muted">Aquí podremos elegir activos, reglas y condiciones cuando conectemos los datos en vivo.</p>
+</div></section>
+</main>
+<script>
+const assets=[
+["XAU/USD","neutral"],["DXY","neutral"],["US10Y","neutral"],["USOIL","neutral"],["AUD/USD","neutral"]
+];
+const macro=document.getElementById("macroRows");
+assets.forEach(([name,state])=>{
+ const d=document.createElement("div"); d.className="row";
+ d.innerHTML=`<span><b>${name}</b><br><span class="muted">Dirección automática</span></span><span class="badge neutral">Sin datos</span>`;
+ macro.appendChild(d);
+});
+document.querySelectorAll("nav button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active"); document.getElementById(btn.dataset.page).classList.add("active");
+ });
+});
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
