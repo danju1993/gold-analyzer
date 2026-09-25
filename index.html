@@ -3452,6 +3452,12 @@ async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimal
 
 
 /* ====================================================== */
+/* CONTROL DE ACTUALIZACIÓN */
+/* ====================================================== */
+
+let actualizacionEnCurso = false;
+
+/* ====================================================== */
 /* CARGAR TODO */
 /* ====================================================== */
 
@@ -3510,7 +3516,19 @@ navigator.serviceWorker
 
 cargarEstructura();
 
+actualizarBarraActualizacion();
+
 cargarDatos();
+
+const botonActualizar = document.getElementById("refreshNow");
+if(botonActualizar){
+  botonActualizar.addEventListener("click", () => {
+    if(!actualizacionEnCurso){
+      registrarActualizacion();
+      cargarDatos();
+    }
+  });
+}
 
 
 </script>
