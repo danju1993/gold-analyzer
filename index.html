@@ -3544,7 +3544,8 @@ if(guardarNoticiaBtn){
 renderNoticias();
 actualizarBarraActualizacion();
 setInterval(actualizarBarraActualizacion, 1000);
-setInterval(ejecutarActualizacion, 60000);
+// La actualización del mercado se inicia al cargar y mediante el botón "Actualizar ahora".
+// No hacemos consultas automáticas cada minuto para evitar repetir llamadas mientras una fuente lenta responde.
 
 
 /* ====================================================== */
