@@ -1386,6 +1386,30 @@ detalle;
 
 
 /* ====================================================== */
+/* CONSULTAS RÁPIDAS */
+/* ====================================================== */
+
+async function fetchJSONRapido(url, timeoutMs = 8000){
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try{
+    const respuesta = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+
+    if(!respuesta.ok){
+      throw new Error("HTTP " + respuesta.status);
+    }
+
+    return await respuesta.json();
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+/* ====================================================== */
 /* ORO */
 /* ====================================================== */
 
@@ -1393,11 +1417,8 @@ async function cargarOro(){
 
 try{
 
-const respuesta =
-await fetch("/api/market");
-
 const datos =
-await respuesta.json();
+await fetchJSONRapido("/api/market", 8000);
 
 
 if(
@@ -1468,11 +1489,8 @@ async function cargarRealMarket(){
 
 try{
 
-const respuesta =
-await fetch("/api/realmarket");
-
 const datos =
-await respuesta.json();
+await fetchJSONRapido("/api/realmarket", 8000);
 
 
 /* DXY */
@@ -1597,22 +1615,8 @@ async function cargarUS10Y(){
 
 try{
 
-const respuesta =
-await fetch("/api/us10y");
-
-
-if(!respuesta.ok){
-
-throw new Error(
-"Error HTTP US10Y: " +
-respuesta.status
-);
-
-}
-
-
 const datos =
-await respuesta.json();
+await fetchJSONRapido("/api/us10y", 8000);
 
 
 if(
@@ -3424,19 +3428,27 @@ function registrarActualizacion(){
 
 async function cargarDatos(){
 
-await Promise.all([
+  /*
+     Las fuentes se consultan en paralelo, pero cada una actualiza
+     la pantalla en cuanto responde. Una fuente lenta no bloquea
+     a las demás.
+  */
 
-cargarOro(),
+  const tareas = [
+    cargarOro(),
+    cargarRealMarket(),
+    cargarUS10Y()
+  ];
 
-cargarRealMarket(),
+  tareas.forEach(tarea => {
+    Promise.resolve(tarea)
+      .catch(error => console.log("Error de actualización:", error))
+      .finally(() => actualizarResumen());
+  });
 
-cargarUS10Y()
-
-]);
-
-
-actualizarResumen();
-
+  /* También esperamos todas las tareas para saber cuándo terminó
+     el ciclo completo, pero la interfaz no depende de esa espera. */
+  return Promise.allSettled(tareas);
 }
 
 
@@ -3444,19 +3456,36 @@ actualizarResumen();
 /* ACTUALIZACIÓN MANUAL Y AUTOMÁTICA */
 /* ====================================================== */
 
+let actualizacionEnCurso = false;
+
+async function ejecutarActualizacion(){
+  if(actualizacionEnCurso){
+    return;
+  }
+
+  actualizacionEnCurso = true;
+
+  const boton = document.getElementById("refreshNow");
+  if(boton){
+    boton.disabled = true;
+    boton.textContent = "Actualizando...";
+  }
+
+  try{
+    await cargarDatos();
+    registrarActualizacion();
+  }finally{
+    actualizacionEnCurso = false;
+    if(boton){
+      boton.disabled = false;
+      boton.textContent = "Actualizar ahora";
+    }
+  }
+}
+
 const botonActualizar = document.getElementById("refreshNow");
 if(botonActualizar){
-  botonActualizar.addEventListener("click", async () => {
-    botonActualizar.disabled = true;
-    botonActualizar.textContent = "Actualizando...";
-    try{
-      await cargarDatos();
-      registrarActualizacion();
-    }finally{
-      botonActualizar.disabled = false;
-      botonActualizar.textContent = "Actualizar ahora";
-    }
-  });
+  botonActualizar.addEventListener("click", ejecutarActualizacion);
 }
 
 const guardarNoticiaBtn = document.getElementById("saveNews");
@@ -3487,10 +3516,7 @@ if(guardarNoticiaBtn){
 renderNoticias();
 actualizarBarraActualizacion();
 setInterval(actualizarBarraActualizacion, 1000);
-setInterval(async () => {
-  await cargarDatos();
-  registrarActualizacion();
-}, 60000);
+setInterval(ejecutarActualizacion, 60000);
 
 
 /* ====================================================== */
@@ -3514,7 +3540,7 @@ navigator.serviceWorker
 
 cargarEstructura();
 
-cargarDatos().then(() => registrarActualizacion());
+ejecutarActualizacion();
 
 
 </script>
