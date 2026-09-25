@@ -394,8 +394,16 @@ Esperando datos de mercado...
     <strong>🥇 XAU/USD</strong>
     <span class="source-wait">⏳ Esperando...</span>
   </div>
-  <div class="source-item" id="sourceReal">
-    <strong>📊 DXY · USOIL · AUD/USD</strong>
+  <div class="source-item" id="sourceDXY">
+    <strong>📊 DXY</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceUSOIL">
+    <strong>🛢️ USOIL</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceAUDUSD">
+    <strong>🇦🇺 AUD/USD</strong>
     <span class="source-wait">⏳ Esperando...</span>
   </div>
   <div class="source-item" id="sourceUS10Y">
@@ -1508,125 +1516,54 @@ document.getElementById(
 /* REALMARKETAPI */
 /* ====================================================== */
 
-async function cargarRealMarket(){
+/*
+   DXY, USOIL y AUD/USD se consultan mediante endpoints
+   independientes: /api/dxy, /api/usoil y /api/audusd.
+   Una fuente lenta no bloquea a las demás.
+*/
 
-try{
+async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimals, detalle){
+  try{
+    const respuesta = await fetchJSONRapido(endpoint, 30000);
+    const datos = respuesta && respuesta.data ? respuesta.data : respuesta;
 
-const datos =
-await fetchJSONRapido("/api/realmarket", 25000);
+    if(!respuesta || respuesta.ok === false || !datos){
+      throw new Error("Respuesta no válida");
+    }
 
+    const direccion = obtenerDireccion(datos.openPrice, datos.closePrice);
 
-/* DXY */
+    marketState[stateKey].direction = direccion;
+    marketState[stateKey].price = Number(datos.closePrice);
 
-if(
-datos.DXY &&
-datos.DXY.ok &&
-datos.DXY.data
-){
+    actualizarFila(
+      rowId,
+      Number(datos.closePrice).toFixed(decimals),
+      direccion,
+      detalle
+    );
 
-const d =
-datos.DXY.data;
+    actualizarEstadoFuente(sourceId, "ok", "Actualizado");
 
-const direccion =
-obtenerDireccion(
-d.openPrice,
-d.closePrice
-);
+  }catch(error){
 
-marketState.DXY.direction =
-direccion;
+    console.log("Error " + endpoint + ":", error);
 
-marketState.DXY.price =
-Number(d.closePrice);
+    actualizarFila(
+      rowId,
+      "No disponible",
+      "neutral",
+      detalle
+    );
 
-
-actualizarFila(
-"row-DXY",
-Number(d.closePrice).toFixed(3),
-direccion,
-"RealMarketAPI · DXY"
-);
-
-}
-
-
-/* USOIL */
-
-if(
-datos.USOIL &&
-datos.USOIL.ok &&
-datos.USOIL.data
-){
-
-const d =
-datos.USOIL.data;
-
-const direccion =
-obtenerDireccion(
-d.openPrice,
-d.closePrice
-);
-
-marketState.USOIL.direction =
-direccion;
-
-marketState.USOIL.price =
-Number(d.closePrice);
-
-
-actualizarFila(
-"row-USOIL",
-Number(d.closePrice).toFixed(3),
-direccion,
-"RealMarketAPI · USOIL"
-);
-
-}
-
-
-/* AUD/USD */
-
-if(
-datos.AUDUSD &&
-datos.AUDUSD.ok &&
-datos.AUDUSD.data
-){
-
-const d =
-datos.AUDUSD.data;
-
-const direccion =
-obtenerDireccion(
-d.openPrice,
-d.closePrice
-);
-
-marketState.AUDUSD.direction =
-direccion;
-
-marketState.AUDUSD.price =
-Number(d.closePrice);
-
-
-actualizarFila(
-"row-AUDUSD",
-Number(d.closePrice).toFixed(5),
-direccion,
-"RealMarketAPI · AUD/USD"
-);
-
-}
-
-}
-catch(error){
-
-console.log(
-"No se pudo cargar RealMarketAPI",
-error
-);
-
-}
-
+    actualizarEstadoFuente(
+      sourceId,
+      "error",
+      error.name === "AbortError"
+        ? "Tiempo agotado"
+        : "No disponible"
+    );
+  }
 }
 
 
@@ -3463,6 +3400,34 @@ function actualizarEstadoFuente(id, estado, detalle){
   }
 }
 
+async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimals, detalle){
+  try{
+    const respuesta = await fetchJSONRapido(endpoint, 30000);
+    const datos = respuesta && respuesta.data ? respuesta.data : respuesta;
+
+    if(!respuesta || respuesta.ok === false || !datos){
+      throw new Error("Respuesta no válida");
+    }
+
+    const direccion = obtenerDireccion(datos.openPrice, datos.closePrice);
+    marketState[stateKey].direction = direccion;
+    marketState[stateKey].price = Number(datos.closePrice);
+
+    actualizarFila(
+      rowId,
+      Number(datos.closePrice).toFixed(decimals),
+      direccion,
+      detalle
+    );
+
+    actualizarEstadoFuente(sourceId, "ok", "Actualizado");
+  }catch(error){
+    console.log("Error " + endpoint + ":", error);
+    actualizarEstadoFuente(sourceId, "error", "No disponible");
+  }
+}
+
+
 /* ====================================================== */
 /* CARGAR TODO */
 /* ====================================================== */
@@ -3475,9 +3440,9 @@ async function cargarDatos(){
      a las demás.
   */
 
-  actualizarEstadoFuente("sourceXAU", "wait", "Actualizando...");
-  actualizarEstadoFuente("sourceReal", "wait", "Actualizando...");
-  actualizarEstadoFuente("sourceUS10Y", "wait", "Actualizando...");
+  ["sourceXAU","sourceDXY","sourceUSOIL","sourceAUDUSD","sourceUS10Y"].forEach(id =>
+    actualizarEstadoFuente(id, "wait", "Actualizando...")
+  );
 
   const tareaOro = cargarOro()
     .then(() => actualizarEstadoFuente("sourceXAU", "ok", "Actualizado"))
@@ -3487,12 +3452,13 @@ async function cargarDatos(){
     })
     .finally(() => actualizarResumen());
 
-  const tareaReal = cargarRealMarket()
-    .then(() => actualizarEstadoFuente("sourceReal", "ok", "Actualizado"))
-    .catch(error => {
-      console.log("Error RealMarketAPI:", error);
-      actualizarEstadoFuente("sourceReal", "error", "No disponible");
-    })
+  const tareaDXY = cargarActivoSeparado("/api/dxy", "sourceDXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY")
+    .finally(() => actualizarResumen());
+
+  const tareaUSOIL = cargarActivoSeparado("/api/usoil", "sourceUSOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL")
+    .finally(() => actualizarResumen());
+
+  const tareaAUDUSD = cargarActivoSeparado("/api/audusd", "sourceAUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
     .finally(() => actualizarResumen());
 
   const tareaUS10Y = cargarUS10Y()
@@ -3503,7 +3469,7 @@ async function cargarDatos(){
     })
     .finally(() => actualizarResumen());
 
-  return Promise.allSettled([tareaOro, tareaReal, tareaUS10Y]);
+  return Promise.allSettled([tareaOro, tareaDXY, tareaUSOIL, tareaAUDUSD, tareaUS10Y]);
 }
 
 
