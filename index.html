@@ -1523,15 +1523,32 @@ document.getElementById(
 */
 
 async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimals, detalle){
+  actualizarFila(
+    rowId,
+    "Cargando...",
+    "neutral",
+    detalle + " · consultando..."
+  );
+
+  actualizarEstadoFuente(sourceId, "wait", "Cargando...");
+
   try{
     const respuesta = await fetchJSONRapido(endpoint, 30000);
-    const datos = respuesta && respuesta.data ? respuesta.data : respuesta;
 
-    if(!respuesta || respuesta.ok === false || !datos){
-      throw new Error("Respuesta no válida");
+    if(!respuesta){
+      throw new Error("Sin respuesta");
     }
 
-    const direccion = obtenerDireccion(datos.openPrice, datos.closePrice);
+    const datos = respuesta.data ? respuesta.data : respuesta;
+
+    if(respuesta.ok === false || !datos || datos.closePrice === undefined){
+      throw new Error(respuesta.error || "Respuesta no válida");
+    }
+
+    const direccion = obtenerDireccion(
+      datos.openPrice,
+      datos.closePrice
+    );
 
     marketState[stateKey].direction = direccion;
     marketState[stateKey].price = Number(datos.closePrice);
@@ -1543,7 +1560,11 @@ async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimal
       detalle
     );
 
-    actualizarEstadoFuente(sourceId, "ok", "Actualizado");
+    actualizarEstadoFuente(
+      sourceId,
+      "ok",
+      "Actualizado"
+    );
 
   }catch(error){
 
@@ -1553,7 +1574,10 @@ async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimal
       rowId,
       "No disponible",
       "neutral",
-      detalle
+      detalle + " · " +
+      (error.name === "AbortError"
+        ? "tiempo agotado"
+        : "sin respuesta")
     );
 
     actualizarEstadoFuente(
@@ -1565,7 +1589,6 @@ async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimal
     );
   }
 }
-
 
 /* ====================================================== */
 /* US10Y */
@@ -3434,119 +3457,37 @@ async function cargarActivoSeparado(endpoint, sourceId, stateKey, rowId, decimal
 
 async function cargarDatos(){
 
-  /*
-     Las fuentes se consultan en paralelo, pero cada una actualiza
-     la pantalla en cuanto responde. Una fuente lenta no bloquea
-     a las demás.
-  */
-
-  ["sourceXAU","sourceDXY","sourceUSOIL","sourceAUDUSD","sourceUS10Y"].forEach(id =>
-    actualizarEstadoFuente(id, "wait", "Actualizando...")
-  );
-
-  const tareaOro = cargarOro()
-    .then(() => actualizarEstadoFuente("sourceXAU", "ok", "Actualizado"))
-    .catch(error => {
-      console.log("Error XAU/USD:", error);
-      actualizarEstadoFuente("sourceXAU", "error", "No disponible");
-    })
-    .finally(() => actualizarResumen());
-
-  const tareaDXY = cargarActivoSeparado("/api/dxy", "sourceDXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY")
-    .finally(() => actualizarResumen());
-
-  const tareaUSOIL = cargarActivoSeparado("/api/usoil", "sourceUSOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL")
-    .finally(() => actualizarResumen());
-
-  const tareaAUDUSD = cargarActivoSeparado("/api/audusd", "sourceAUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
-    .finally(() => actualizarResumen());
-
-  const tareaUS10Y = cargarUS10Y()
-    .then(() => actualizarEstadoFuente("sourceUS10Y", "ok", "Actualizado"))
-    .catch(error => {
-      console.log("Error US10Y:", error);
-      actualizarEstadoFuente("sourceUS10Y", "error", "No disponible");
-    })
-    .finally(() => actualizarResumen());
-
-  return Promise.allSettled([tareaOro, tareaDXY, tareaUSOIL, tareaAUDUSD, tareaUS10Y]);
-}
-
-
-/* ====================================================== */
-/* ACTUALIZACIÓN MANUAL Y AUTOMÁTICA */
-/* ====================================================== */
-
-let actualizacionEnCurso = false;
-
-function ejecutarActualizacion(){
   if(actualizacionEnCurso){
+    console.log("Actualización ya en curso. Se ignora el nuevo intento.");
     return;
   }
 
   actualizacionEnCurso = true;
 
-  const boton = document.getElementById("refreshNow");
-  if(boton){
-    boton.disabled = true;
-    boton.textContent = "Actualizando...";
-  }
+  try{
 
-  /* El contador empieza inmediatamente. No esperamos a que
-     RealMarketAPI termine para registrar la actualización. */
-  registrarActualizacion();
+    actualizarEstadoFuente("source-XAUUSD", "wait", "Cargando...");
+    actualizarEstadoFuente("source-US10Y", "wait", "Cargando...");
+    actualizarEstadoFuente("source-DXY", "wait", "Cargando...");
+    actualizarEstadoFuente("source-USOIL", "wait", "Cargando...");
+    actualizarEstadoFuente("source-AUDUSD", "wait", "Cargando...");
 
-  const ciclo = cargarDatos();
+    await Promise.all([
+      cargarOro(),
+      cargarUS10Y(),
+      cargarActivoSeparado("/api/dxy", "source-DXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY"),
+      cargarActivoSeparado("/api/usoil", "source-USOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL"),
+      cargarActivoSeparado("/api/audusd", "source-AUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
+    ]);
 
-  /* La interfaz queda libre mientras las fuentes responden. */
-  ciclo
-    .catch(error => console.log("Error en ciclo de actualización:", error))
-    .finally(() => {
-      actualizacionEnCurso = false;
-      if(boton){
-        boton.disabled = false;
-        boton.textContent = "Actualizar ahora";
-      }
-      actualizarResumen();
-    });
-}
-
-const botonActualizar = document.getElementById("refreshNow");
-if(botonActualizar){
-  botonActualizar.addEventListener("click", ejecutarActualizacion);
-}
-
-const guardarNoticiaBtn = document.getElementById("saveNews");
-if(guardarNoticiaBtn){
-  guardarNoticiaBtn.addEventListener("click", () => {
-    const evento = document.getElementById("newsEvent").value.trim();
-    if(!evento){
-      alert("Escribe el nombre del evento.");
-      return;
-    }
-    const noticias = obtenerNoticias();
-    noticias.unshift({
-      event: evento,
-      time: document.getElementById("newsTime").value.trim(),
-      importance: document.getElementById("newsImportance").value,
-      influence: document.getElementById("newsInfluence").value,
-      actual: document.getElementById("newsActual").value.trim(),
-      forecast: document.getElementById("newsForecast").value.trim(),
-      previous: document.getElementById("newsPrevious").value.trim()
-    });
-    guardarNoticias(noticias.slice(0, 20));
-    ["newsEvent","newsTime","newsActual","newsForecast","newsPrevious"].forEach(id => document.getElementById(id).value = "");
-    renderNoticias();
     actualizarResumen();
-  });
+
+  }finally{
+
+    actualizacionEnCurso = false;
+
+  }
 }
-
-renderNoticias();
-actualizarBarraActualizacion();
-setInterval(actualizarBarraActualizacion, 1000);
-// La actualización del mercado se inicia al cargar y mediante el botón "Actualizar ahora".
-// No hacemos consultas automáticas cada minuto para evitar repetir llamadas mientras una fuente lenta responde.
-
 
 /* ====================================================== */
 /* SERVICE WORKER */
