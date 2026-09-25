@@ -264,6 +264,17 @@ iframe{
   border:0
 }
 
+
+.refresh-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f8fa}
+.refresh-bar button,.news-form button{border:0;border-radius:9px;padding:10px 12px;background:#111827;color:white;font-weight:700}
+.refresh-info{font-size:12px;color:#6b7280}
+.news-form{display:grid;gap:9px}
+.news-form .grid{grid-template-columns:1fr 1fr}
+.news-list{margin-top:10px}
+.news-item{padding:11px;border:1px solid #e5e7eb;border-radius:10px;margin-top:8px;background:#fafafa}
+.news-item strong{display:block;margin-bottom:4px}
+.news-item small{color:#6b7280}
+
 @media(max-width:520px){
 
   .grid{
@@ -358,6 +369,16 @@ Esperando datos
 Esperando datos de mercado...
 </p>
 
+</div>
+
+<div class="card">
+  <div class="refresh-bar">
+    <div>
+      <strong>🔄 Actualización del mercado</strong>
+      <div class="refresh-info" id="refreshInfo">Preparando actualización...</div>
+    </div>
+    <button id="refreshNow" type="button">Actualizar ahora</button>
+  </div>
 </div>
 
 
@@ -662,8 +683,10 @@ Esperando datos
   class="muted"
 >
 La aplicación combinará los factores principales,
-las confirmaciones y la estructura del oro.
+las confirmaciones, la estructura y la influencia manual de noticias.
 </p>
+
+<div id="finalNews" class="muted">📰 Noticias: sin influencia manual registrada</div>
 
 
 <ul
@@ -899,7 +922,7 @@ Precio
 
 </span>
 
-<span class="badge neutral">
+<span class="badge neutral" id="macroXAUUSD">
 Cargando...
 </span>
 
@@ -1075,6 +1098,37 @@ Investing.com
 
 </div>
 
+<div class="card">
+  <h2>🧭 Influencia manual de noticias</h2>
+  <p class="muted">Registra la noticia que quieras tener en cuenta. La aplicación la usará como contexto en la lectura final; no genera una señal automática.</p>
+
+  <div class="news-form">
+    <input id="newsEvent" type="text" placeholder="Evento (ej. Fed, CPI, NFP)">
+    <input id="newsTime" type="text" placeholder="Fecha / hora (opcional)">
+    <div class="grid">
+      <select id="newsImportance">
+        <option>Alta</option>
+        <option>Media</option>
+        <option>Baja</option>
+      </select>
+      <select id="newsInfluence">
+        <option value="favorable">🟢 Favorable para oro</option>
+        <option value="desfavorable">🔴 Desfavorable para oro</option>
+        <option value="mixta">🟡 Mixta</option>
+        <option value="neutral">⚪ Neutral</option>
+      </select>
+    </div>
+    <div class="grid">
+      <input id="newsActual" type="text" placeholder="Actual">
+      <input id="newsForecast" type="text" placeholder="Previsión">
+    </div>
+    <input id="newsPrevious" type="text" placeholder="Anterior">
+    <button id="saveNews" type="button">Guardar noticia</button>
+  </div>
+
+  <div id="newsList" class="news-list"></div>
+</div>
+
 
 </section>
 
@@ -1193,7 +1247,8 @@ const marketState = {
 
 XAUUSD:{
   direction:"neutral",
-  price:null
+  price:null,
+  previousPrice:null
 },
 
 DXY:{
@@ -1354,9 +1409,20 @@ datos.price !== undefined
 const precio =
 Number(datos.price);
 
-marketState.XAUUSD.price =
-precio;
+const anterior = marketState.XAUUSD.price !== null
+  ? marketState.XAUUSD.price
+  : Number(localStorage.getItem("goldAnalyzer_lastGoldPrice"));
 
+marketState.XAUUSD.previousPrice = Number.isFinite(anterior) ? anterior : null;
+marketState.XAUUSD.price = precio;
+
+let direccion = "neutral";
+if(Number.isFinite(anterior)){
+  direccion = obtenerDireccion(anterior, precio);
+}
+marketState.XAUUSD.direction = direccion;
+
+localStorage.setItem("goldAnalyzer_lastGoldPrice", String(precio));
 
 document.getElementById(
 "goldPrice"
@@ -1368,9 +1434,11 @@ precio.toFixed(2) +
 actualizarFila(
 "row-XAUUSD",
 precio.toFixed(2) + " USD",
-"neutral",
+direccion,
 "Precio actual · XAU/USD"
 );
+
+ponerBadge("macroXAUUSD", direccion);
 
 }
 
@@ -1954,6 +2022,18 @@ document.getElementById(
 
 
 lista.innerHTML = "";
+
+const noticias = obtenerInfluenciaNoticias();
+if(noticias.total > 0){
+  const textoNoticias = noticias.direccion === "favorable"
+    ? `Noticias: ${noticias.favorables} favorables para oro`
+    : noticias.direccion === "desfavorable"
+      ? `Noticias: ${noticias.desfavorables} desfavorables para oro`
+      : noticias.direccion === "mixta"
+        ? `Noticias: influencia mixta (${noticias.favorables} favorables / ${noticias.desfavorables} desfavorables)`
+        : "Noticias: influencia neutral";
+  agregarLista(lista, textoNoticias);
+}
 
 
 /* ====================================================== */
@@ -2731,6 +2811,22 @@ estructura.venta +
 
 function actualizarResumen(){
 
+const newsSummary = obtenerInfluenciaNoticias();
+const finalNews = document.getElementById("finalNews");
+if(finalNews){
+  if(newsSummary.total === 0){
+    finalNews.textContent = "📰 Noticias: sin influencia manual registrada";
+  }else if(newsSummary.direccion === "favorable"){
+    finalNews.textContent = `📰 Noticias: 🟢 influencia favorable para oro (${newsSummary.favorables})`;
+  }else if(newsSummary.direccion === "desfavorable"){
+    finalNews.textContent = `📰 Noticias: 🔴 influencia desfavorable para oro (${newsSummary.desfavorables})`;
+  }else if(newsSummary.direccion === "mixta"){
+    finalNews.textContent = `📰 Noticias: 🟡 influencia mixta (${newsSummary.favorables} / ${newsSummary.desfavorables})`;
+  }else{
+    finalNews.textContent = "📰 Noticias: ⚪ influencia neutral";
+  }
+}
+
 
 /* ====================================================== */
 /* FACTORES PRINCIPALES */
@@ -3167,6 +3263,11 @@ confirmacionesVenta.length
 const activos = [
 
 {
+nombre:"XAU/USD",
+data:marketState.XAUUSD
+},
+
+{
 nombre:"DXY",
 data:marketState.DXY
 },
@@ -3236,6 +3337,88 @@ bajando.length
 
 
 /* ====================================================== */
+/* NOTICIAS MANUALES */
+/* ====================================================== */
+
+function obtenerNoticias(){
+  try{
+    return JSON.parse(localStorage.getItem("goldAnalyzer_news") || "[]");
+  }catch(e){
+    return [];
+  }
+}
+
+function guardarNoticias(noticias){
+  localStorage.setItem("goldAnalyzer_news", JSON.stringify(noticias));
+}
+
+function renderNoticias(){
+  const lista = document.getElementById("newsList");
+  if(!lista) return;
+  const noticias = obtenerNoticias();
+  lista.innerHTML = "";
+
+  if(!noticias.length){
+    lista.innerHTML = '<div class="muted">No hay noticias manuales guardadas.</div>';
+    return;
+  }
+
+  noticias.forEach((n, index) => {
+    const item = document.createElement("div");
+    item.className = "news-item";
+    const simbolo = n.influence === "favorable" ? "🟢" : n.influence === "desfavorable" ? "🔴" : n.influence === "mixta" ? "🟡" : "⚪";
+    item.innerHTML = `<strong>${simbolo} ${escapeHTML(n.event || "Sin nombre")}</strong><small>${escapeHTML(n.time || "")} · Importancia: ${escapeHTML(n.importance || "")}</small><div>Actual: ${escapeHTML(n.actual || "—")} · Previsión: ${escapeHTML(n.forecast || "—")} · Anterior: ${escapeHTML(n.previous || "—")}</div><button type="button" data-news-delete="${index}" style="margin-top:7px">Eliminar</button>`;
+    lista.appendChild(item);
+  });
+
+  lista.querySelectorAll("[data-news-delete]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const noticias = obtenerNoticias();
+      noticias.splice(Number(btn.dataset.newsDelete), 1);
+      guardarNoticias(noticias);
+      renderNoticias();
+      actualizarResumen();
+    });
+  });
+}
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[char]));
+}
+
+function obtenerInfluenciaNoticias(){
+  const noticias = obtenerNoticias();
+  const relevantes = noticias.filter(n => n.importance === "Alta" || n.importance === "Media");
+  const favorables = relevantes.filter(n => n.influence === "favorable").length;
+  const desfavorables = relevantes.filter(n => n.influence === "desfavorable").length;
+  const mixtas = relevantes.filter(n => n.influence === "mixta").length;
+
+  let direccion = "neutral";
+  if(favorables > desfavorables) direccion = "favorable";
+  else if(desfavorables > favorables) direccion = "desfavorable";
+  else if(favorables > 0 && desfavorables > 0) direccion = "mixta";
+  else if(mixtas > 0) direccion = "mixta";
+
+  return { total: relevantes.length, favorables, desfavorables, mixtas, direccion };
+}
+
+function actualizarBarraActualizacion(){
+  const info = document.getElementById("refreshInfo");
+  if(!info) return;
+  const ultima = Number(localStorage.getItem("goldAnalyzer_lastUpdate") || 0);
+  const ahora = Date.now();
+  const proxima = ultima ? Math.max(0, 60 - Math.floor((ahora - ultima) / 1000)) : 60;
+  info.textContent = ultima
+    ? `Última actualización: ${new Date(ultima).toLocaleTimeString()} · Próxima en ${proxima}s`
+    : "Esperando primera actualización...";
+}
+
+function registrarActualizacion(){
+  localStorage.setItem("goldAnalyzer_lastUpdate", String(Date.now()));
+  actualizarBarraActualizacion();
+}
+
+/* ====================================================== */
 /* CARGAR TODO */
 /* ====================================================== */
 
@@ -3255,6 +3438,59 @@ cargarUS10Y()
 actualizarResumen();
 
 }
+
+
+/* ====================================================== */
+/* ACTUALIZACIÓN MANUAL Y AUTOMÁTICA */
+/* ====================================================== */
+
+const botonActualizar = document.getElementById("refreshNow");
+if(botonActualizar){
+  botonActualizar.addEventListener("click", async () => {
+    botonActualizar.disabled = true;
+    botonActualizar.textContent = "Actualizando...";
+    try{
+      await cargarDatos();
+      registrarActualizacion();
+    }finally{
+      botonActualizar.disabled = false;
+      botonActualizar.textContent = "Actualizar ahora";
+    }
+  });
+}
+
+const guardarNoticiaBtn = document.getElementById("saveNews");
+if(guardarNoticiaBtn){
+  guardarNoticiaBtn.addEventListener("click", () => {
+    const evento = document.getElementById("newsEvent").value.trim();
+    if(!evento){
+      alert("Escribe el nombre del evento.");
+      return;
+    }
+    const noticias = obtenerNoticias();
+    noticias.unshift({
+      event: evento,
+      time: document.getElementById("newsTime").value.trim(),
+      importance: document.getElementById("newsImportance").value,
+      influence: document.getElementById("newsInfluence").value,
+      actual: document.getElementById("newsActual").value.trim(),
+      forecast: document.getElementById("newsForecast").value.trim(),
+      previous: document.getElementById("newsPrevious").value.trim()
+    });
+    guardarNoticias(noticias.slice(0, 20));
+    ["newsEvent","newsTime","newsActual","newsForecast","newsPrevious"].forEach(id => document.getElementById(id).value = "");
+    renderNoticias();
+    actualizarResumen();
+  });
+}
+
+renderNoticias();
+actualizarBarraActualizacion();
+setInterval(actualizarBarraActualizacion, 1000);
+setInterval(async () => {
+  await cargarDatos();
+  registrarActualizacion();
+}, 60000);
 
 
 /* ====================================================== */
@@ -3278,7 +3514,7 @@ navigator.serviceWorker
 
 cargarEstructura();
 
-cargarDatos();
+cargarDatos().then(() => registrarActualizacion());
 
 
 </script>
