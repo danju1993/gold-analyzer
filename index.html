@@ -1507,8 +1507,6 @@ document.getElementById(
 ).textContent =
 "No disponible";
 
-actualizarEstadoFuente("sourceXAU", "error", "No disponible");
-
 }
 
 }
@@ -1520,70 +1518,75 @@ actualizarEstadoFuente("sourceXAU", "error", "No disponible");
 
 async function cargarRealMarket(){
 
-  /*
-     Cada activo se consulta por separado.
-     Así, si DXY o USOIL tarda, no bloquea a los demás.
-  */
+/*
+  Las tres fuentes de RealMarketAPI se consultan por separado.
+  Así DXY, USOIL y AUD/USD no dependen de una sola respuesta lenta.
+*/
 
-  const cargarActivo = async (endpoint, stateKey, rowId, decimals, detalle) => {
-    const respuesta = await fetchJSONRapido(endpoint, 30000);
-    const datos = respuesta && respuesta.data ? respuesta.data : respuesta;
+const cargarFuente = async (endpoint, symbol, rowId, decimals) => {
 
-    if(!respuesta || respuesta.ok === false || !datos){
-      throw new Error("Respuesta no válida para " + stateKey);
-    }
+  const datos = await fetchJSONRapido(endpoint, 30000);
 
-    const direccion = obtenerDireccion(datos.openPrice, datos.closePrice);
-    marketState[stateKey].direction = direccion;
-    marketState[stateKey].price = Number(datos.closePrice);
+  if(!datos || !datos.ok || !datos.data){
+    throw new Error(symbol + " sin datos");
+  }
 
-    actualizarFila(
-      rowId,
-      Number(datos.closePrice).toFixed(decimals),
-      direccion,
-      detalle
-    );
-  };
+  const d = datos.data;
 
-  /* DXY */
-  const tareaDXY = cargarActivo(
+  const direccion = obtenerDireccion(
+    d.openPrice,
+    d.closePrice
+  );
+
+  marketState[symbol].direction = direccion;
+  marketState[symbol].price = Number(d.closePrice);
+
+  actualizarFila(
+    rowId,
+    Number(d.closePrice).toFixed(decimals),
+    direccion,
+    "RealMarketAPI · " + symbol
+  );
+
+};
+
+const resultados = await Promise.allSettled([
+
+  cargarFuente(
     "/api/dxy",
     "DXY",
     "row-DXY",
-    3,
-    "RealMarketAPI · DXY"
-  ).catch(error => {
-    console.log("No se pudo cargar DXY", error);
-    actualizarFila("row-DXY", "No disponible", "neutral", "RealMarketAPI · DXY");
-  });
+    3
+  ),
 
-  /* USOIL */
-  const tareaUSOIL = cargarActivo(
+  cargarFuente(
     "/api/usoil",
     "USOIL",
     "row-USOIL",
-    3,
-    "RealMarketAPI · USOIL"
-  ).catch(error => {
-    console.log("No se pudo cargar USOIL", error);
-    actualizarFila("row-USOIL", "No disponible", "neutral", "RealMarketAPI · USOIL");
-  });
+    3
+  ),
 
-  /* AUD/USD */
-  const tareaAUDUSD = cargarActivo(
+  cargarFuente(
     "/api/audusd",
     "AUDUSD",
     "row-AUDUSD",
-    5,
-    "RealMarketAPI · AUD/USD"
-  ).catch(error => {
-    console.log("No se pudo cargar AUD/USD", error);
-    actualizarFila("row-AUDUSD", "No disponible", "neutral", "RealMarketAPI · AUD/USD");
-  });
+    5
+  )
 
-  await Promise.all([tareaDXY, tareaUSOIL, tareaAUDUSD]);
+]);
+
+const errores = resultados.filter(
+  resultado => resultado.status === "rejected"
+);
+
+if(errores.length){
+  console.log(
+    "Fuentes RealMarketAPI con error:",
+    errores.map(e => e.reason)
+  );
 }
 
+}
 
 /* ====================================================== */
 /* US10Y */
@@ -1634,8 +1637,6 @@ cambio.toFixed(2)
 }
 
 else{
-
-actualizarEstadoFuente("sourceUS10Y", "error", "No disponible");
 
 throw new Error(
 "US10Y sin precio"
@@ -2795,27 +2796,6 @@ estructura.venta +
 
 function actualizarResumen(){
 
-/* Actualizar estados de las fuentes directamente desde los datos recibidos.
-   Así el Resumen no puede quedarse mostrando "Cargando..." cuando el dato ya llegó. */
-
-if(Number.isFinite(marketState.XAUUSD.price)){
-  actualizarEstadoFuente("sourceXAU", "ok", "Actualizado");
-}
-
-const realDisponibles = ["DXY", "USOIL", "AUDUSD"].filter(key =>
-  Number.isFinite(marketState[key].price)
-).length;
-
-if(realDisponibles === 3){
-  actualizarEstadoFuente("sourceReal", "ok", "Actualizado");
-}else if(realDisponibles > 0){
-  actualizarEstadoFuente("sourceReal", "wait", `${realDisponibles}/3 datos recibidos...`);
-}
-
-if(Number.isFinite(marketState.US10Y.price)){
-  actualizarEstadoFuente("sourceUS10Y", "ok", "Actualizado");
-}
-
 const newsSummary = obtenerInfluenciaNoticias();
 const finalNews = document.getElementById("finalNews");
 if(finalNews){
@@ -3481,25 +3461,33 @@ async function cargarDatos(){
      a las demás.
   */
 
-  actualizarEstadoFuente("sourceXAU", "wait", "Actualizando...");
-  actualizarEstadoFuente("sourceReal", "wait", "Actualizando DXY · USOIL · AUD/USD...");
-  actualizarEstadoFuente("sourceUS10Y", "wait", "Actualizando...");
+  ["sourceXAU","sourceDXY","sourceUSOIL","sourceAUDUSD","sourceUS10Y"].forEach(id =>
+    actualizarEstadoFuente(id, "wait", "Actualizando...")
+  );
 
   const tareaOro = cargarOro()
-    .catch(error => console.log("Error XAU/USD:", error))
+    .then(() => actualizarEstadoFuente("sourceXAU", "ok", "Actualizado"))
+    .catch(error => {
+      console.log("Error XAU/USD:", error);
+      actualizarEstadoFuente("sourceXAU", "error", "No disponible");
+    })
     .finally(() => actualizarResumen());
 
-  const tareaDXY = cargarActivoSeparado("/api/dxy", "sourceReal", "DXY", "row-DXY", 3, "RealMarketAPI · DXY")
+  const tareaDXY = cargarActivoSeparado("/api/dxy", "sourceDXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY")
     .finally(() => actualizarResumen());
 
-  const tareaUSOIL = cargarActivoSeparado("/api/usoil", "sourceReal", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL")
+  const tareaUSOIL = cargarActivoSeparado("/api/usoil", "sourceUSOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL")
     .finally(() => actualizarResumen());
 
-  const tareaAUDUSD = cargarActivoSeparado("/api/audusd", "sourceReal", "AUD/USD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
+  const tareaAUDUSD = cargarActivoSeparado("/api/audusd", "sourceAUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
     .finally(() => actualizarResumen());
 
   const tareaUS10Y = cargarUS10Y()
-    .catch(error => console.log("Error US10Y:", error))
+    .then(() => actualizarEstadoFuente("sourceUS10Y", "ok", "Actualizado"))
+    .catch(error => {
+      console.log("Error US10Y:", error);
+      actualizarEstadoFuente("sourceUS10Y", "error", "No disponible");
+    })
     .finally(() => actualizarResumen());
 
   return Promise.allSettled([tareaOro, tareaDXY, tareaUSOIL, tareaAUDUSD, tareaUS10Y]);
