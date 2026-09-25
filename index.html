@@ -268,6 +268,14 @@ iframe{
 .refresh-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f8fa}
 .refresh-bar button,.news-form button{border:0;border-radius:9px;padding:10px 12px;background:#111827;color:white;font-weight:700}
 .refresh-info{font-size:12px;color:#6b7280}
+.source-status{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.source-item{padding:9px 10px;border-radius:10px;background:#f7f8fa;font-size:12px}
+.source-item strong{display:block;font-size:13px;margin-bottom:3px}
+.source-ok{color:#166534}
+.source-wait{color:#92400e}
+.source-error{color:#991b1b}
+@media(max-width:520px){.source-status{grid-template-columns:1fr}}
+
 .news-form{display:grid;gap:9px}
 .news-form .grid{grid-template-columns:1fr 1fr}
 .news-list{margin-top:10px}
@@ -378,6 +386,21 @@ Esperando datos de mercado...
       <div class="refresh-info" id="refreshInfo">Preparando actualización...</div>
     </div>
     <button id="refreshNow" type="button">Actualizar ahora</button>
+  </div>
+</div>
+
+<div class="source-status">
+  <div class="source-item" id="sourceXAU">
+    <strong>🥇 XAU/USD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceReal">
+    <strong>📊 DXY · USOIL · AUD/USD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceUS10Y">
+    <strong>🇺🇸 US10Y</strong>
+    <span class="source-wait">⏳ Esperando...</span>
   </div>
 </div>
 
@@ -3422,6 +3445,24 @@ function registrarActualizacion(){
   actualizarBarraActualizacion();
 }
 
+function actualizarEstadoFuente(id, estado, detalle){
+  const elemento = document.getElementById(id);
+  if(!elemento) return;
+  const span = elemento.querySelector("span");
+  if(!span) return;
+
+  if(estado === "ok"){
+    span.className = "source-ok";
+    span.textContent = "🟢 " + (detalle || "Actualizado");
+  }else if(estado === "error"){
+    span.className = "source-error";
+    span.textContent = "🔴 " + (detalle || "No disponible");
+  }else{
+    span.className = "source-wait";
+    span.textContent = "⏳ " + (detalle || "Actualizando...");
+  }
+}
+
 /* ====================================================== */
 /* CARGAR TODO */
 /* ====================================================== */
@@ -3434,21 +3475,35 @@ async function cargarDatos(){
      a las demás.
   */
 
-  const tareas = [
-    cargarOro(),
-    cargarRealMarket(),
-    cargarUS10Y()
-  ];
+  actualizarEstadoFuente("sourceXAU", "wait", "Actualizando...");
+  actualizarEstadoFuente("sourceReal", "wait", "Actualizando...");
+  actualizarEstadoFuente("sourceUS10Y", "wait", "Actualizando...");
 
-  tareas.forEach(tarea => {
-    Promise.resolve(tarea)
-      .catch(error => console.log("Error de actualización:", error))
-      .finally(() => actualizarResumen());
-  });
+  const tareaOro = cargarOro()
+    .then(() => actualizarEstadoFuente("sourceXAU", "ok", "Actualizado"))
+    .catch(error => {
+      console.log("Error XAU/USD:", error);
+      actualizarEstadoFuente("sourceXAU", "error", "No disponible");
+    })
+    .finally(() => actualizarResumen());
 
-  /* También esperamos todas las tareas para saber cuándo terminó
-     el ciclo completo, pero la interfaz no depende de esa espera. */
-  return Promise.allSettled(tareas);
+  const tareaReal = cargarRealMarket()
+    .then(() => actualizarEstadoFuente("sourceReal", "ok", "Actualizado"))
+    .catch(error => {
+      console.log("Error RealMarketAPI:", error);
+      actualizarEstadoFuente("sourceReal", "error", "No disponible");
+    })
+    .finally(() => actualizarResumen());
+
+  const tareaUS10Y = cargarUS10Y()
+    .then(() => actualizarEstadoFuente("sourceUS10Y", "ok", "Actualizado"))
+    .catch(error => {
+      console.log("Error US10Y:", error);
+      actualizarEstadoFuente("sourceUS10Y", "error", "No disponible");
+    })
+    .finally(() => actualizarResumen());
+
+  return Promise.allSettled([tareaOro, tareaReal, tareaUS10Y]);
 }
 
 
@@ -3458,7 +3513,7 @@ async function cargarDatos(){
 
 let actualizacionEnCurso = false;
 
-async function ejecutarActualizacion(){
+function ejecutarActualizacion(){
   if(actualizacionEnCurso){
     return;
   }
@@ -3471,16 +3526,23 @@ async function ejecutarActualizacion(){
     boton.textContent = "Actualizando...";
   }
 
-  try{
-    await cargarDatos();
-    registrarActualizacion();
-  }finally{
-    actualizacionEnCurso = false;
-    if(boton){
-      boton.disabled = false;
-      boton.textContent = "Actualizar ahora";
-    }
-  }
+  /* El contador empieza inmediatamente. No esperamos a que
+     RealMarketAPI termine para registrar la actualización. */
+  registrarActualizacion();
+
+  const ciclo = cargarDatos();
+
+  /* La interfaz queda libre mientras las fuentes responden. */
+  ciclo
+    .catch(error => console.log("Error en ciclo de actualización:", error))
+    .finally(() => {
+      actualizacionEnCurso = false;
+      if(boton){
+        boton.disabled = false;
+        boton.textContent = "Actualizar ahora";
+      }
+      actualizarResumen();
+    });
 }
 
 const botonActualizar = document.getElementById("refreshNow");
