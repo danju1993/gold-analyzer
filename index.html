@@ -3466,18 +3466,18 @@ async function cargarDatos(){
 
   try{
 
-    actualizarEstadoFuente("source-XAUUSD", "wait", "Cargando...");
-    actualizarEstadoFuente("source-US10Y", "wait", "Cargando...");
-    actualizarEstadoFuente("source-DXY", "wait", "Cargando...");
-    actualizarEstadoFuente("source-USOIL", "wait", "Cargando...");
-    actualizarEstadoFuente("source-AUDUSD", "wait", "Cargando...");
+    actualizarEstadoFuente("sourceXAU", "wait", "Cargando...");
+    actualizarEstadoFuente("sourceUS10Y", "wait", "Cargando...");
+    actualizarEstadoFuente("sourceDXY", "wait", "Cargando...");
+    actualizarEstadoFuente("sourceUSOIL", "wait", "Cargando...");
+    actualizarEstadoFuente("sourceAUDUSD", "wait", "Cargando...");
 
     await Promise.all([
       cargarOro(),
       cargarUS10Y(),
-      cargarActivoSeparado("/api/dxy", "source-DXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY"),
-      cargarActivoSeparado("/api/usoil", "source-USOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL"),
-      cargarActivoSeparado("/api/audusd", "source-AUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
+      cargarActivoSeparado("/api/dxy", "sourceDXY", "DXY", "row-DXY", 3, "RealMarketAPI · DXY"),
+      cargarActivoSeparado("/api/usoil", "sourceUSOIL", "USOIL", "row-USOIL", 3, "RealMarketAPI · USOIL"),
+      cargarActivoSeparado("/api/audusd", "sourceAUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
     ]);
 
     actualizarResumen();
@@ -3510,7 +3510,7 @@ navigator.serviceWorker
 
 cargarEstructura();
 
-ejecutarActualizacion();
+cargarDatos();
 
 
 </script>
