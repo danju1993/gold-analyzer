@@ -2578,7 +2578,8 @@ function renderOportunidades(){
     card.innerHTML = '<strong>' + label + ' · ' + escapeHTML(new Date(item.date).toLocaleString()) + '</strong>' +
       '<div class="grid" style="margin-top:8px"><select data-op-taken="' + item.id + '"><option value="pendiente">¿Tomaste la entrada? Pendiente</option><option value="si">Sí, la tomé</option><option value="no">No la tomé</option></select>' +
       '<select data-op-outcome="' + item.id + '"><option value="pendiente">Resultado pendiente</option><option value="ganadora">Ganadora</option><option value="perdedora">Perdedora</option></select></div>' +
-      '<input data-op-note="' + item.id + '" type="text" placeholder="Nota opcional" style="width:100%;margin-top:8px">' +
+      '<label style="display:block;margin-top:10px;font-size:13px;font-weight:600">Notas de esta oportunidad</label>' +
+      '<textarea data-op-note="' + item.id + '" rows="3" placeholder="Anota por qué tomaste o descartaste la entrada, cómo gestionaste el riesgo y cualquier observación." style="width:100%;margin-top:5px;padding:9px;border:1px solid #d5d9df;border-radius:9px;font:inherit;resize:vertical"></textarea>' +
       '<button type="button" data-op-delete="' + item.id + '" style="margin-top:8px">Eliminar</button>';
     list.appendChild(card);
     card.querySelector("[data-op-taken]").value = item.taken || "pendiente";
