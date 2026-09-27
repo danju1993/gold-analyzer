@@ -331,6 +331,10 @@ Contexto para estudiar el mercado · no es una señal automática
 🌎 Macro
 </button>
 
+<button data-page="tracking">
+📅 Registro
+</button>
+
 <button data-page="news">
 📰 Noticias
 </button>
@@ -737,26 +741,7 @@ las confirmaciones, la estructura y la influencia manual de noticias.
 </div>
 
 
-<div class="card layer-confirm">
-  <h3>🗓️ Registro de oportunidades</h3>
-  <p class="muted">Se guarda una oportunidad cada vez que las condiciones pasan de incompletas a completas. Marca si tomaste la entrada y su resultado.</p>
-  <div class="grid">
-    <div class="metric"><div class="muted">Oportunidades hoy</div><div class="big" id="opportunitiesToday">0</div></div>
-    <div class="metric"><div class="muted">Oportunidades este mes</div><div class="big" id="opportunitiesMonth">0</div></div>
-  </div>
-  <div class="grid" style="margin-top:10px">
-    <div class="metric"><div class="muted">Ganadoras</div><div class="big up" id="opportunitiesWins">0</div></div>
-    <div class="metric"><div class="muted">Perdedoras</div><div class="big down" id="opportunitiesLosses">0</div></div>
-  </div>
-  <div class="row" style="margin-top:12px">
-    <button id="calendarPrev" type="button" aria-label="Mes anterior">◀</button>
-    <strong id="calendarTitle"></strong>
-    <button id="calendarNext" type="button" aria-label="Mes siguiente">▶</button>
-  </div>
-  <div id="opportunityCalendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center"></div>
-  <div class="muted" style="margin-top:6px">Los días con oportunidades muestran su cantidad.</div>
-  <div id="opportunityList" class="news-list"></div>
-</div>
+
 
 
 <!-- ====================================================== -->
@@ -1108,6 +1093,36 @@ opuestas confirman estudiar venta.
 
 </div>
 
+
+</section>
+
+
+<!-- ====================================================== -->
+<!-- REGISTRO DE OPORTUNIDADES -->
+<!-- ====================================================== -->
+
+<section id="tracking" class="page">
+
+<div class="card layer-confirm">
+  <h3>🗓️ Registro de oportunidades</h3>
+  <p class="muted">Se guarda una oportunidad cada vez que las condiciones pasan de incompletas a completas. Marca si tomaste la entrada y su resultado.</p>
+  <div class="grid">
+    <div class="metric"><div class="muted">Oportunidades hoy</div><div class="big" id="opportunitiesToday">0</div></div>
+    <div class="metric"><div class="muted">Oportunidades este mes</div><div class="big" id="opportunitiesMonth">0</div></div>
+  </div>
+  <div class="grid" style="margin-top:10px">
+    <div class="metric"><div class="muted">Ganadoras</div><div class="big up" id="opportunitiesWins">0</div></div>
+    <div class="metric"><div class="muted">Perdedoras</div><div class="big down" id="opportunitiesLosses">0</div></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button id="calendarPrev" type="button" aria-label="Mes anterior">◀</button>
+    <strong id="calendarTitle"></strong>
+    <button id="calendarNext" type="button" aria-label="Mes siguiente">▶</button>
+  </div>
+  <div id="opportunityCalendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center"></div>
+  <div class="muted" style="margin-top:6px">Los días con oportunidades muestran su cantidad.</div>
+  <div id="opportunityList" class="news-list"></div>
+</div>
 
 </section>
 
