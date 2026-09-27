@@ -406,6 +406,10 @@ Esperando datos de mercado...
     <strong>🇦🇺 AUD/USD</strong>
     <span class="source-wait">⏳ Esperando...</span>
   </div>
+  <div class="source-item" id="sourceUSDCAD">
+    <strong>🇨🇦 USD/CAD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
   <div class="source-item" id="sourceUS10Y">
     <strong>🇺🇸 US10Y</strong>
     <span class="source-wait">⏳ Esperando...</span>
@@ -515,9 +519,9 @@ Sin datos
 <h3>🟡 2. Confirmaciones</h3>
 
 <p class="muted">
-Según tu método: si USOIL y AUD/USD suben,
-son confirmaciones para estudiar compra.
-Si bajan, son confirmaciones para estudiar venta.
+USOIL y AUD/USD subiendo, o USD/CAD bajando,
+confirman estudiar compra. USOIL y AUD/USD bajando,
+o USD/CAD subiendo, confirman estudiar venta.
 </p>
 
 
@@ -534,7 +538,7 @@ Si bajan, son confirmaciones para estudiar venta.
   class="big up"
   id="buyConfirmations"
 >
-0/2
+0/3
 </div>
 
 <div
@@ -557,7 +561,7 @@ Si bajan, son confirmaciones para estudiar venta.
   class="big down"
   id="sellConfirmations"
 >
-0/2
+0/3
 </div>
 
 <div
@@ -596,6 +600,21 @@ AUD/USD
 
 <span
   id="summaryAUDUSD"
+  class="badge neutral"
+>
+Sin datos
+</span>
+
+</div>
+
+<div class="row">
+
+<span>
+USD/CAD
+</span>
+
+<span
+  id="summaryUSDCAD"
   class="badge neutral"
 >
 Sin datos
@@ -1055,6 +1074,29 @@ Cargando...
 
 </div>
 
+<div
+  class="row"
+  id="row-USDCAD"
+>
+
+<span>
+
+<b>USD/CAD</b>
+
+<br>
+
+<span class="muted">
+Dirección
+</span>
+
+</span>
+
+<span class="badge neutral">
+Cargando...
+</span>
+
+</div>
+
 
 </div>
 
@@ -1067,8 +1109,9 @@ Cargando...
 
 <p class="muted">
 DXY y US10Y son los factores principales.
-USOIL y AUD/USD son confirmaciones complementarias
-según el método configurado en esta aplicación.
+USOIL y AUD/USD subiendo, junto con USD/CAD bajando,
+son confirmaciones para estudiar compra. Sus direcciones
+opuestas confirman estudiar venta.
 </p>
 
 </div>
@@ -1298,6 +1341,11 @@ USOIL:{
 },
 
 AUDUSD:{
+  direction:"neutral",
+  price:null
+},
+
+USDCAD:{
   direction:"neutral",
   price:null
 }
@@ -2081,7 +2129,7 @@ agregarLista(
 lista,
 "Confirmaciones: " +
 compras +
-"/2 para estudiar compra"
+"/3 para estudiar compra"
 );
 
 agregarLista(
@@ -2140,7 +2188,7 @@ agregarLista(
 lista,
 "Confirmaciones: " +
 ventas +
-"/2 para estudiar venta"
+"/3 para estudiar venta"
 );
 
 agregarLista(
@@ -2198,7 +2246,7 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2256,7 +2304,7 @@ agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2320,7 +2368,7 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2387,7 +2435,7 @@ agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2518,7 +2566,7 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2574,7 +2622,7 @@ agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2637,14 +2685,14 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2702,14 +2750,14 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -2763,14 +2811,14 @@ agregarLista(
 lista,
 "Confirmaciones compra: " +
 compras +
-"/2"
+"/3"
 );
 
 agregarLista(
 lista,
 "Confirmaciones venta: " +
 ventas +
-"/2"
+"/3"
 );
 
 agregarLista(
@@ -3059,6 +3107,26 @@ confirmacionesVenta.push(
 
 }
 
+if(
+marketState.USDCAD.direction === "down"
+){
+
+confirmacionesCompra.push(
+"USD/CAD"
+);
+
+}
+
+else if(
+marketState.USDCAD.direction === "up"
+){
+
+confirmacionesVenta.push(
+"USD/CAD"
+);
+
+}
+
 
 /* ====================================================== */
 /* MOSTRAR CONFIRMACIONES */
@@ -3068,14 +3136,14 @@ document.getElementById(
 "buyConfirmations"
 ).textContent =
 confirmacionesCompra.length +
-"/2";
+"/3";
 
 
 document.getElementById(
 "sellConfirmations"
 ).textContent =
 confirmacionesVenta.length +
-"/2";
+"/3";
 
 
 document.getElementById(
@@ -3102,6 +3170,11 @@ marketState.USOIL.direction
 ponerBadge(
 "summaryAUDUSD",
 marketState.AUDUSD.direction
+);
+
+ponerBadge(
+"summaryUSDCAD",
+marketState.USDCAD.direction
 );
 
 
@@ -3270,6 +3343,11 @@ data:marketState.USOIL
 {
 nombre:"AUD/USD",
 data:marketState.AUDUSD
+},
+
+{
+nombre:"USD/CAD",
+data:marketState.USDCAD
 }
 
 ];
@@ -3461,7 +3539,7 @@ async function cargarDatos(){
      a las demás.
   */
 
-  ["sourceXAU","sourceDXY","sourceUSOIL","sourceAUDUSD","sourceUS10Y"].forEach(id =>
+  ["sourceXAU","sourceDXY","sourceUSOIL","sourceAUDUSD","sourceUSDCAD","sourceUS10Y"].forEach(id =>
     actualizarEstadoFuente(id, "wait", "Actualizando...")
   );
 
@@ -3482,6 +3560,9 @@ async function cargarDatos(){
   const tareaAUDUSD = cargarActivoSeparado("/api/audusd", "sourceAUDUSD", "AUDUSD", "row-AUDUSD", 5, "RealMarketAPI · AUD/USD")
     .finally(() => actualizarResumen());
 
+  const tareaUSDCAD = cargarActivoSeparado("/api/usdcad", "sourceUSDCAD", "USDCAD", "row-USDCAD", 5, "RealMarketAPI · USD/CAD")
+    .finally(() => actualizarResumen());
+
   const tareaUS10Y = cargarUS10Y()
     .then(() => actualizarEstadoFuente("sourceUS10Y", "ok", "Actualizado"))
     .catch(error => {
@@ -3490,7 +3571,7 @@ async function cargarDatos(){
     })
     .finally(() => actualizarResumen());
 
-  return Promise.allSettled([tareaOro, tareaDXY, tareaUSOIL, tareaAUDUSD, tareaUS10Y]);
+  return Promise.allSettled([tareaOro, tareaDXY, tareaUSOIL, tareaAUDUSD, tareaUSDCAD, tareaUS10Y]);
 }
 
 
