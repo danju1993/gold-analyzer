@@ -671,19 +671,6 @@ Sin definir
 <div class="row">
 
 <span>
-BOS / ruptura
-</span>
-
-<strong id="summaryBOS">
-Sin definir
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
 Retroceso / rechazo
 </span>
 
@@ -747,6 +734,28 @@ las confirmaciones, la estructura y la influencia manual de noticias.
 
 </div>
 
+</div>
+
+
+<div class="card layer-confirm">
+  <h3>🗓️ Registro de oportunidades</h3>
+  <p class="muted">Se guarda una oportunidad cada vez que las condiciones pasan de incompletas a completas. Marca si tomaste la entrada y su resultado.</p>
+  <div class="grid">
+    <div class="metric"><div class="muted">Oportunidades hoy</div><div class="big" id="opportunitiesToday">0</div></div>
+    <div class="metric"><div class="muted">Oportunidades este mes</div><div class="big" id="opportunitiesMonth">0</div></div>
+  </div>
+  <div class="grid" style="margin-top:10px">
+    <div class="metric"><div class="muted">Ganadoras</div><div class="big up" id="opportunitiesWins">0</div></div>
+    <div class="metric"><div class="muted">Perdedoras</div><div class="big down" id="opportunitiesLosses">0</div></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button id="calendarPrev" type="button" aria-label="Mes anterior">◀</button>
+    <strong id="calendarTitle"></strong>
+    <button id="calendarNext" type="button" aria-label="Mes siguiente">▶</button>
+  </div>
+  <div id="opportunityCalendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center"></div>
+  <div class="muted" style="margin-top:6px">Los días con oportunidades muestran su cantidad.</div>
+  <div id="opportunityList" class="news-list"></div>
 </div>
 
 
@@ -888,23 +897,6 @@ XAU/USD · Twelve Data
 <div class="row">
 
 <span>
-BOS / ruptura
-</span>
-
-<select id="bos">
-
-<option>Sin definir</option>
-<option>Compra</option>
-<option>Venta</option>
-
-</select>
-
-</div>
-
-
-<div class="row">
-
-<span>
 Retroceso / rechazo
 </span>
 
@@ -927,8 +919,8 @@ Retroceso / rechazo
 
 <p class="muted">
 Usa 15M para estudiar la estructura principal y 5M
-para buscar confirmación. BOS, ruptura, retroceso y
-rechazo deben interpretarse junto al contexto macro.
+para buscar confirmación. La estructura considera la
+dirección de 15M y 5M, más el retroceso o rechazo.
 </p>
 
 </div>
@@ -1772,7 +1764,6 @@ const ids = [
 
 "structure15",
 "structure5",
-"bos",
 "rejection"
 
 ];
@@ -1807,7 +1798,6 @@ const ids = [
 
 "structure15",
 "structure5",
-"bos",
 "rejection"
 
 ];
@@ -1858,148 +1848,24 @@ actualizarResumen();
 /* ====================================================== */
 
 function analizarEstructura(){
-
-const estructura15 =
-document.getElementById(
-"structure15"
-).value;
-
-const estructura5 =
-document.getElementById(
-"structure5"
-).value;
-
-const bos =
-document.getElementById(
-"bos"
-).value;
-
-const rejection =
-document.getElementById(
-"rejection"
-).value;
-
-
-/* ------------------------------------------------------ */
-/* COMPRA */
-/* ------------------------------------------------------ */
-
-let compra = 0;
-
-if(
-estructura15 === "Alcista"
-){
-compra++;
-}
-
-if(
-estructura5 === "Alcista"
-){
-compra++;
-}
-
-if(
-bos === "Compra"
-){
-compra++;
-}
-
-if(
-rejection === "Compra"
-){
-compra++;
-}
-
-
-/* ------------------------------------------------------ */
-/* VENTA */
-/* ------------------------------------------------------ */
-
-let venta = 0;
-
-if(
-estructura15 === "Bajista"
-){
-venta++;
-}
-
-if(
-estructura5 === "Bajista"
-){
-venta++;
-}
-
-if(
-bos === "Venta"
-){
-venta++;
-}
-
-if(
-rejection === "Venta"
-){
-venta++;
-}
-
-
-/* ------------------------------------------------------ */
-/* RESULTADO */
-/* ------------------------------------------------------ */
-
-let direccion = "neutral";
-
-if(
-compra === 4
-){
-
-direccion = "compra";
-
-}
-
-else if(
-venta === 4
-){
-
-direccion = "venta";
-
-}
-
-else if(
-compra > venta &&
-compra >= 2
-){
-
-direccion = "parcialCompra";
-
-}
-
-else if(
-venta > compra &&
-venta >= 2
-){
-
-direccion = "parcialVenta";
-
-}
-
-else if(
-compra > 0 &&
-venta > 0
-){
-
-direccion = "conflicto";
-
-}
-
-
-return {
-
-compra,
-venta,
-direccion
-
-};
-
+  const estructura15 = document.getElementById("structure15").value;
+  const estructura5 = document.getElementById("structure5").value;
+  const rejection = document.getElementById("rejection").value;
+  let compra = 0;
+  let venta = 0;
+  if(estructura15 === "Alcista") compra++;
+  if(estructura5 === "Alcista") compra++;
+  if(rejection === "Compra") compra++;
+  if(estructura15 === "Bajista") venta++;
+  if(estructura5 === "Bajista") venta++;
+  if(rejection === "Venta") venta++;
+  let direccion = "neutral";
+  if(compra === 3) direccion = "compra";
+  else if(venta === 3) direccion = "venta";
+  else if(compra > venta && compra >= 2) direccion = "parcialCompra";
+  else if(venta > compra && venta >= 2) direccion = "parcialVenta";
+  else if(compra > 0 && venta > 0) direccion = "conflicto";
+  return { compra, venta, direccion };
 }
 
 
@@ -2027,814 +1893,44 @@ lista.appendChild(li);
 /* LECTURA FINAL */
 /* ====================================================== */
 
-function actualizarLecturaFinal(
-tipoContexto,
-compras,
-ventas
-){
-
-const badge =
-document.getElementById(
-"finalBadge"
-);
-
-const title =
-document.getElementById(
-"finalTitle"
-);
-
-const text =
-document.getElementById(
-"finalText"
-);
-
-const lista =
-document.getElementById(
-"finalList"
-);
-
-
-lista.innerHTML = "";
-
-const noticias = obtenerInfluenciaNoticias();
-if(noticias.total > 0){
-  const textoNoticias = noticias.direccion === "favorable"
-    ? `Noticias: ${noticias.favorables} favorables para oro`
-    : noticias.direccion === "desfavorable"
-      ? `Noticias: ${noticias.desfavorables} desfavorables para oro`
-      : noticias.direccion === "mixta"
-        ? `Noticias: influencia mixta (${noticias.favorables} favorables / ${noticias.desfavorables} desfavorables)`
-        : "Noticias: influencia neutral";
-  agregarLista(lista, textoNoticias);
-}
-
-
-/* ====================================================== */
-/* ESTRUCTURA */
-/* ====================================================== */
-
-const estructura =
-analizarEstructura();
-
-
-const estructura15 =
-document.getElementById(
-"structure15"
-).value;
-
-const estructura5 =
-document.getElementById(
-"structure5"
-).value;
-
-const bos =
-document.getElementById(
-"bos"
-).value;
-
-const rejection =
-document.getElementById(
-"rejection"
-).value;
-
-
-/* ====================================================== */
-/* COMPRA COMPLETAMENTE ALINEADA */
-/* ====================================================== */
-
-if(
-tipoContexto === "oro" &&
-compras >= 2 &&
-estructura.direccion === "compra"
-){
-
-badge.className =
-"badge context-good";
-
-badge.textContent =
-"🟢 Contexto + estructura alineados";
-
-title.textContent =
-"Contexto alcista para estudiar";
-
-text.textContent =
-"Los factores macro, las confirmaciones y la estructura manual del oro están alineados. Esto sirve como contexto de estudio y requiere interpretar el precio en el momento.";
-
-agregarLista(
-lista,
-"DXY ↓ + US10Y ↓"
-);
-
-agregarLista(
-lista,
-"Confirmaciones: " +
-compras +
-"/3 para estudiar compra"
-);
-
-agregarLista(
-lista,
-"15M: Alcista"
-);
-
-agregarLista(
-lista,
-"5M: Alcista"
-);
-
-agregarLista(
-lista,
-"BOS: Compra"
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: Compra"
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* VENTA COMPLETAMENTE ALINEADA */
-/* ====================================================== */
-
-if(
-tipoContexto === "presion" &&
-ventas >= 2 &&
-estructura.direccion === "venta"
-){
-
-badge.className =
-"badge context-sell";
-
-badge.textContent =
-"🔴 Contexto + estructura alineados";
-
-title.textContent =
-"Contexto bajista para estudiar";
-
-text.textContent =
-"Los factores macro, las confirmaciones y la estructura manual del oro están alineados. Esto sirve como contexto de estudio y requiere interpretar el precio en el momento.";
-
-agregarLista(
-lista,
-"DXY ↑ + US10Y ↑"
-);
-
-agregarLista(
-lista,
-"Confirmaciones: " +
-ventas +
-"/3 para estudiar venta"
-);
-
-agregarLista(
-lista,
-"15M: Bajista"
-);
-
-agregarLista(
-lista,
-"5M: Bajista"
-);
-
-agregarLista(
-lista,
-"BOS: Venta"
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: Venta"
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* MACRO ALINEADO PERO ESTRUCTURA CONTRARIA */
-/* ====================================================== */
-
-if(
-tipoContexto === "oro" &&
-estructura.direccion === "venta"
-){
-
-badge.className =
-"badge context-conflict";
-
-badge.textContent =
-"🟡 Conflicto macro / estructura";
-
-title.textContent =
-"El contexto macro y el precio no están alineados";
-
-text.textContent =
-"El contexto principal favorece el estudio de una subida, pero la estructura introducida para el oro muestra dirección bajista. Conviene separar ambos elementos.";
-
-agregarLista(
-lista,
-"DXY ↓ + US10Y ↓"
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura 15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"Estructura 5M: " +
-estructura5
-);
-
-agregarLista(
-lista,
-"BOS: " +
-bos
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: " +
-rejection
-);
-
-return;
-
-}
-
-
-if(
-tipoContexto === "presion" &&
-estructura.direccion === "compra"
-){
-
-badge.className =
-"badge context-conflict";
-
-badge.textContent =
-"🟡 Conflicto macro / estructura";
-
-title.textContent =
-"El contexto macro y el precio no están alineados";
-
-text.textContent =
-"El contexto principal muestra presión, pero la estructura introducida para el oro muestra dirección alcista. Conviene separar ambos elementos.";
-
-agregarLista(
-lista,
-"DXY ↑ + US10Y ↑"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura 15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"Estructura 5M: " +
-estructura5
-);
-
-agregarLista(
-lista,
-"BOS: " +
-bos
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: " +
-rejection
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* ESTRUCTURA PARCIALMENTE ALINEADA */
-/* ====================================================== */
-
-if(
-(
-tipoContexto === "oro" &&
-estructura.direccion === "parcialCompra"
-)
-){
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Falta confirmación de estructura";
-
-title.textContent =
-"Contexto favorable, estructura parcial";
-
-text.textContent =
-"El contexto macro está alineado para estudiar compra, pero la estructura manual todavía no tiene los cuatro elementos alcistas.";
-
-agregarLista(
-lista,
-"DXY ↓ + US10Y ↓"
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura alcista: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"5M: " +
-estructura5
-);
-
-agregarLista(
-lista,
-"BOS: " +
-bos
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: " +
-rejection
-);
-
-return;
-
-}
-
-
-if(
-(
-tipoContexto === "presion" &&
-estructura.direccion === "parcialVenta"
-)
-){
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Falta confirmación de estructura";
-
-title.textContent =
-"Contexto de presión, estructura parcial";
-
-text.textContent =
-"El contexto macro está alineado para estudiar venta, pero la estructura manual todavía no tiene los cuatro elementos bajistas.";
-
-agregarLista(
-lista,
-"DXY ↑ + US10Y ↑"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura bajista: " +
-estructura.venta +
-"/4"
-);
-
-agregarLista(
-lista,
-"15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"5M: " +
-estructura5
-);
-
-agregarLista(
-lista,
-"BOS: " +
-bos
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: " +
-rejection
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* ESTRUCTURA EN CONFLICTO */
-/* ====================================================== */
-
-if(
-estructura.direccion === "conflicto"
-){
-
-badge.className =
-"badge context-conflict";
-
-badge.textContent =
-"🟡 Estructura en conflicto";
-
-title.textContent =
-"Los elementos de estructura no están alineados";
-
-text.textContent =
-"Hay elementos que apuntan en direcciones diferentes. La estructura necesita una lectura más clara antes de compararla con el contexto macro.";
-
-agregarLista(
-lista,
-"Elementos alcistas: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"Elementos bajistas: " +
-estructura.venta +
-"/4"
-);
-
-agregarLista(
-lista,
-"15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"5M: " +
-estructura5
-);
-
-agregarLista(
-lista,
-"BOS: " +
-bos
-);
-
-agregarLista(
-lista,
-"Retroceso/rechazo: " +
-rejection
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* MACRO ALINEADO PERO SIN ESTRUCTURA COMPLETA */
-/* ====================================================== */
-
-if(
-tipoContexto === "oro"
-){
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Contexto favorable · falta estructura";
-
-title.textContent =
-"Falta confirmar la estructura del oro";
-
-text.textContent =
-"El contexto macro está alineado, pero todavía no hay una estructura completa de 15M y 5M con BOS y retroceso/rechazo en la misma dirección.";
-
-agregarLista(
-lista,
-"DXY ↓ + US10Y ↓"
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura alcista: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"5M: " +
-estructura5
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* MACRO DE PRESIÓN PERO SIN ESTRUCTURA COMPLETA */
-/* ====================================================== */
-
-if(
-tipoContexto === "presion"
-){
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Contexto de presión · falta estructura";
-
-title.textContent =
-"Falta confirmar la estructura del oro";
-
-text.textContent =
-"El contexto macro muestra presión, pero todavía no hay una estructura completa de 15M y 5M con BOS y retroceso/rechazo en la misma dirección.";
-
-agregarLista(
-lista,
-"DXY ↑ + US10Y ↑"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura bajista: " +
-estructura.venta +
-"/4"
-);
-
-agregarLista(
-lista,
-"15M: " +
-estructura15
-);
-
-agregarLista(
-lista,
-"5M: " +
-estructura5
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* PARCIAL */
-/* ====================================================== */
-
-if(
-tipoContexto === "parcial"
-){
-
-badge.className =
-"badge context-wait";
-
-badge.textContent =
-"🟡 Contexto parcial";
-
-title.textContent =
-"Falta confirmación de un factor principal";
-
-text.textContent =
-"Solo uno de DXY y US10Y tiene dirección. Las confirmaciones y la estructura pueden aportar información adicional, pero el contexto principal todavía no está completo.";
-
-agregarLista(
-lista,
-"DXY: " +
-marketState.DXY.direction
-);
-
-agregarLista(
-lista,
-"US10Y: " +
-marketState.US10Y.direction
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura alcista: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"Estructura bajista: " +
-estructura.venta +
-"/4"
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* CONFLICTO MACRO */
-/* ====================================================== */
-
-if(
-tipoContexto === "conflicto"
-){
-
-badge.className =
-"badge context-conflict";
-
-badge.textContent =
-"🟡 Factores macro en conflicto";
-
-title.textContent =
-"DXY y US10Y no están alineados";
-
-text.textContent =
-"Los dos factores principales muestran direcciones opuestas. Las confirmaciones y la estructura pueden observarse por separado.";
-
-agregarLista(
-lista,
-"DXY: " +
-marketState.DXY.direction
-);
-
-agregarLista(
-lista,
-"US10Y: " +
-marketState.US10Y.direction
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura alcista: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"Estructura bajista: " +
-estructura.venta +
-"/4"
-);
-
-return;
-
-}
-
-
-/* ====================================================== */
-/* SIN DIRECCIÓN */
-/* ====================================================== */
-
-badge.className =
-"badge neutral";
-
-badge.textContent =
-"⚪ Sin dirección clara";
-
-title.textContent =
-"Esperando una dirección más definida";
-
-text.textContent =
-"DXY y US10Y están neutrales. Las confirmaciones y la estructura se mantienen como información de estudio.";
-
-agregarLista(
-lista,
-"DXY: " +
-marketState.DXY.direction
-);
-
-agregarLista(
-lista,
-"US10Y: " +
-marketState.US10Y.direction
-);
-
-agregarLista(
-lista,
-"Confirmaciones compra: " +
-compras +
-"/3"
-);
-
-agregarLista(
-lista,
-"Confirmaciones venta: " +
-ventas +
-"/3"
-);
-
-agregarLista(
-lista,
-"Estructura alcista: " +
-estructura.compra +
-"/4"
-);
-
-agregarLista(
-lista,
-"Estructura bajista: " +
-estructura.venta +
-"/4"
-);
-
+function actualizarLecturaFinal(tipoContexto, compras, ventas){
+  const badge = document.getElementById("finalBadge");
+  const title = document.getElementById("finalTitle");
+  const text = document.getElementById("finalText");
+  const lista = document.getElementById("finalList");
+  const estructura = analizarEstructura();
+  lista.innerHTML = "";
+  const noticias = obtenerInfluenciaNoticias();
+  if(noticias.total > 0){
+    const noticia = noticias.direccion === "favorable" ? "Noticias: " + noticias.favorables + " favorables para oro"
+      : noticias.direccion === "desfavorable" ? "Noticias: " + noticias.desfavorables + " desfavorables para oro"
+      : noticias.direccion === "mixta" ? "Noticias: influencia mixta (" + noticias.favorables + " favorables / " + noticias.desfavorables + " desfavorables)"
+      : "Noticias: influencia neutral";
+    agregarLista(lista, noticia);
+  }
+  const estructura15 = document.getElementById("structure15").value;
+  const estructura5 = document.getElementById("structure5").value;
+  const rejection = document.getElementById("rejection").value;
+  let direction = "neutral";
+  if(tipoContexto === "oro" && compras >= 2 && estructura.direccion === "compra") direction = "compra";
+  if(tipoContexto === "presion" && ventas >= 2 && estructura.direccion === "venta") direction = "venta";
+  if(direction === "compra" || direction === "venta"){
+    const buy = direction === "compra";
+    badge.className = buy ? "badge context-good" : "badge context-sell";
+    badge.textContent = (buy ? "🟢" : "🔴") + " Contexto + estructura alineados";
+    title.textContent = buy ? "Contexto alcista para estudiar" : "Contexto bajista para estudiar";
+    text.textContent = "Los factores macro, al menos dos confirmaciones y la estructura del oro están alineados. Registra si tomaste la entrada y su resultado.";
+  }else{
+    badge.className = "badge context-wait";
+    badge.textContent = "🟡 Condiciones incompletas";
+    title.textContent = "Esperando alineación";
+    text.textContent = "Se registra una oportunidad cuando el contexto macro, al menos dos confirmaciones y la estructura de 15M, 5M y retroceso/rechazo coinciden.";
+  }
+  agregarLista(lista, "Confirmaciones compra: " + compras + "/3");
+  agregarLista(lista, "Confirmaciones venta: " + ventas + "/3");
+  agregarLista(lista, "Estructura 15M: " + estructura15);
+  agregarLista(lista, "Estructura 5M: " + estructura5);
+  agregarLista(lista, "Retroceso / rechazo: " + rejection);
 }
 
 
@@ -3288,14 +2384,6 @@ document.getElementById(
 
 
 document.getElementById(
-"summaryBOS"
-).textContent =
-document.getElementById(
-"bos"
-).value;
-
-
-document.getElementById(
 "summaryRejection"
 ).textContent =
 document.getElementById(
@@ -3306,6 +2394,12 @@ document.getElementById(
 /* ====================================================== */
 /* LECTURA FINAL */
 /* ====================================================== */
+
+const estructuraActual = analizarEstructura();
+let oportunidadActiva = "neutral";
+if(tipoContexto === "oro" && confirmacionesCompra.length >= 2 && estructuraActual.direccion === "compra") oportunidadActiva = "compra";
+else if(tipoContexto === "presion" && confirmacionesVenta.length >= 2 && estructuraActual.direccion === "venta") oportunidadActiva = "venta";
+registrarTransicionOportunidad(oportunidadActiva);
 
 actualizarLecturaFinal(
 tipoContexto,
@@ -3396,6 +2490,101 @@ bajando.length
     .join(", ")
 : "—";
 
+}
+
+
+/* ====================================================== */
+/* REGISTRO DE OPORTUNIDADES */
+/* ====================================================== */
+const OPPORTUNITIES_KEY = "goldAnalyzer_opportunities";
+const LAST_OPPORTUNITY_STATE_KEY = "goldAnalyzer_lastOpportunityState";
+let opportunityCalendarMonth = new Date();
+
+function obtenerOportunidades(){
+  try{
+    const items = JSON.parse(localStorage.getItem(OPPORTUNITIES_KEY) || "[]");
+    return Array.isArray(items) ? items : [];
+  }catch(error){ return []; }
+}
+function guardarOportunidades(items){
+  localStorage.setItem(OPPORTUNITIES_KEY, JSON.stringify(items));
+}
+function registrarTransicionOportunidad(direction){
+  const previous = localStorage.getItem(LAST_OPPORTUNITY_STATE_KEY) || "neutral";
+  if(direction !== "neutral" && direction !== previous){
+    const items = obtenerOportunidades();
+    items.unshift({id:String(Date.now()) + Math.random().toString(16).slice(2),date:new Date().toISOString(),direction,outcome:"pendiente",taken:"pendiente",note:""});
+    guardarOportunidades(items);
+  }
+  localStorage.setItem(LAST_OPPORTUNITY_STATE_KEY, direction);
+  renderOportunidades();
+}
+function renderOportunidades(){
+  const list = document.getElementById("opportunityList");
+  if(!list) return;
+  const items = obtenerOportunidades();
+  const now = new Date();
+  const todayKey = now.toLocaleDateString("sv-SE");
+  const monthKey = todayKey.slice(0,7);
+  document.getElementById("opportunitiesToday").textContent = items.filter(x => new Date(x.date).toLocaleDateString("sv-SE") === todayKey).length;
+  document.getElementById("opportunitiesMonth").textContent = items.filter(x => String(x.date).slice(0,7) === monthKey).length;
+  const calendarYear = opportunityCalendarMonth.getFullYear();
+  const calendarMonth = opportunityCalendarMonth.getMonth();
+  const first = new Date(calendarYear, calendarMonth, 1);
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const offset = (first.getDay() + 6) % 7;
+  document.getElementById("calendarTitle").textContent = opportunityCalendarMonth.toLocaleDateString("es-ES", {month:"long",year:"numeric"});
+  const calendar = document.getElementById("opportunityCalendar");
+  calendar.innerHTML = "";
+  ["L","M","X","J","V","S","D"].forEach(day => {
+    const label = document.createElement("strong");
+    label.textContent = day;
+    calendar.appendChild(label);
+  });
+  for(let blank=0; blank<offset; blank++) calendar.appendChild(document.createElement("span"));
+  for(let day=1; day<=daysInMonth; day++){
+    const date = new Date(calendarYear, calendarMonth, day);
+    const key = date.toLocaleDateString("sv-SE");
+    const count = items.filter(x => new Date(x.date).toLocaleDateString("sv-SE") === key).length;
+    const cell = document.createElement("div");
+    cell.style.cssText = "padding:7px 2px;border-radius:8px;background:" + (count ? "#dcfce7" : "#f7f8fa");
+    cell.textContent = String(day) + (count ? " · " + count : "");
+    cell.title = count ? count + " oportunidad(es)" : "Sin oportunidades";
+    calendar.appendChild(cell);
+  }
+  document.getElementById("opportunitiesWins").textContent = items.filter(x => x.outcome === "ganadora").length;
+  document.getElementById("opportunitiesLosses").textContent = items.filter(x => x.outcome === "perdedora").length;
+  if(!items.length){ list.innerHTML = '<div class="muted">Todavía no hay oportunidades registradas.</div>'; return; }
+  list.innerHTML = "";
+  items.slice(0,100).forEach(item => {
+    const card = document.createElement("div");
+    card.className = "news-item";
+    const label = item.direction === "compra" ? "🟢 Compra" : "🔴 Venta";
+    card.innerHTML = '<strong>' + label + ' · ' + escapeHTML(new Date(item.date).toLocaleString()) + '</strong>' +
+      '<div class="grid" style="margin-top:8px"><select data-op-taken="' + item.id + '"><option value="pendiente">¿Tomaste la entrada? Pendiente</option><option value="si">Sí, la tomé</option><option value="no">No la tomé</option></select>' +
+      '<select data-op-outcome="' + item.id + '"><option value="pendiente">Resultado pendiente</option><option value="ganadora">Ganadora</option><option value="perdedora">Perdedora</option></select></div>' +
+      '<input data-op-note="' + item.id + '" type="text" placeholder="Nota opcional" style="width:100%;margin-top:8px">' +
+      '<button type="button" data-op-delete="' + item.id + '" style="margin-top:8px">Eliminar</button>';
+    list.appendChild(card);
+    card.querySelector("[data-op-taken]").value = item.taken || "pendiente";
+    card.querySelector("[data-op-outcome]").value = item.outcome || "pendiente";
+    card.querySelector("[data-op-note]").value = item.note || "";
+  });
+  list.querySelectorAll("[data-op-taken],[data-op-outcome],[data-op-note]").forEach(control => control.addEventListener("change", () => {
+    const id = control.dataset.opTaken || control.dataset.opOutcome || control.dataset.opNote;
+    const current = obtenerOportunidades();
+    const item = current.find(x => x.id === id);
+    if(!item) return;
+    if(control.dataset.opTaken) item.taken = control.value;
+    if(control.dataset.opOutcome) item.outcome = control.value;
+    if(control.dataset.opNote) item.note = control.value;
+    guardarOportunidades(current);
+    renderOportunidades();
+  }));
+  list.querySelectorAll("[data-op-delete]").forEach(button => button.addEventListener("click", () => {
+    guardarOportunidades(obtenerOportunidades().filter(x => x.id !== button.dataset.opDelete));
+    renderOportunidades();
+  }));
 }
 
 
@@ -3644,6 +2833,15 @@ if(guardarNoticiaBtn){
 }
 
 renderNoticias();
+renderOportunidades();
+document.getElementById("calendarPrev").addEventListener("click", () => {
+  opportunityCalendarMonth = new Date(opportunityCalendarMonth.getFullYear(), opportunityCalendarMonth.getMonth() - 1, 1);
+  renderOportunidades();
+});
+document.getElementById("calendarNext").addEventListener("click", () => {
+  opportunityCalendarMonth = new Date(opportunityCalendarMonth.getFullYear(), opportunityCalendarMonth.getMonth() + 1, 1);
+  renderOportunidades();
+});
 actualizarBarraActualizacion();
 setInterval(actualizarBarraActualizacion, 1000);
 setInterval(ejecutarActualizacion, 60000);
