@@ -344,6 +344,23 @@ nav button:hover{background:#f5f0e3;color:#59451f}
 nav button{display:inline-flex;align-items:center;gap:8px}
 .nav-icon{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 nav button.active .nav-icon{stroke-width:1.9}
+/* Indicadores modernos para estados y direcciones */
+.badge.up::before,.badge.down::before,.badge.neutral::before{
+  display:inline-grid;place-items:center;width:17px;height:17px;margin-right:5px;border-radius:50%;font-size:11px;font-weight:800;vertical-align:-1px
+}
+.badge.up::before{content:"↗";background:#bbf7d0;color:#166534}
+.badge.down::before{content:"↘";background:#fecaca;color:#991b1b}
+.badge.neutral::before{content:"·";background:#e5e7eb;color:#667085;font-size:17px}
+.context-good::before,.context-sell::before,.context-wait::before,.context-conflict::before{
+  display:inline-grid;place-items:center;width:20px;height:20px;margin-right:7px;border-radius:50%;font-size:12px;font-weight:800;vertical-align:-2px
+}
+.context-good::before{content:"✓";background:#bbf7d0;color:#166534}
+.context-sell::before{content:"↘";background:#fecaca;color:#991b1b}
+.context-wait::before,.context-conflict::before{content:"!";background:#fde68a;color:#92400e}
+.status-large::before{display:inline-block;margin-right:7px;font-weight:900}
+.status-large.up::before{content:"↗";color:#15803d}
+.status-large.down::before{content:"↘";color:#b91c1c}
+.status-large.neutral::before{content:"—";color:#7c8491}
 nav button.active{
   background:#302a1d;
   color:#fff4d6;
@@ -1578,7 +1595,7 @@ badge.className =
 "badge up";
 
 badge.textContent =
-"🟢 " + valor;
+valor;
 
 }
 
@@ -1588,7 +1605,7 @@ badge.className =
 "badge down";
 
 badge.textContent =
-"🔴 " + valor;
+valor;
 
 }
 
@@ -1598,7 +1615,7 @@ badge.className =
 "badge neutral";
 
 badge.textContent =
-"⚪ " + valor;
+valor;
 
 }
 
@@ -1886,7 +1903,7 @@ elemento.className =
 "badge up";
 
 elemento.textContent =
-"🟢 Subiendo";
+"Subiendo";
 
 }
 
@@ -1896,7 +1913,7 @@ elemento.className =
 "badge down";
 
 elemento.textContent =
-"🔴 Bajando";
+"Bajando";
 
 }
 
@@ -1906,7 +1923,7 @@ elemento.className =
 "badge neutral";
 
 elemento.textContent =
-"⚪ Neutral";
+"Neutral";
 
 }
 
@@ -2076,12 +2093,12 @@ function actualizarLecturaFinal(tipoContexto, compras, ventas){
   if(direction === "compra" || direction === "venta"){
     const buy = direction === "compra";
     badge.className = buy ? "badge context-good" : "badge context-sell";
-    badge.textContent = (buy ? "🟢" : "🔴") + " Contexto + estructura alineados";
+    badge.textContent = "Contexto + estructura alineados";
     title.textContent = buy ? "Contexto alcista para estudiar" : "Contexto bajista para estudiar";
     text.textContent = "Los factores macro, al menos dos confirmaciones y la estructura del oro están alineados. Registra si tomaste la entrada y su resultado.";
   }else{
     badge.className = "badge context-wait";
-    badge.textContent = "🟡 Condiciones incompletas";
+    badge.textContent = "Condiciones incompletas";
     title.textContent = "Esperando alineación";
     text.textContent = "Se registra una oportunidad cuando el contexto macro, al menos dos confirmaciones y la estructura de 15M, 5M y retroceso/rechazo coinciden.";
   }
@@ -2228,7 +2245,7 @@ tipoContexto === "oro"
 ){
 
 mainReading.textContent =
-"🟢 Alineados";
+"Alineados";
 
 mainReading.className =
 "status-large up";
@@ -2243,7 +2260,7 @@ tipoContexto === "presion"
 ){
 
 mainReading.textContent =
-"🔴 Presión";
+"Presión";
 
 mainReading.className =
 "status-large down";
@@ -2258,7 +2275,7 @@ tipoContexto === "parcial"
 ){
 
 mainReading.textContent =
-"🟡 Parcial";
+"Parcial";
 
 mainReading.className =
 "status-large";
@@ -2273,7 +2290,7 @@ tipoContexto === "conflicto"
 ){
 
 mainReading.textContent =
-"🟡 Conflicto";
+"Conflicto";
 
 mainReading.className =
 "status-large";
@@ -2286,7 +2303,7 @@ mainText.textContent =
 else{
 
 mainReading.textContent =
-"⚪ Sin dirección";
+"Sin dirección";
 
 mainReading.className =
 "status-large neutral";
@@ -2456,7 +2473,7 @@ badge.className =
 "badge context-good";
 
 badge.textContent =
-"🟢 Contexto favorable para estudiar";
+"Contexto favorable para estudiar";
 
 texto.textContent =
 "DXY y US10Y están bajando. Los factores principales están alineados. Revisa ahora las confirmaciones y la estructura del oro.";
@@ -2471,7 +2488,7 @@ badge.className =
 "badge context-sell";
 
 badge.textContent =
-"🔴 Contexto de presión para estudiar";
+"Contexto de presión para estudiar";
 
 texto.textContent =
 "DXY y US10Y están subiendo. Los factores principales están alineados en una dirección de presión. Revisa las confirmaciones y la estructura.";
@@ -2486,7 +2503,7 @@ badge.className =
 "badge context-wait";
 
 badge.textContent =
-"🟡 Contexto parcial";
+"Contexto parcial";
 
 texto.textContent =
 "Solo uno de los factores principales tiene dirección. El otro está neutral y todavía no confirma el contexto.";
@@ -2501,7 +2518,7 @@ badge.className =
 "badge context-wait";
 
 badge.textContent =
-"🟡 Factores en conflicto";
+"Factores en conflicto";
 
 texto.textContent =
 "DXY y US10Y tienen direcciones opuestas. El contexto principal no está alineado.";
@@ -2514,7 +2531,7 @@ badge.className =
 "badge context-wait";
 
 badge.textContent =
-"⚪ Sin dirección clara";
+"Sin dirección clara";
 
 texto.textContent =
 "DXY y US10Y están neutrales. No hay una dirección definida en los factores principales.";
@@ -2849,10 +2866,10 @@ function actualizarEstadoFuente(id, estado, detalle){
 
   if(estado === "ok"){
     span.className = "source-ok";
-    span.textContent = "🟢 " + (detalle || "Actualizado");
+    span.textContent = (detalle || "Actualizado");
   }else if(estado === "error"){
     span.className = "source-error";
-    span.textContent = "🔴 " + (detalle || "No disponible");
+    span.textContent = (detalle || "No disponible");
   }else{
     span.className = "source-wait";
     span.textContent = "⏳ " + (detalle || "Actualizando...");
