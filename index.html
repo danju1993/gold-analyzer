@@ -295,6 +295,147 @@ iframe{
 
 }
 
+
+/* Pulido visual: tema cálido con acentos dorados */
+:root{
+  color-scheme:light;
+  --ink:#17202c;
+  --muted:#667085;
+  --gold:#c89b3c;
+  --gold-dark:#8b641c;
+  --surface:#ffffff;
+  --canvas:#f3f4f6;
+  --line:#e5e7eb;
+  --shadow:0 8px 24px rgba(23,32,44,.07)
+}
+body{
+  background:linear-gradient(180deg,#f7f5ef 0,#f3f4f6 330px);
+  color:var(--ink);
+  line-height:1.5
+}
+header{
+  padding:20px max(18px,calc((100% - 920px)/2));
+  background:linear-gradient(120deg,#171b22 0%,#242a33 72%,#3c3321 100%);
+  box-shadow:0 4px 18px rgba(17,24,39,.16);
+  border-bottom:3px solid var(--gold)
+}
+h1{font-size:23px;letter-spacing:.2px}
+h2{font-size:20px;letter-spacing:-.25px;color:#202938}
+h3{font-size:16px;color:#263244}
+.sub{color:#e7e1d3;opacity:.9}
+nav{
+  padding:10px max(12px,calc((100% - 920px)/2));
+  gap:7px;
+  background:rgba(255,255,255,.94);
+  border-bottom:1px solid #e8e3d8;
+  box-shadow:0 3px 12px rgba(23,32,44,.04);
+  backdrop-filter:blur(12px)
+}
+nav button{
+  border:1px solid transparent;
+  border-radius:999px;
+  padding:10px 15px;
+  background:transparent;
+  color:#586174;
+  cursor:pointer;
+  transition:background .18s ease,color .18s ease,transform .18s ease
+}
+nav button:hover{background:#f5f0e3;color:#59451f}
+nav button.active{
+  background:#302a1d;
+  color:#fff4d6;
+  box-shadow:inset 0 0 0 1px rgba(200,155,60,.65)
+}
+main{max-width:920px;padding:22px 16px 40px}
+.card{
+  background:var(--surface);
+  border:1px solid rgba(215,218,224,.85);
+  border-radius:17px;
+  padding:19px;
+  margin-bottom:15px;
+  box-shadow:var(--shadow)
+}
+.metric{
+  padding:15px;
+  border:1px solid #eceef1;
+  border-radius:13px;
+  background:linear-gradient(145deg,#fbfbfc,#f5f6f8)
+}
+.big{font-variant-numeric:tabular-nums;letter-spacing:-.7px}
+.muted{color:var(--muted);line-height:1.5}
+.row{border-bottom-color:#edf0f2}
+.badge{padding:6px 10px}
+.layer-main{border-left:4px solid #526987}
+.layer-confirm{border-left:4px solid var(--gold)}
+.layer-structure{border-left:4px solid #8b95a3}
+.layer-final{border-left:4px solid #31815c}
+.status-large{letter-spacing:-.2px}
+.final-box{border:1px solid #eceef1;background:#fafaf9}
+.refresh-bar{
+  padding:13px 14px;
+  border:1px solid #ede8dc;
+  background:#fbfaf7
+}
+button{
+  font:inherit;
+  cursor:pointer;
+  transition:filter .16s ease,transform .16s ease,box-shadow .16s ease
+}
+button:hover{filter:brightness(.97)}
+button:active{transform:translateY(1px)}
+button:disabled{opacity:.6;cursor:wait}
+.refresh-bar button,.news-form button,.news-item button,#calendarPrev,#calendarNext{
+  border:1px solid #302a1d;
+  border-radius:10px;
+  padding:10px 14px;
+  background:#302a1d;
+  color:#fff4d6;
+  font-weight:700;
+  box-shadow:0 3px 8px rgba(48,42,29,.12)
+}
+#calendarPrev,#calendarNext{padding:7px 11px}
+select,input,textarea{
+  color:var(--ink);
+  border:1px solid #d8dce2;
+  border-radius:10px;
+  background:#fff;
+  transition:border-color .15s ease,box-shadow .15s ease
+}
+select,input{font-size:15px;padding:10px 11px}
+select:focus,input:focus,textarea:focus,button:focus-visible{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(200,155,60,.2)
+}
+.source-item{
+  border:1px solid #eceef1;
+  border-radius:11px;
+  background:#fff;
+  padding:10px 12px
+}
+.news-item{
+  border:1px solid #e7e9ed;
+  border-radius:13px;
+  padding:14px;
+  background:#fff;
+  box-shadow:0 3px 10px rgba(23,32,44,.035)
+}
+.page.active{animation:page-in .22s ease-out}
+@keyframes page-in{
+  from{opacity:.72;transform:translateY(3px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:520px){
+  header{padding:16px}
+  main{padding:15px 12px 30px}
+  .card{padding:15px;border-radius:15px}
+  nav{padding:9px 10px}
+  nav button{padding:9px 12px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
 </style>
 
 </head>
@@ -2578,6 +2719,8 @@ function renderOportunidades(){
     card.innerHTML = '<strong>' + label + ' · ' + escapeHTML(new Date(item.date).toLocaleString()) + '</strong>' +
       '<div class="grid" style="margin-top:8px"><select data-op-taken="' + item.id + '"><option value="pendiente">¿Tomaste la entrada? Pendiente</option><option value="si">Sí, la tomé</option><option value="no">No la tomé</option></select>' +
       '<select data-op-outcome="' + item.id + '"><option value="pendiente">Resultado pendiente</option><option value="ganadora">Ganadora</option><option value="perdedora">Perdedora</option></select></div>' +
+      '<button type="button" data-op-enter="' + item.id + '" style="margin-top:8px">' + (item.takenAt ? "Actualizar hora de entrada" : "Registrar entrada ahora") + '</button>' +
+      (item.takenAt ? '<div class="muted" style="margin-top:5px">Entrada ' + (item.direction === "compra" ? "de compra" : "de venta") + ' registrada: ' + escapeHTML(new Date(item.takenAt).toLocaleString()) + '</div>' : '') +
       '<label style="display:block;margin-top:10px;font-size:13px;font-weight:600">Notas de esta oportunidad</label>' +
       '<textarea data-op-note="' + item.id + '" rows="3" placeholder="Anota por qué tomaste o descartaste la entrada, cómo gestionaste el riesgo y cualquier observación." style="width:100%;margin-top:5px;padding:9px;border:1px solid #d5d9df;border-radius:9px;font:inherit;resize:vertical"></textarea>' +
       '<button type="button" data-op-delete="' + item.id + '" style="margin-top:8px">Eliminar</button>';
@@ -2594,6 +2737,15 @@ function renderOportunidades(){
     if(control.dataset.opTaken) item.taken = control.value;
     if(control.dataset.opOutcome) item.outcome = control.value;
     if(control.dataset.opNote) item.note = control.value;
+    guardarOportunidades(current);
+    renderOportunidades();
+  }));
+  list.querySelectorAll("[data-op-enter]").forEach(button => button.addEventListener("click", () => {
+    const current = obtenerOportunidades();
+    const item = current.find(x => x.id === button.dataset.opEnter);
+    if(!item) return;
+    item.taken = "si";
+    item.takenAt = new Date().toISOString();
     guardarOportunidades(current);
     renderOportunidades();
   }));
