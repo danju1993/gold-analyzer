@@ -3044,7 +3044,7 @@ if(
 ){
 
 navigator.serviceWorker
-.register("sw.js")
+.register("sw.js?v=20260927-2", {updateViaCache:"none"})
 .catch(() => {});
 
 }
