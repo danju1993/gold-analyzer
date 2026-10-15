@@ -456,6 +456,25 @@ select:focus,input:focus,textarea:focus,button:focus-visible{
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 
+
+.summary-panel{margin:0 0 14px;border:1px solid var(--line,#ddd);border-radius:14px;overflow:hidden;background:var(--card,#fff)}
+.summary-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border:0;background:var(--surface,#f7f7f7);color:inherit;text-align:left;font:inherit;font-weight:700;cursor:pointer}
+.summary-toggle:hover{filter:brightness(.97)}
+.summary-chevron{transition:transform .18s ease;font-size:1.2em}
+.summary-toggle[aria-expanded="true"] .summary-chevron{transform:rotate(180deg)}
+.summary-content{padding:12px}
+.summary-content[hidden]{display:none}
+.summary-content>.card{margin:0 0 12px}
+.summary-content>.card:last-child{margin-bottom:0}
+
+
+.factor-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.factor-options label{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid #d7dce3;border-radius:10px;background:#fff;cursor:pointer}
+.factor-options input{width:18px;height:18px;accent-color:#1d4ed8}
+.factor-direction-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.factor-direction-options label{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid #d7dce3;border-radius:10px;background:#fff;font-size:14px}
+.factor-direction-options select{max-width:145px;padding:7px;border:1px solid #d7dce3;border-radius:8px;background:#fff;font:inherit}
+
 </style>
 
 </head>
@@ -512,15 +531,12 @@ Contexto para estudiar el mercado · no es una señal automática
 
 <!-- ====================================================== -->
 <!-- RESUMEN -->
-<!-- ====================================================== -->
-
-<section
-  id="summary"
-  class="page active"
->
-
-
-<!-- ====================================================== -->
+<section id="summary" class="page active">
+<div class="summary-panel" data-summary-panel="quick">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-quick">
+    <span>1. 🥇 Lectura rápida</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-quick">
 <!-- LECTURA RÁPIDA -->
 <!-- ====================================================== -->
 
@@ -544,55 +560,23 @@ Esperando datos de mercado...
 
 </div>
 
-<div class="card">
-  <div class="refresh-bar">
-    <div>
-      <strong>🔄 Actualización del mercado</strong>
-      <div class="refresh-info" id="refreshInfo">Preparando actualización...</div>
-    </div>
-    <button id="refreshNow" type="button">Actualizar ahora</button>
+
   </div>
 </div>
 
-<div class="source-status">
-  <div class="source-item" id="sourceXAU">
-    <strong>🥇 XAU/USD</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-  <div class="source-item" id="sourceDXY">
-    <strong>📊 DXY</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-  <div class="source-item" id="sourceUSOIL">
-    <strong>🛢️ USOIL</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-  <div class="source-item" id="sourceAUDUSD">
-    <strong>🇦🇺 AUD/USD</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-  <div class="source-item" id="sourceUSDCAD">
-    <strong>🇨🇦 USD/CAD</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-  <div class="source-item" id="sourceUS10Y">
-    <strong>🇺🇸 US10Y</strong>
-    <span class="source-wait">⏳ Esperando...</span>
-  </div>
-</div>
-
-
-<!-- ====================================================== -->
+<div class="summary-panel" data-summary-panel="factors">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-factors">
+    <span>2. 🎯 Factores principales</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-factors">
 <!-- FACTORES PRINCIPALES -->
 <!-- ====================================================== -->
 
 <div class="card layer-main">
 
-<h3>🎯 1. Factores principales</h3>
+<h3>🎯 Factores principales</h3>
 
-<p class="muted">
-DXY + US10Y
-</p>
+<p class="muted" id="mainFactorSelectionLabel">Factores elegidos: DXY + US10Y</p>
 
 <div class="grid">
 
@@ -641,53 +625,93 @@ Contexto macro principal
 </div>
 
 
-<div class="row">
-
-<span>
-DXY
-</span>
-
-<span
-  id="summaryDXY"
-  class="badge neutral"
->
-Sin datos
-</span>
-
-</div>
-
-
-<div class="row">
-
-<span>
-US10Y
-</span>
-
-<span
-  id="summaryUS10Y"
-  class="badge neutral"
->
-Sin datos
-</span>
-
-</div>
+<div id="mainFactorRows"></div>
 
 </div>
 
 
 <!-- ====================================================== -->
+
+  </div>
+</div>
+
+<div class="summary-panel" data-summary-panel="final">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-final">
+    <span>3. 🧭 Lectura final</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-final">
+<!-- LECTURA FINAL -->
+<!-- ====================================================== -->
+
+<div class="card layer-final">
+
+<h3>🧭 Lectura final</h3>
+
+<div
+  id="finalBadge"
+  class="badge neutral"
+>
+Esperando datos
+</div>
+
+
+<div
+  id="finalBox"
+  class="final-box"
+>
+
+<div
+  id="finalTitle"
+  class="final-title"
+>
+Esperando datos
+</div>
+
+
+<p
+  id="finalText"
+  class="muted"
+>
+La aplicación combinará los factores principales,
+las confirmaciones, la estructura y la influencia manual de noticias.
+</p>
+
+<div id="finalNews" class="muted">📰 Noticias: sin influencia manual registrada</div>
+
+
+<ul
+  id="finalList"
+  class="final-list"
+>
+</ul>
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- ====================================================== -->
+
+  </div>
+</div>
+
+<div class="summary-panel" data-summary-panel="confirmations">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-confirmations">
+    <span>4. 🟡 Confirmaciones</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-confirmations">
 <!-- CONFIRMACIONES -->
 <!-- ====================================================== -->
 
 <div class="card layer-confirm">
 
-<h3>🟡 2. Confirmaciones</h3>
+<h3>🟡 Confirmaciones</h3>
 
-<p class="muted">
-USOIL y AUD/USD subiendo, o USD/CAD bajando,
-confirman estudiar compra. USOIL y AUD/USD bajando,
-o USD/CAD subiendo, confirman estudiar venta.
-</p>
+<p class="muted" id="confirmationDescription"></p>
 
 
 <div class="grid">
@@ -741,56 +765,118 @@ o USD/CAD subiendo, confirman estudiar venta.
 </div>
 
 
-<div class="row">
-
-<span>
-USOIL
-</span>
-
-<span
-  id="summaryUSOIL"
-  class="badge neutral"
->
-Sin datos
-</span>
-
-</div>
-
-
-<div class="row">
-
-<span>
-AUD/USD
-</span>
-
-<span
-  id="summaryAUDUSD"
-  class="badge neutral"
->
-Sin datos
-</span>
-
-</div>
-
-<div class="row">
-
-<span>
-USD/CAD
-</span>
-
-<span
-  id="summaryUSDCAD"
-  class="badge neutral"
->
-Sin datos
-</span>
-
-</div>
-
+<div id="confirmationPairRows"></div>
 </div>
 
 
 <!-- ====================================================== -->
+
+  </div>
+</div>
+
+<div class="summary-panel" data-summary-panel="market">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-market">
+    <span>5. 📊 Mercado</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-market">
+<div class="source-status">
+  <div class="source-item" id="sourceXAU">
+    <strong>🥇 XAU/USD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceDXY">
+    <strong>📊 DXY</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceUSOIL">
+    <strong>🛢️ USOIL</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceAUDUSD">
+    <strong>🇦🇺 AUD/USD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceUSDCAD">
+    <strong>🇨🇦 USD/CAD</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+  <div class="source-item" id="sourceUS10Y">
+    <strong>🇺🇸 US10Y</strong>
+    <span class="source-wait">⏳ Esperando...</span>
+  </div>
+</div>
+
+<!-- MERCADO -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+<h2>📊 Mercado</h2>
+<p class="muted" id="marketRoleSummary"></p>
+
+<div class="grid">
+
+
+<div class="metric">
+
+<div class="muted">
+🟢 Subiendo
+</div>
+
+<div
+  class="big up"
+  id="upCount"
+>
+0
+</div>
+
+<div
+  class="muted"
+  id="upNames"
+>
+—
+</div>
+
+</div>
+
+
+<div class="metric">
+
+<div class="muted">
+🔴 Bajando
+</div>
+
+<div
+  class="big down"
+  id="downCount"
+>
+0
+</div>
+
+<div
+  class="muted"
+  id="downNames"
+>
+—
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+  </div>
+</div>
+
+<div class="summary-panel" data-summary-panel="structure">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-structure">
+    <span>6. 🥇 Estructura del oro</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-structure">
 <!-- ESTRUCTURA -->
 <!-- ====================================================== -->
 
@@ -849,124 +935,25 @@ Sin definir
 </div>
 
 </div>
-
-
-<!-- ====================================================== -->
-<!-- LECTURA FINAL -->
-<!-- ====================================================== -->
-
-<div class="card layer-final">
-
-<h3>🧭 4. Lectura final</h3>
-
-<div
-  id="finalBadge"
-  class="badge neutral"
->
-Esperando datos
+  </div>
 </div>
 
-
-<div
-  id="finalBox"
-  class="final-box"
->
-
-<div
-  id="finalTitle"
-  class="final-title"
->
-Esperando datos
-</div>
-
-
-<p
-  id="finalText"
-  class="muted"
->
-La aplicación combinará los factores principales,
-las confirmaciones, la estructura y la influencia manual de noticias.
-</p>
-
-<div id="finalNews" class="muted">📰 Noticias: sin influencia manual registrada</div>
-
-
-<ul
-  id="finalList"
-  class="final-list"
->
-</ul>
-
-</div>
-
-</div>
-
-
-
-
-
-<!-- ====================================================== -->
-<!-- MERCADO -->
-<!-- ====================================================== -->
-
+<div class="summary-panel" data-summary-panel="update">
+  <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-update">
+    <span>7. 🔄 Actualización</span><span class="summary-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="summary-content" id="summary-content-update">
 <div class="card">
-
-<h2>📊 Mercado</h2>
-
-
-<div class="grid">
-
-
-<div class="metric">
-
-<div class="muted">
-🟢 Subiendo
+  <div class="refresh-bar">
+    <div>
+      <strong>🔄 Actualización del mercado</strong>
+      <div class="refresh-info" id="refreshInfo">Preparando actualización...</div>
+    </div>
+    <button id="refreshNow" type="button">Actualizar ahora</button>
+  </div>
 </div>
-
-<div
-  class="big up"
-  id="upCount"
->
-0
+  </div>
 </div>
-
-<div
-  class="muted"
-  id="upNames"
->
-—
-</div>
-
-</div>
-
-
-<div class="metric">
-
-<div class="muted">
-🔴 Bajando
-</div>
-
-<div
-  class="big down"
-  id="downCount"
->
-0
-</div>
-
-<div
-  class="muted"
-  id="downNames"
->
-—
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-
 
 </section>
 
@@ -1246,7 +1233,7 @@ Cargando...
 <h2>🧭 Relación con el oro</h2>
 
 <p class="muted">
-DXY y US10Y son los factores principales.
+Los factores principales se eligen en Configuración entre DXY, US10Y, USOIL, AUD/USD y USD/CAD.
 USOIL y AUD/USD subiendo, junto con USD/CAD bajando,
 son confirmaciones para estudiar compra. Sus direcciones
 opuestas confirman estudiar venta.
@@ -1391,6 +1378,32 @@ Investing.com
 
 
 <div class="row">
+  <strong>Factores principales del análisis</strong>
+</div>
+<p class="muted">Elige dos pares. La selección se guarda en este navegador y se usa para calcular la lectura principal.</p>
+<div class="factor-options" id="mainFactorOptions">
+  <label><input type="checkbox" name="mainFactor" value="DXY"> DXY</label>
+  <label><input type="checkbox" name="mainFactor" value="US10Y"> US10Y</label>
+  <label><input type="checkbox" name="mainFactor" value="USOIL"> USOIL</label>
+  <label><input type="checkbox" name="mainFactor" value="AUDUSD"> AUD/USD</label>
+  <label><input type="checkbox" name="mainFactor" value="USDCAD"> USD/CAD</label>
+</div>
+<p class="muted" id="mainFactorSelectionStatus" aria-live="polite">Selecciona dos factores principales.</p>
+
+<div class="row">
+  <strong>Dirección que cuenta para compra</strong>
+</div>
+<p class="muted">Configura cada par según tu método. La dirección contraria contará para venta.</p>
+<div class="factor-direction-options" id="mainFactorDirectionOptions">
+  <label>DXY <select data-factor-buy-direction="DXY"><option value="down" selected>↓ Bajando</option><option value="up">↑ Subiendo</option></select></label>
+  <label>US10Y <select data-factor-buy-direction="US10Y"><option value="down" selected>↓ Bajando</option><option value="up">↑ Subiendo</option></select></label>
+  <label>USOIL <select data-factor-buy-direction="USOIL"><option value="up" selected>↑ Subiendo</option><option value="down">↓ Bajando</option></select></label>
+  <label>AUD/USD <select data-factor-buy-direction="AUDUSD"><option value="up" selected>↑ Subiendo</option><option value="down">↓ Bajando</option></select></label>
+  <label>USD/CAD <select data-factor-buy-direction="USDCAD"><option value="down" selected>↓ Bajando</option><option value="up">↑ Subiendo</option></select></label>
+</div>
+<p class="muted" id="factorDirectionStatus" aria-live="polite">Direcciones predeterminadas.</p>
+
+<div class="row">
 
 <span>
 Mínimo de condiciones
@@ -1519,6 +1532,102 @@ USDCAD:{
 }
 
 };
+
+const MAIN_FACTOR_DEFAULTS = ["DXY", "US10Y"];
+const MAIN_FACTOR_STORAGE_KEY = "goldAnalyzerMainFactors";
+const MAIN_FACTOR_LABELS = {DXY:"DXY", US10Y:"US10Y", USOIL:"USOIL", AUDUSD:"AUD/USD", USDCAD:"USD/CAD"};
+const MAIN_FACTOR_DIRECTION_STORAGE_KEY = "goldAnalyzerMainFactorBuyDirections";
+const MAIN_FACTOR_BUY_DIRECTION_DEFAULTS = {DXY:"down", US10Y:"down", USOIL:"up", AUDUSD:"up", USDCAD:"down"};
+const mainFactorBuyDirections = (() => {
+  const directions = {...MAIN_FACTOR_BUY_DIRECTION_DEFAULTS};
+  try {
+    const stored = JSON.parse(localStorage.getItem(MAIN_FACTOR_DIRECTION_STORAGE_KEY) || "null");
+    if(stored && typeof stored === "object"){
+      Object.keys(MAIN_FACTOR_LABELS).forEach(key => {
+        if(stored[key] === "up" || stored[key] === "down") directions[key] = stored[key];
+      });
+    }
+  } catch(error) {}
+  return directions;
+})();
+const selectedMainFactors = (() => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(MAIN_FACTOR_STORAGE_KEY) || "null");
+    if (Array.isArray(stored)) {
+      const valid = [...new Set(stored.filter(key => Object.hasOwn(MAIN_FACTOR_LABELS, key)))].slice(0, 2);
+      if (valid.length === 2) return valid;
+    }
+  } catch (error) {}
+  return [...MAIN_FACTOR_DEFAULTS];
+})();
+
+function getGoldImpact(key, direction){
+  if(direction !== "up" && direction !== "down") return 0;
+  return direction === mainFactorBuyDirections[key] ? 1 : -1;
+}
+
+function renderMainFactorRows(){
+  const rows = document.getElementById("mainFactorRows");
+  if(!rows) return;
+  rows.innerHTML = selectedMainFactors.map(key => `<div class="row"><span>${MAIN_FACTOR_LABELS[key]}</span><span id="summary${key}" class="badge neutral">Sin datos</span></div>`).join("");
+  selectedMainFactors.forEach(key => ponerBadge("summary" + key, marketState[key].direction));
+  const label = document.getElementById("mainFactorSelectionLabel");
+  if(label) label.textContent = "Factores elegidos: " + selectedMainFactors.map(key => MAIN_FACTOR_LABELS[key]).join(" + ");
+}
+
+function renderConfirmationPairRows(){
+  const rows = document.getElementById("confirmationPairRows");
+  if(!rows) return;
+  const available = Object.keys(MAIN_FACTOR_LABELS).filter(key => !selectedMainFactors.includes(key));
+  rows.innerHTML = available.map(key => `<div class="row"><span>${MAIN_FACTOR_LABELS[key]}</span><span id="summary${key}" class="badge neutral">Sin datos</span></div>`).join("");
+  available.forEach(key => ponerBadge("summary" + key, marketState[key].direction));
+  const description = document.getElementById("confirmationDescription");
+  if(description){
+    const buyDirections = available.map(key => MAIN_FACTOR_LABELS[key] + " " + (mainFactorBuyDirections[key] === "up" ? "↑" : "↓"));
+    const sellDirections = available.map(key => MAIN_FACTOR_LABELS[key] + " " + (mainFactorBuyDirections[key] === "up" ? "↓" : "↑"));
+    description.textContent = "Direcciones para compra: " + buyDirections.join(", ") + ". Para venta: " + sellDirections.join(", ") + ".";
+  }
+}
+
+function initializeMainFactorDirectionOptions(){
+  const controls = [...document.querySelectorAll("[data-factor-buy-direction]")];
+  const status = document.getElementById("factorDirectionStatus");
+  controls.forEach(control => {
+    const key = control.dataset.factorBuyDirection;
+    control.value = mainFactorBuyDirections[key];
+    control.addEventListener("change", () => {
+      mainFactorBuyDirections[key] = control.value;
+      localStorage.setItem(MAIN_FACTOR_DIRECTION_STORAGE_KEY, JSON.stringify(mainFactorBuyDirections));
+      if(status) status.textContent = "Direcciones guardadas. Se actualizaron factores, confirmaciones y mercado.";
+      actualizarResumen();
+    });
+  });
+}
+
+function initializeMainFactorOptions(){
+  const checkboxes = [...document.querySelectorAll('input[name="mainFactor"]')];
+  const status = document.getElementById("mainFactorSelectionStatus");
+  checkboxes.forEach(box => { box.checked = selectedMainFactors.includes(box.value); });
+  const updateStatus = message => { if(status) status.textContent = message; };
+  checkboxes.forEach(box => box.addEventListener("change", () => {
+    const checked = checkboxes.filter(item => item.checked);
+    if(checked.length > 2){
+      box.checked = false;
+      updateStatus("Puedes elegir dos factores. Desmarca uno antes de seleccionar otro.");
+      return;
+    }
+    if(checked.length < 2){
+      updateStatus("Selecciona otro factor para completar el reemplazo; el análisis conserva la selección anterior hasta entonces.");
+      return;
+    }
+    selectedMainFactors.splice(0, selectedMainFactors.length, ...checked.map(item => item.value));
+    localStorage.setItem(MAIN_FACTOR_STORAGE_KEY, JSON.stringify(selectedMainFactors));
+    updateStatus("Factores guardados: " + selectedMainFactors.map(key => MAIN_FACTOR_LABELS[key]).join(" + "));
+    actualizarResumen();
+  }));
+  updateStatus("Factores seleccionados: " + selectedMainFactors.map(key => MAIN_FACTOR_LABELS[key]).join(" + "));
+}
+
 
 
 /* ====================================================== */
@@ -2137,267 +2246,59 @@ if(finalNews){
 /* FACTORES PRINCIPALES */
 /* ====================================================== */
 
-const dxy =
-marketState.DXY.direction;
-
-const us10y =
-marketState.US10Y.direction;
-
-
-let condicionesPrincipales = 0;
-
+const factores = selectedMainFactors.map(key => ({
+  key,
+  label: MAIN_FACTOR_LABELS[key],
+  direction: marketState[key].direction,
+  impact: getGoldImpact(key, marketState[key].direction)
+}));
+const condicionesPrincipales = factores.filter(factor => factor.impact !== 0).length;
+const votos = factores.map(factor => factor.impact);
 let tipoContexto = "neutral";
+if(votos.every(vote => vote === 1)) tipoContexto = "oro";
+else if(votos.every(vote => vote === -1)) tipoContexto = "presion";
+else if(votos.includes(0)) tipoContexto = condicionesPrincipales === 0 ? "neutral" : "parcial";
+else tipoContexto = "conflicto";
 
-
-if(
-dxy === "down" &&
-us10y === "down"
-){
-
-condicionesPrincipales = 2;
-
-tipoContexto = "oro";
-
+document.getElementById("mainConditions").textContent = condicionesPrincipales + "/2";
+const mainReading = document.getElementById("mainReading");
+const mainText = document.getElementById("mainConditionText");
+const factorSummary = factores.map(factor => factor.label + " " + (factor.direction === "up" ? "↑" : factor.direction === "down" ? "↓" : "·")).join(" + ");
+if(tipoContexto === "oro"){
+  mainReading.textContent = "Alineados";
+  mainReading.className = "status-large up";
+  mainText.textContent = factorSummary + " · dirección favorable para oro";
+}else if(tipoContexto === "presion"){
+  mainReading.textContent = "Presión";
+  mainReading.className = "status-large down";
+  mainText.textContent = factorSummary + " · presión sobre el oro";
+}else if(tipoContexto === "parcial"){
+  mainReading.textContent = "Parcial";
+  mainReading.className = "status-large";
+  mainText.textContent = factorSummary + " · solo un factor tiene dirección";
+}else if(tipoContexto === "conflicto"){
+  mainReading.textContent = "Conflicto";
+  mainReading.className = "status-large";
+  mainText.textContent = factorSummary + " · señales en direcciones opuestas";
+}else{
+  mainReading.textContent = "Sin dirección";
+  mainReading.className = "status-large neutral";
+  mainText.textContent = factorSummary + " · sin direcciones definidas";
 }
+renderMainFactorRows();
+renderConfirmationPairRows();
 
-else if(
-dxy === "up" &&
-us10y === "up"
-){
-
-condicionesPrincipales = 2;
-
-tipoContexto = "presion";
-
-}
-
-else if(
-(
-dxy === "up" ||
-dxy === "down"
-) &&
-us10y === "neutral"
-){
-
-condicionesPrincipales = 1;
-
-tipoContexto = "parcial";
-
-}
-
-else if(
-dxy === "neutral" &&
-(
-us10y === "up" ||
-us10y === "down"
-)
-){
-
-condicionesPrincipales = 1;
-
-tipoContexto = "parcial";
-
-}
-
-else if(
-dxy === "neutral" &&
-us10y === "neutral"
-){
-
-condicionesPrincipales = 0;
-
-tipoContexto = "neutral";
-
-}
-
-else{
-
-condicionesPrincipales = 0;
-
-tipoContexto = "conflicto";
-
-}
-
-
-/* ====================================================== */
-/* MOSTRAR PRINCIPALES */
-/* ====================================================== */
-
-document.getElementById(
-"mainConditions"
-).textContent =
-condicionesPrincipales + "/2";
-
-
-const mainReading =
-document.getElementById(
-"mainReading"
-);
-
-const mainText =
-document.getElementById(
-"mainConditionText"
-);
-
-
-if(
-tipoContexto === "oro"
-){
-
-mainReading.textContent =
-"Alineados";
-
-mainReading.className =
-"status-large up";
-
-mainText.textContent =
-"DXY ↓ + US10Y ↓";
-
-}
-
-else if(
-tipoContexto === "presion"
-){
-
-mainReading.textContent =
-"Presión";
-
-mainReading.className =
-"status-large down";
-
-mainText.textContent =
-"DXY ↑ + US10Y ↑";
-
-}
-
-else if(
-tipoContexto === "parcial"
-){
-
-mainReading.textContent =
-"Parcial";
-
-mainReading.className =
-"status-large";
-
-mainText.textContent =
-"Solo uno de los factores tiene dirección";
-
-}
-
-else if(
-tipoContexto === "conflicto"
-){
-
-mainReading.textContent =
-"Conflicto";
-
-mainReading.className =
-"status-large";
-
-mainText.textContent =
-"DXY y US10Y tienen direcciones opuestas";
-
-}
-
-else{
-
-mainReading.textContent =
-"Sin dirección";
-
-mainReading.className =
-"status-large neutral";
-
-mainText.textContent =
-"DXY y US10Y están neutrales";
-
-}
-
-
-/* ====================================================== */
-/* BADGES PRINCIPALES */
-/* ====================================================== */
-
-ponerBadge(
-"summaryDXY",
-dxy
-);
-
-ponerBadge(
-"summaryUS10Y",
-us10y
-);
-
-
-/* ====================================================== */
 /* CONFIRMACIONES */
 /* ====================================================== */
 
 const confirmacionesCompra = [];
-
 const confirmacionesVenta = [];
-
-
-if(
-marketState.USOIL.direction === "up"
-){
-
-confirmacionesCompra.push(
-"USOIL"
-);
-
-}
-
-else if(
-marketState.USOIL.direction === "down"
-){
-
-confirmacionesVenta.push(
-"USOIL"
-);
-
-}
-
-
-if(
-marketState.AUDUSD.direction === "up"
-){
-
-confirmacionesCompra.push(
-"AUD/USD"
-);
-
-}
-
-else if(
-marketState.AUDUSD.direction === "down"
-){
-
-confirmacionesVenta.push(
-"AUD/USD"
-);
-
-}
-
-if(
-marketState.USDCAD.direction === "down"
-){
-
-confirmacionesCompra.push(
-"USD/CAD"
-);
-
-}
-
-else if(
-marketState.USDCAD.direction === "up"
-){
-
-confirmacionesVenta.push(
-"USD/CAD"
-);
-
-}
+const paresConfirmacion = Object.keys(MAIN_FACTOR_LABELS).filter(key => !selectedMainFactors.includes(key));
+paresConfirmacion.forEach(key => {
+  const impact = getGoldImpact(key, marketState[key].direction);
+  if(impact === 1) confirmacionesCompra.push(MAIN_FACTOR_LABELS[key]);
+  else if(impact === -1) confirmacionesVenta.push(MAIN_FACTOR_LABELS[key]);
+});
 
 
 /* ====================================================== */
@@ -2408,14 +2309,14 @@ document.getElementById(
 "buyConfirmations"
 ).textContent =
 confirmacionesCompra.length +
-"/3";
+"/" + paresConfirmacion.length;
 
 
 document.getElementById(
 "sellConfirmations"
 ).textContent =
 confirmacionesVenta.length +
-"/3";
+"/" + paresConfirmacion.length;
 
 
 document.getElementById(
@@ -2432,22 +2333,6 @@ document.getElementById(
 confirmacionesVenta.length
 ? confirmacionesVenta.join(", ")
 : "—";
-
-
-ponerBadge(
-"summaryUSOIL",
-marketState.USOIL.direction
-);
-
-ponerBadge(
-"summaryAUDUSD",
-marketState.AUDUSD.direction
-);
-
-ponerBadge(
-"summaryUSDCAD",
-marketState.USDCAD.direction
-);
 
 
 /* ====================================================== */
@@ -2476,7 +2361,7 @@ badge.textContent =
 "Contexto favorable para estudiar";
 
 texto.textContent =
-"DXY y US10Y están bajando. Los factores principales están alineados. Revisa ahora las confirmaciones y la estructura del oro.";
+factorSummary + " están alineados con dirección favorable para oro. Revisa las confirmaciones y la estructura del oro.";
 
 }
 
@@ -2491,7 +2376,7 @@ badge.textContent =
 "Contexto de presión para estudiar";
 
 texto.textContent =
-"DXY y US10Y están subiendo. Los factores principales están alineados en una dirección de presión. Revisa las confirmaciones y la estructura.";
+factorSummary + " están alineados con presión sobre el oro. Revisa las confirmaciones y la estructura.";
 
 }
 
@@ -2521,7 +2406,7 @@ badge.textContent =
 "Factores en conflicto";
 
 texto.textContent =
-"DXY y US10Y tienen direcciones opuestas. El contexto principal no está alineado.";
+factorSummary + " tienen impactos opuestos. El contexto principal no está alineado.";
 
 }
 
@@ -2534,7 +2419,7 @@ badge.textContent =
 "Sin dirección clara";
 
 texto.textContent =
-"DXY y US10Y están neutrales. No hay una dirección definida en los factores principales.";
+factorSummary + " no tiene direcciones definidas. No hay un contexto principal claro.";
 
 }
 
@@ -2634,6 +2519,12 @@ activos.filter(
 x => x.data.direction === "down"
 );
 
+const marketRoleSummary = document.getElementById("marketRoleSummary");
+if(marketRoleSummary){
+  const confirmatoryFactors = Object.keys(MAIN_FACTOR_LABELS).filter(key => !selectedMainFactors.includes(key));
+  marketRoleSummary.textContent = "Principales: " + selectedMainFactors.map(key => MAIN_FACTOR_LABELS[key]).join(" + ") + " · Confirmaciones: " + confirmatoryFactors.map(key => MAIN_FACTOR_LABELS[key]).join(", ");
+}
+
 
 document.getElementById(
 "upCount"
@@ -2652,7 +2543,10 @@ document.getElementById(
 ).textContent =
 subiendo.length
 ? subiendo
-    .map(x => x.nombre)
+    .map(x => {
+      const key = Object.keys(MAIN_FACTOR_LABELS).find(item => marketState[item] === x.data);
+      return key ? x.nombre + (selectedMainFactors.includes(key) ? " · principal" : " · confirmación") : x.nombre;
+    })
     .join(", ")
 : "—";
 
@@ -2662,7 +2556,10 @@ document.getElementById(
 ).textContent =
 bajando.length
 ? bajando
-    .map(x => x.nombre)
+    .map(x => {
+      const key = Object.keys(MAIN_FACTOR_LABELS).find(item => marketState[item] === x.data);
+      return key ? x.nombre + (selectedMainFactors.includes(key) ? " · principal" : " · confirmación") : x.nombre;
+    })
     .join(", ")
 : "—";
 
@@ -3054,10 +2951,25 @@ navigator.serviceWorker
 /* INICIO */
 /* ====================================================== */
 
+initializeMainFactorOptions();
+initializeMainFactorDirectionOptions();
+renderMainFactorRows();
+renderConfirmationPairRows();
 cargarEstructura();
 
 ejecutarActualizacion();
 
+
+
+/* Botones independientes para expandir o contraer las secciones del Resumen. */
+document.querySelectorAll("#summary .summary-toggle").forEach(button => {
+  button.addEventListener("click", () => {
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!expanded));
+    const content = document.getElementById(button.getAttribute("aria-controls"));
+    if (content) content.hidden = expanded;
+  });
+});
 
 </script>
 
