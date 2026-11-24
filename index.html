@@ -282,6 +282,20 @@ iframe{
 .news-item{padding:11px;border:1px solid #e5e7eb;border-radius:10px;margin-top:8px;background:#fafafa}
 .news-item strong{display:block;margin-bottom:4px}
 .news-item small{color:#6b7280}
+.trade-form{display:grid;gap:10px}
+.trade-chart{width:100%;height:220px;display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fbfcfd}
+.trade-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.trade-levels .metric{padding:10px}
+.trade-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.trade-actions button{border:0;border-radius:9px;padding:9px 12px;background:#111827;color:#fff;font-weight:700}
+.trade-actions button.secondary{background:#eef1f5;color:#17202c}
+.trade-state{font-weight:800}
+.trade-directions{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.trade-direction{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#f3f4f6;font-size:12px;font-weight:700}
+.trade-direction.up{background:#dcfce7;color:#166534}
+.trade-direction.down{background:#fee2e2;color:#991b1b}
+.trade-direction.neutral{background:#f3f4f6;color:#667085}
+@media(max-width:520px){.trade-levels{grid-template-columns:1fr}}
 
 @media(max-width:520px){
 
@@ -512,7 +526,7 @@ Contexto para estudiar el mercado · no es una señal automática
 </button>
 
 <button data-page="tracking">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M7.5 3v4M16.5 3v4M3.5 9.5h17M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01"/></svg>Registro
+<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M7.5 3v4M16.5 3v4M3.5 9.5h17M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01"/></svg>Operaciones
 </button>
 
 <button data-page="news">
@@ -1251,6 +1265,26 @@ opuestas confirman estudiar venta.
 
 <section id="tracking" class="page">
 
+<div class="card layer-main">
+  <h3>📈 Seguimiento de mis operaciones</h3>
+  <p class="muted">Registra manualmente una posición que ya decidiste tomar. El analizador compara el precio de XAU/USD con tu entrada, objetivo y límite de pérdida; no envía órdenes.</p>
+  <form id="tradeForm" class="trade-form">
+    <div class="grid">
+      <label>Dirección<br><select id="tradeDirection" required><option value="compra">Compra</option><option value="venta">Venta</option></select></label>
+      <label>Precio de entrada<br><input id="tradeEntry" type="number" step="0.01" min="0" placeholder="Ej. 2350.00" required></label>
+    </div>
+    <div class="grid">
+      <label>Objetivo de ganancia<br><input id="tradeTarget" type="number" step="0.01" min="0" placeholder="Ej. 2360.00" required></label>
+      <label>Límite de pérdida<br><input id="tradeStop" type="number" step="0.01" min="0" placeholder="Ej. 2345.00" required></label>
+    </div>
+    <label>Exposición de la posición (onzas)<br><input id="tradeSize" type="number" step="0.01" min="0.01" value="1" required></label>
+    <label>Nota (opcional)<br><input id="tradeNote" type="text" maxlength="120" placeholder="Motivo o contexto de la operación"></label>
+    <button type="submit">Añadir al seguimiento</button>
+  </form>
+  <div class="muted" id="tradePriceStatus" style="margin-top:10px">Esperando precio actual de XAU/USD…</div>
+  <div id="tradeList" class="news-list"></div>
+</div>
+
 <div class="card layer-confirm">
   <h3>🗓️ Registro de oportunidades</h3>
   <p class="muted">Se guarda una oportunidad cada vez que las condiciones pasan de incompletas a completas. Marca si tomaste la entrada y su resultado.</p>
@@ -1486,6 +1520,7 @@ button.dataset.page
 if(page){
 
 page.classList.add("active");
+if(page.id === "tracking") renderTrades();
 
 }
 
@@ -1792,6 +1827,7 @@ const anterior = marketState.XAUUSD.price !== null
 
 marketState.XAUUSD.previousPrice = Number.isFinite(anterior) ? anterior : null;
 marketState.XAUUSD.price = precio;
+recordTradePrice(precio);
 
 let direccion = "neutral";
 if(Number.isFinite(anterior)){
@@ -2563,12 +2599,96 @@ bajando.length
     .join(", ")
 : "—";
 
+renderTrades();
 }
 
 
 /* ====================================================== */
 /* REGISTRO DE OPORTUNIDADES */
 /* ====================================================== */
+const TRADES_KEY = "goldAnalyzer_trades";
+const TRADE_HISTORY_KEY = "goldAnalyzer_tradePriceHistory";
+function getTrades(){
+  try{const value=JSON.parse(localStorage.getItem(TRADES_KEY)||"[]");return Array.isArray(value)?value:[]}catch(error){return []}
+}
+function saveTrades(items){localStorage.setItem(TRADES_KEY,JSON.stringify(items))}
+function getTradeHistory(){
+  try{const value=JSON.parse(localStorage.getItem(TRADE_HISTORY_KEY)||"{}");return value&&typeof value==="object"?value:{}}catch(error){return {}}
+}
+function recordTradePrice(price){
+  if(!Number.isFinite(price))return;
+  const trades=getTrades().filter(item=>item.status==="abierta");
+  if(!trades.length)return;
+  const history=getTradeHistory();
+  trades.forEach(item=>{const points=history[item.id]||[];if(!points.length||points[points.length-1].price!==price)points.push({time:Date.now(),price});history[item.id]=points.slice(-180)});
+  localStorage.setItem(TRADE_HISTORY_KEY,JSON.stringify(history));
+  renderTrades();
+}
+function drawTradeChart(canvas,trade,history,current){
+  const ctx=canvas.getContext("2d"),dpr=window.devicePixelRatio||1,rect=canvas.getBoundingClientRect();
+  if(!rect.width)return;
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.scale(dpr,dpr);
+  const w=rect.width,h=rect.height,pad={l:54,r:12,t:16,b:24},buy=trade.direction==="compra";
+  const prices=[trade.entry,trade.target,trade.stop,current,...history.map(x=>x.price)].filter(Number.isFinite);
+  let min=Math.min(...prices),max=Math.max(...prices);if(max===min){max+=1;min-=1}const gap=(max-min)*.12;min-=gap;max+=gap;
+  const y=value=>pad.t+(max-value)/(max-min)*(h-pad.t-pad.b);
+  ctx.font="11px sans-serif";ctx.textAlign="right";
+  const levels=[{value:trade.target,label:"Objetivo",color:"#15803d"},{value:trade.entry,label:"Entrada",color:"#667085"},{value:trade.stop,label:"Pérdida",color:"#b91c1c"}];
+  levels.forEach(level=>{ctx.strokeStyle=level.color;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(pad.l,y(level.value));ctx.lineTo(w-pad.r,y(level.value));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=level.color;ctx.fillText(level.label,pad.l-7,y(level.value)+4)});
+  const values=history.length?history.map(x=>x.price):[current];
+  const movement=values.length>1?values:[values[0],current];
+  const movementColor=buy?"#2563eb":"#c89b3c";
+  ctx.strokeStyle=movementColor;ctx.lineWidth=3;ctx.beginPath();
+  movement.forEach((value,i)=>{const x=pad.l+i/(movement.length-1)*(w-pad.l-pad.r);if(i===0)ctx.moveTo(x,y(value));else ctx.lineTo(x,y(value))});ctx.stroke();
+  ctx.fillStyle=movementColor;ctx.beginPath();ctx.arc(pad.l,y(movement[0]),3.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#111827";ctx.beginPath();ctx.arc(w-pad.r,y(current),4,0,Math.PI*2);ctx.fill();
+  ctx.textAlign="left";ctx.fillStyle="#17202c";ctx.fillText(current.toFixed(2),pad.l,y(current)-7);
+  ctx.font="10px sans-serif";ctx.fillStyle="#667085";ctx.fillText("Inicio",pad.l,h-6);ctx.textAlign="right";ctx.fillText("Ahora",w-pad.r,h-6);
+}
+function renderTrades(){
+  const list=document.getElementById("tradeList");if(!list)return;
+  const trades=getTrades(),history=getTradeHistory(),price=Number(marketState.XAUUSD.price);
+  const status=document.getElementById("tradePriceStatus");
+  status.textContent=Number.isFinite(price)&&price>0?"Precio XAU/USD: "+price.toFixed(2)+" USD/oz · Actualizado con los datos del analizador":"Aún no hay precio actual. Las distancias se actualizarán al recibir XAU/USD.";
+  list.innerHTML="";
+  if(!trades.length){list.innerHTML='<div class="muted">Todavía no registraste operaciones.</div>';return}
+  trades.forEach(trade=>{
+    const open=trade.status==="abierta",buy=trade.direction==="compra",current=open?(Number.isFinite(price)&&price>0?price:trade.entry):(Number(trade.closedPrice)||trade.entry);
+    const pnl=(current-trade.entry)*(buy?1:-1)*(Number(trade.size)||1),targetDistance=Math.abs(trade.target-current),stopDistance=Math.abs(current-trade.stop);
+    const favorable=buy?current>=trade.entry:current<=trade.entry;
+    const card=document.createElement("div");card.className="news-item";
+    card.innerHTML='<strong>'+(buy?'🟢 Compra':'🔴 Venta')+' XAU/USD · '+(open?'En seguimiento':'Cerrada')+'</strong>'+
+      (trade.note?'<div>'+escapeHTML(trade.note)+'</div>':'')+
+      '<div class="trade-levels"><div class="metric"><div class="muted">Resultado estimado</div><strong class="'+(pnl>=0?'up':'down')+'">'+(pnl>=0?'+':'')+pnl.toFixed(2)+' USD</strong></div><div class="metric"><div class="muted">Movimiento hasta objetivo</div><strong>'+targetDistance.toFixed(2)+' USD de precio/oz</strong></div><div class="metric"><div class="muted">Movimiento hasta pérdida</div><strong>'+stopDistance.toFixed(2)+' USD de precio/oz</strong></div></div>'+
+      '<div class="muted">“USD de precio/oz” es cuánto debe moverse la cotización del oro por onza; no es la cantidad de onzas de tu posición.</div>'+
+      '<div class="muted trade-state">'+(open?(buy?current>=trade.target?'Objetivo alcanzado.':current<=trade.stop?'Límite de pérdida alcanzado.':favorable?'El precio está a favor de la posición.':'El precio está en contra de la posición.':current<=trade.target?'Objetivo alcanzado.':current>=trade.stop?'Límite de pérdida alcanzado.':favorable?'El precio está a favor de la posición.':'El precio está en contra de la posición.'):'Operación cerrada')+'</div>'+
+      marketDirectionsMarkup()+
+      '<canvas class="trade-chart" aria-label="Gráfico de precio con niveles de entrada, objetivo y pérdida"></canvas>'+
+      (open?'<div class="trade-actions"><button type="button" data-trade-close="'+trade.id+'">Marcar como cerrada</button><button type="button" class="secondary" data-trade-delete="'+trade.id+'">Eliminar</button></div>':'<div class="trade-actions"><button type="button" class="secondary" data-trade-delete="'+trade.id+'">Eliminar</button></div>');
+    list.appendChild(card);drawTradeChart(card.querySelector("canvas"),trade,history[trade.id]||[],current);
+  });
+  list.querySelectorAll("[data-trade-close]").forEach(button=>button.addEventListener("click",()=>{const items=getTrades(),item=items.find(x=>x.id===button.dataset.tradeClose);if(item){item.status="cerrada";item.closedAt=new Date().toISOString();item.closedPrice=Number(marketState.XAUUSD.price)||item.entry;saveTrades(items);renderTrades()}}));
+  list.querySelectorAll("[data-trade-delete]").forEach(button=>button.addEventListener("click",()=>{saveTrades(getTrades().filter(x=>x.id!==button.dataset.tradeDelete));renderTrades()}));
+}
+function marketDirectionsMarkup(){
+  const assets=[
+    {key:"XAUUSD",label:"Oro"},{key:"DXY",label:"Dólar"},{key:"US10Y",label:"Bonos · rendimiento"},{key:"USOIL",label:"Petróleo"},
+    {key:"AUDUSD",label:"AUD/USD"},{key:"USDCAD",label:"USD/CAD"}
+  ];
+  return '<div class="muted" style="margin-top:12px;font-weight:700">Dirección de los activos analizados</div><div class="trade-directions">'+assets.map(asset=>{
+    const rawDirection=marketState[asset.key]?.direction||"neutral",direction=asset.key==="US10Y"?(rawDirection==="up"?"down":rawDirection==="down"?"up":"neutral"):rawDirection,className=direction==="up"?"up":direction==="down"?"down":"neutral",label=direction==="up"?"↑ Sube":direction==="down"?"↓ Baja":"· Sin dirección";
+    return '<span class="trade-direction '+className+'">'+asset.label+': '+label+'</span>';
+  }).join("")+'</div><div class="muted">La dirección de los bonos se invierte frente al rendimiento de US10Y: si el rendimiento sube, el precio de los bonos baja.</div>';
+}
+document.getElementById("tradeForm").addEventListener("submit",event=>{
+  event.preventDefault();const direction=document.getElementById("tradeDirection").value,entry=Number(document.getElementById("tradeEntry").value),target=Number(document.getElementById("tradeTarget").value),stop=Number(document.getElementById("tradeStop").value),size=Number(document.getElementById("tradeSize").value);
+  const valid=direction==="compra"?stop<entry&&entry<target:target<entry&&entry<stop;
+  if(!valid){alert(direction==="compra"?"Para una compra, el límite de pérdida debe quedar bajo la entrada y el objetivo por encima.":"Para una venta, el objetivo debe quedar bajo la entrada y el límite de pérdida por encima.");return}
+  const id=String(Date.now())+Math.random().toString(16).slice(2),items=getTrades();items.unshift({id,direction,entry,target,stop,size,note:document.getElementById("tradeNote").value.trim(),status:"abierta",createdAt:new Date().toISOString()});saveTrades(items);
+  const price=Number(marketState.XAUUSD.price);if(Number.isFinite(price)&&price>0){const h=getTradeHistory();h[id]=[{time:Date.now(),price}];localStorage.setItem(TRADE_HISTORY_KEY,JSON.stringify(h))}
+  event.target.reset();renderTrades();
+});
+window.addEventListener("resize",()=>renderTrades());
 const OPPORTUNITIES_KEY = "goldAnalyzer_opportunities";
 const LAST_OPPORTUNITY_STATE_KEY = "goldAnalyzer_lastOpportunityState";
 let opportunityCalendarMonth = new Date();
@@ -2919,6 +3039,7 @@ if(guardarNoticiaBtn){
 
 renderNoticias();
 renderOportunidades();
+renderTrades();
 document.getElementById("calendarPrev").addEventListener("click", () => {
   opportunityCalendarMonth = new Date(opportunityCalendarMonth.getFullYear(), opportunityCalendarMonth.getMonth() - 1, 1);
   renderOportunidades();
