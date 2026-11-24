@@ -71,6 +71,11 @@ nav{
   top:78px;
   z-index:4
 }
+nav{display:block;overflow:visible;padding:8px 10px}
+.menu-toggle{width:100%;text-align:left;display:flex;align-items:center;gap:9px;background:#f5f0e3;color:#59451f;border:1px solid #d8c28c}
+.menu-panel{position:absolute;top:calc(100% + 4px);left:10px;right:10px;max-width:360px;display:grid;gap:6px;padding:9px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 12px 28px rgba(23,32,44,.18);z-index:20}
+.menu-panel[hidden]{display:none}
+.menu-panel button{width:100%;text-align:left}
 
 nav button{
   white-space:nowrap;
@@ -481,6 +486,12 @@ select:focus,input:focus,textarea:focus,button:focus-visible{
 .summary-content>.card{margin:0 0 12px}
 .summary-content>.card:last-child{margin-bottom:0}
 
+nav{display:block;overflow:visible;padding:8px 10px}
+.menu-toggle{width:100%;text-align:left;display:flex;align-items:center;gap:9px;background:#f5f0e3;color:#59451f;border:1px solid #d8c28c}
+.menu-panel{position:absolute;top:calc(100% + 4px);left:10px;right:10px;max-width:360px;display:grid;gap:6px;padding:9px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 12px 28px rgba(23,32,44,.18);z-index:20}
+.menu-panel[hidden]{display:none}
+.menu-panel button{width:100%;text-align:left}
+
 
 .factor-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
 .factor-options label{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid #d7dce3;border-radius:10px;background:#fff;cursor:pointer}
@@ -510,8 +521,11 @@ Contexto para estudiar el mercado · no es una señal automática
 
 <nav>
 
+<button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="menuPanel">☰ Menú</button>
+
+<div id="menuPanel" class="menu-panel" hidden>
+
 <button
-  class="active"
   data-page="summary"
 >
 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Resumen
@@ -523,6 +537,14 @@ Contexto para estudiar el mercado · no es una señal automática
 
 <button data-page="macro">
 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.3 2.4 3.4 5.4 3.4 9s-1.1 6.6-3.4 9c-2.3-2.4-3.4-5.4-3.4-9S9.7 5.4 12 3Z"/></svg>Macro
+</button>
+
+<button class="active" data-page="positions">
+<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6M4 18h16M7 14l4-4 3 2 5-6"/></svg>Seguimiento
+</button>
+
+<button data-page="entry">
+<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/><circle cx="12" cy="12" r="9"/></svg>Nueva entrada
 </button>
 
 <button data-page="tracking">
@@ -537,6 +559,8 @@ Contexto para estudiar el mercado · no es una señal automática
 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="m19.4 15 .1.1 1.1.9-1.2 2.1-1.4-.5a7.8 7.8 0 0 1-1.5.9l-.3 1.5h-2.4l-.3-1.5a7.8 7.8 0 0 1-1.5-.9l-1.4.5-1.2-2.1 1.1-.9a7.6 7.6 0 0 1 0-1.8l-1.1-.9 1.2-2.1 1.4.5a7.8 7.8 0 0 1 1.5-.9l.3-1.5h2.4l.3 1.5a7.8 7.8 0 0 1 1.5.9l1.4-.5 1.2 2.1-1.1.9a7.6 7.6 0 0 1 0 1.8Z"/></svg>Config.
 </button>
 
+</div>
+
 </nav>
 
 
@@ -545,7 +569,7 @@ Contexto para estudiar el mercado · no es una señal automática
 
 <!-- ====================================================== -->
 <!-- RESUMEN -->
-<section id="summary" class="page active">
+<section id="summary" class="page">
 <div class="summary-panel" data-summary-panel="quick">
   <button class="summary-toggle" type="button" aria-expanded="true" aria-controls="summary-content-quick">
     <span>1. 🥇 Lectura rápida</span><span class="summary-chevron" aria-hidden="true">⌄</span>
@@ -1263,11 +1287,22 @@ opuestas confirman estudiar venta.
 <!-- REGISTRO DE OPORTUNIDADES -->
 <!-- ====================================================== -->
 
-<section id="tracking" class="page">
+<section id="positions" class="page active">
 
 <div class="card layer-main">
-  <h3>📈 Seguimiento de mis operaciones</h3>
-  <p class="muted">Registra manualmente una posición que ya decidiste tomar. El analizador compara el precio de XAU/USD con tu entrada, objetivo y límite de pérdida; no envía órdenes.</p>
+  <h3>📈 Seguimiento de operaciones abiertas</h3>
+  <p class="muted">Aquí ves cómo avanzan las posiciones que registraste, el precio de XAU/USD y la distancia hasta el objetivo y el límite de pérdida.</p>
+  <div class="muted" id="tradePriceStatus" style="margin-top:10px">Esperando precio actual de XAU/USD…</div>
+  <div id="tradeList" class="news-list"></div>
+</div>
+
+</section>
+
+<section id="entry" class="page">
+
+<div class="card layer-main">
+  <h3>➕ Registrar una nueva entrada</h3>
+  <p class="muted">Anota manualmente una posición que ya decidiste tomar. Este analizador no envía órdenes.</p>
   <form id="tradeForm" class="trade-form">
     <div class="grid">
       <label>Dirección<br><select id="tradeDirection" required><option value="compra">Compra</option><option value="venta">Venta</option></select></label>
@@ -1281,9 +1316,11 @@ opuestas confirman estudiar venta.
     <label>Nota (opcional)<br><input id="tradeNote" type="text" maxlength="120" placeholder="Motivo o contexto de la operación"></label>
     <button type="submit">Añadir al seguimiento</button>
   </form>
-  <div class="muted" id="tradePriceStatus" style="margin-top:10px">Esperando precio actual de XAU/USD…</div>
-  <div id="tradeList" class="news-list"></div>
 </div>
+
+</section>
+
+<section id="tracking" class="page">
 
 <div class="card layer-confirm">
   <h3>🗓️ Registro de oportunidades</h3>
@@ -1492,40 +1529,29 @@ El sistema no genera señales automáticas.
 /* NAVEGACIÓN */
 /* ====================================================== */
 
-document
-.querySelectorAll("nav button")
-.forEach(button => {
-
-button.addEventListener("click",() => {
-
-document
-.querySelectorAll("nav button")
-.forEach(x =>
-x.classList.remove("active")
-);
-
-document
-.querySelectorAll(".page")
-.forEach(x =>
-x.classList.remove("active")
-);
-
-button.classList.add("active");
-
-const page =
-document.getElementById(
-button.dataset.page
-);
-
-if(page){
-
-page.classList.add("active");
-if(page.id === "tracking") renderTrades();
-
-}
-
+const menuToggle=document.getElementById("menuToggle");
+const menuPanel=document.getElementById("menuPanel");
+menuToggle.addEventListener("click",()=>{
+  const open=menuToggle.getAttribute("aria-expanded")==="true";
+  menuToggle.setAttribute("aria-expanded",String(!open));
+  menuPanel.hidden=open;
 });
-
+document.querySelectorAll("#menuPanel button[data-page]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll("#menuPanel button[data-page]").forEach(item=>item.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(page=>page.classList.remove("active"));
+    button.classList.add("active");
+    const page=document.getElementById(button.dataset.page);
+    if(page){page.classList.add("active");if(page.id==="positions")renderTrades()}
+    menuPanel.hidden=true;
+    menuToggle.setAttribute("aria-expanded","false");
+  });
+});
+document.addEventListener("click",event=>{
+  if(!event.target.closest("nav")){menuPanel.hidden=true;menuToggle.setAttribute("aria-expanded","false")}
+});
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){menuPanel.hidden=true;menuToggle.setAttribute("aria-expanded","false")}
 });
 
 
@@ -2647,7 +2673,7 @@ function drawTradeChart(canvas,trade,history,current){
 }
 function renderTrades(){
   const list=document.getElementById("tradeList");if(!list)return;
-  const trades=getTrades(),history=getTradeHistory(),price=Number(marketState.XAUUSD.price);
+  const trades=getTrades().sort((a,b)=>(a.status==="abierta"?0:1)-(b.status==="abierta"?0:1)),history=getTradeHistory(),price=Number(marketState.XAUUSD.price);
   const status=document.getElementById("tradePriceStatus");
   status.textContent=Number.isFinite(price)&&price>0?"Precio XAU/USD: "+price.toFixed(2)+" USD/oz · Actualizado con los datos del analizador":"Aún no hay precio actual. Las distancias se actualizarán al recibir XAU/USD.";
   list.innerHTML="";
@@ -2686,7 +2712,7 @@ document.getElementById("tradeForm").addEventListener("submit",event=>{
   if(!valid){alert(direction==="compra"?"Para una compra, el límite de pérdida debe quedar bajo la entrada y el objetivo por encima.":"Para una venta, el objetivo debe quedar bajo la entrada y el límite de pérdida por encima.");return}
   const id=String(Date.now())+Math.random().toString(16).slice(2),items=getTrades();items.unshift({id,direction,entry,target,stop,size,note:document.getElementById("tradeNote").value.trim(),status:"abierta",createdAt:new Date().toISOString()});saveTrades(items);
   const price=Number(marketState.XAUUSD.price);if(Number.isFinite(price)&&price>0){const h=getTradeHistory();h[id]=[{time:Date.now(),price}];localStorage.setItem(TRADE_HISTORY_KEY,JSON.stringify(h))}
-  event.target.reset();renderTrades();
+  event.target.reset();renderTrades();document.querySelector('nav button[data-page="positions"]').click();
 });
 window.addEventListener("resize",()=>renderTrades());
 const OPPORTUNITIES_KEY = "goldAnalyzer_opportunities";
